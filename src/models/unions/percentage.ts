@@ -1,0 +1,6 @@
+import * as s from "../../core/validation/index.js";
+import type { Schema } from "../../core/validation/schema.js";
+
+export type Percentage = string | number;
+
+export const percentageSchema: Schema<Percentage> = s.of<Percentage>(s.union([s.string(), s.number()]));
