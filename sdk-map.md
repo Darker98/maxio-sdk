@@ -208,8 +208,7 @@ Take the pair from an operation's **Type sources** table. **Do not derive the pa
 | --- | --- | --- |
 | Objects | 563 | `src/models/` |
 | Enums (open; const companion plus schema) | 98 | `src/models/` |
-| Discriminated unions | 7 | `src/models/unions/` |
-| Unions without a discriminant | 83 | `src/models/unions/` |
+| Unions without a discriminant | 90 | `src/models/unions/` |
 
 **Conventions.** Every model is a plain `type`, not a class — build one with an object literal; there is no constructor and no builder. `f: T` is required, `f?: T` is optional (omit the key), and `f: T | null` is a **required, nullable** field where `null` is a value distinct from an omitted key. Optional properties are declared `f?: T`, not `f?: T | undefined`, so under `exactOptionalPropertyTypes` you must **omit or spread** an absent field rather than assign `undefined` to it.
 
@@ -353,17 +352,17 @@ Take the pair from an operation's **Type sources** table. **Do not derive the pa
 | `FullNumber` | no discriminant | `typeof`, or an `in` check | `src/models/unions/full-number.ts` |
 | `InitialChargeInCents` | no discriminant | `typeof`, or an `in` check | `src/models/unions/initial-charge-in-cents.ts` |
 | `Interval` | no discriminant | `typeof`, or an `in` check | `src/models/unions/interval.ts` |
-| `InvoiceEvent` | `eventType: "apply_credit_note"` · `eventType: "apply_debit_note"` · `eventType: "apply_payment"` · `eventType: "backport_invoice"` · `eventType: "change_chargeback_status"` · `eventType: "change_invoice_collection_method"` · `eventType: "change_invoice_status"` · `eventType: "create_credit_note"` · `eventType: "create_debit_note"` · `eventType: "failed_payment"` · `eventType: "issue_invoice"` · `eventType: "refund_invoice"` · `eventType: "remove_payment"` · `eventType: "void_invoice"` · `eventType: "void_remainder"` | `switch (x.eventType)` | `src/models/unions/invoice-event.ts` |
-| `InvoiceEventPayment` | `type: "apple_pay"` · `type: "bank_account"` · `type: "credit_card"` · `type: "external"` · `type: "paypal_account"` | `switch (x.type)` | `src/models/unions/invoice-event-payment.ts` |
-| `InvoiceEventPayment1` | `type: "apple_pay"` · `type: "bank_account"` · `type: "credit_card"` · `type: "external"` · `type: "paypal_account"` | `switch (x.type)` | `src/models/unions/invoice-event-payment1.ts` |
-| `InvoiceEvent1` | `eventType: "apply_credit_note"` · `eventType: "apply_debit_note"` · `eventType: "apply_payment"` · `eventType: "backport_invoice"` · `eventType: "change_chargeback_status"` · `eventType: "change_invoice_collection_method"` · `eventType: "change_invoice_status"` · `eventType: "create_credit_note"` · `eventType: "create_debit_note"` · `eventType: "failed_payment"` · `eventType: "issue_invoice"` · `eventType: "refund_invoice"` · `eventType: "remove_payment"` · `eventType: "void_invoice"` · `eventType: "void_remainder"` | `switch (x.eventType)` | `src/models/unions/invoice-event1.ts` |
+| `InvoiceEvent` | no discriminant | `typeof`, or an `in` check | `src/models/unions/invoice-event.ts` |
+| `InvoiceEventPayment` | no discriminant | `typeof`, or an `in` check | `src/models/unions/invoice-event-payment.ts` |
+| `InvoiceEventPayment1` | no discriminant | `typeof`, or an `in` check | `src/models/unions/invoice-event-payment1.ts` |
+| `InvoiceEvent1` | no discriminant | `typeof`, or an `in` check | `src/models/unions/invoice-event1.ts` |
 | `IssueServiceCreditErrorResponse` | no discriminant | `typeof`, or an `in` check | `src/models/unions/issue-service-credit-error-response.ts` |
 | `Metafields` | no discriminant | `typeof`, or an `in` check | `src/models/unions/metafields.ts` |
 | `Metafields1` | no discriminant | `typeof`, or an `in` check | `src/models/unions/metafields1.ts` |
 | `NetTerms1` | no discriminant | `typeof`, or an `in` check | `src/models/unions/net-terms1.ts` |
 | `OfferId` | no discriminant | `typeof`, or an `in` check | `src/models/unions/offer-id.ts` |
-| `PaymentProfile` | `paymentType: "apple_pay"` · `paymentType: "bank_account"` · `paymentType: "credit_card"` · `paymentType: "paypal_account"` | `switch (x.paymentType)` | `src/models/unions/payment-profile.ts` |
-| `PaymentProfile1` | `paymentType: "apple_pay"` · `paymentType: "bank_account"` · `paymentType: "credit_card"` · `paymentType: "paypal_account"` | `switch (x.paymentType)` | `src/models/unions/payment-profile1.ts` |
+| `PaymentProfile` | no discriminant | `typeof`, or an `in` check | `src/models/unions/payment-profile.ts` |
+| `PaymentProfile1` | no discriminant | `typeof`, or an `in` check | `src/models/unions/payment-profile1.ts` |
 | `Percentage` | no discriminant | `typeof`, or an `in` check | `src/models/unions/percentage.ts` |
 | `Percentage1` | no discriminant | `typeof`, or an `in` check | `src/models/unions/percentage1.ts` |
 | `PrepaidConfigurationErrorResponse` | no discriminant | `typeof`, or an `in` check | `src/models/unions/prepaid-configuration-error-response.ts` |
@@ -385,7 +384,7 @@ Take the pair from an operation's **Type sources** table. **Do not derive the pa
 | `Quantity3` | no discriminant | `typeof`, or an `in` check | `src/models/unions/quantity3.ts` |
 | `Refund` | no discriminant | `typeof`, or an `in` check | `src/models/unions/refund.ts` |
 | `RefundPrepaymentErrorResponse` | no discriminant | `typeof`, or an `in` check | `src/models/unions/refund-prepayment-error-response.ts` |
-| `RenewalConfigurationItem` | `itemType: "Component"` · `itemType: "Product"` | `switch (x.itemType)` | `src/models/unions/renewal-configuration-item.ts` |
+| `RenewalConfigurationItem` | no discriminant | `typeof`, or an `in` check | `src/models/unions/renewal-configuration-item.ts` |
 | `Resume` | no discriminant | `typeof`, or an `in` check | `src/models/unions/resume.ts` |
 | `SegmentProperty1Value` | no discriminant | `typeof`, or an `in` check | `src/models/unions/segment-property1-value.ts` |
 | `SegmentProperty1Value1` | no discriminant | `typeof`, or an `in` check | `src/models/unions/segment-property1-value1.ts` |

@@ -13,17 +13,18 @@ import { paymentMethodExternalSchema, type PaymentMethodExternal } from "../paym
 import { paymentMethodPaypalSchema, type PaymentMethodPaypal } from "../payment-method-paypal.js";
 
 export type InvoiceEventPayment1 =
-  | (PaymentMethodApplePay & { type: "apple_pay" })
-  | (PaymentMethodBankAccount & { type: "bank_account" })
-  | (PaymentMethodCreditCard & { type: "credit_card" })
-  | (PaymentMethodExternal & { type: "external" })
-  | (PaymentMethodPaypal & { type: "paypal_account" });
+  | PaymentMethodApplePay
+  | PaymentMethodBankAccount
+  | PaymentMethodCreditCard
+  | PaymentMethodExternal
+  | PaymentMethodPaypal;
 
-export const invoiceEventPayment1Schema: Schema<InvoiceEventPayment1> =
-  s.discriminatedUnion<InvoiceEventPayment1>("type", {
-    apple_pay: paymentMethodApplePaySchema,
-    bank_account: paymentMethodBankAccountSchema,
-    credit_card: paymentMethodCreditCardSchema,
-    external: paymentMethodExternalSchema,
-    paypal_account: paymentMethodPaypalSchema,
-  });
+export const invoiceEventPayment1Schema: Schema<InvoiceEventPayment1> = s.of<InvoiceEventPayment1>(
+  s.union([
+    s.lazy(() => paymentMethodApplePaySchema),
+    s.lazy(() => paymentMethodBankAccountSchema),
+    s.lazy(() => paymentMethodCreditCardSchema),
+    s.lazy(() => paymentMethodExternalSchema),
+    s.lazy(() => paymentMethodPaypalSchema),
+  ]),
+);

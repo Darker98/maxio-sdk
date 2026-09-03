@@ -12,17 +12,16 @@ import {
 import { paypalPaymentProfileSchema, type PaypalPaymentProfile } from "../paypal-payment-profile.js";
 
 export type PaymentProfile1 =
-  | (ApplePayPaymentProfile & { paymentType: "apple_pay" })
-  | (BankAccountPaymentProfile & { paymentType: "bank_account" })
-  | (CreditCardPaymentProfile & { paymentType: "credit_card" })
-  | (PaypalPaymentProfile & { paymentType: "paypal_account" });
+  | ApplePayPaymentProfile
+  | BankAccountPaymentProfile
+  | CreditCardPaymentProfile
+  | PaypalPaymentProfile;
 
-export const paymentProfile1Schema: Schema<PaymentProfile1> = s.discriminatedUnion<PaymentProfile1>(
-  "payment_type",
-  {
-    apple_pay: applePayPaymentProfileSchema,
-    bank_account: bankAccountPaymentProfileSchema,
-    credit_card: creditCardPaymentProfileSchema,
-    paypal_account: paypalPaymentProfileSchema,
-  },
+export const paymentProfile1Schema: Schema<PaymentProfile1> = s.of<PaymentProfile1>(
+  s.union([
+    s.lazy(() => applePayPaymentProfileSchema),
+    s.lazy(() => bankAccountPaymentProfileSchema),
+    s.lazy(() => creditCardPaymentProfileSchema),
+    s.lazy(() => paypalPaymentProfileSchema),
+  ]),
 );

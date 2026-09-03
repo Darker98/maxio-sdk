@@ -26,36 +26,38 @@ import { voidInvoiceEventSchema, type VoidInvoiceEvent } from "../void-invoice-e
 import { voidRemainderEventSchema, type VoidRemainderEvent } from "../void-remainder-event.js";
 
 export type InvoiceEvent =
-  | (ApplyCreditNoteEvent & { eventType: "apply_credit_note" })
-  | (ApplyDebitNoteEvent & { eventType: "apply_debit_note" })
-  | (ApplyPaymentEvent & { eventType: "apply_payment" })
-  | (BackportInvoiceEvent & { eventType: "backport_invoice" })
-  | (ChangeChargebackStatusEvent & { eventType: "change_chargeback_status" })
-  | (ChangeInvoiceCollectionMethodEvent & { eventType: "change_invoice_collection_method" })
-  | (ChangeInvoiceStatusEvent & { eventType: "change_invoice_status" })
-  | (CreateCreditNoteEvent & { eventType: "create_credit_note" })
-  | (CreateDebitNoteEvent & { eventType: "create_debit_note" })
-  | (FailedPaymentEvent & { eventType: "failed_payment" })
-  | (IssueInvoiceEvent & { eventType: "issue_invoice" })
-  | (RefundInvoiceEvent & { eventType: "refund_invoice" })
-  | (RemovePaymentEvent & { eventType: "remove_payment" })
-  | (VoidInvoiceEvent & { eventType: "void_invoice" })
-  | (VoidRemainderEvent & { eventType: "void_remainder" });
+  | ApplyCreditNoteEvent
+  | ApplyDebitNoteEvent
+  | ApplyPaymentEvent
+  | BackportInvoiceEvent
+  | ChangeChargebackStatusEvent
+  | ChangeInvoiceCollectionMethodEvent
+  | ChangeInvoiceStatusEvent
+  | CreateCreditNoteEvent
+  | CreateDebitNoteEvent
+  | FailedPaymentEvent
+  | IssueInvoiceEvent
+  | RefundInvoiceEvent
+  | RemovePaymentEvent
+  | VoidInvoiceEvent
+  | VoidRemainderEvent;
 
-export const invoiceEventSchema: Schema<InvoiceEvent> = s.discriminatedUnion<InvoiceEvent>("event_type", {
-  apply_credit_note: applyCreditNoteEventSchema,
-  apply_debit_note: applyDebitNoteEventSchema,
-  apply_payment: applyPaymentEventSchema,
-  backport_invoice: backportInvoiceEventSchema,
-  change_chargeback_status: changeChargebackStatusEventSchema,
-  change_invoice_collection_method: changeInvoiceCollectionMethodEventSchema,
-  change_invoice_status: changeInvoiceStatusEventSchema,
-  create_credit_note: createCreditNoteEventSchema,
-  create_debit_note: createDebitNoteEventSchema,
-  failed_payment: failedPaymentEventSchema,
-  issue_invoice: issueInvoiceEventSchema,
-  refund_invoice: refundInvoiceEventSchema,
-  remove_payment: removePaymentEventSchema,
-  void_invoice: voidInvoiceEventSchema,
-  void_remainder: voidRemainderEventSchema,
-});
+export const invoiceEventSchema: Schema<InvoiceEvent> = s.of<InvoiceEvent>(
+  s.union([
+    s.lazy(() => applyCreditNoteEventSchema),
+    s.lazy(() => applyDebitNoteEventSchema),
+    s.lazy(() => applyPaymentEventSchema),
+    s.lazy(() => backportInvoiceEventSchema),
+    s.lazy(() => changeChargebackStatusEventSchema),
+    s.lazy(() => changeInvoiceCollectionMethodEventSchema),
+    s.lazy(() => changeInvoiceStatusEventSchema),
+    s.lazy(() => createCreditNoteEventSchema),
+    s.lazy(() => createDebitNoteEventSchema),
+    s.lazy(() => failedPaymentEventSchema),
+    s.lazy(() => issueInvoiceEventSchema),
+    s.lazy(() => refundInvoiceEventSchema),
+    s.lazy(() => removePaymentEventSchema),
+    s.lazy(() => voidInvoiceEventSchema),
+    s.lazy(() => voidRemainderEventSchema),
+  ]),
+);

@@ -10,11 +10,13 @@ import {
 } from "../scheduled-renewal-item-request-body-product.js";
 
 export type RenewalConfigurationItem =
-  | (ScheduledRenewalItemRequestBodyComponent & { itemType: "Component" })
-  | (ScheduledRenewalItemRequestBodyProduct & { itemType: "Product" });
+  | ScheduledRenewalItemRequestBodyComponent
+  | ScheduledRenewalItemRequestBodyProduct;
 
 export const renewalConfigurationItemSchema: Schema<RenewalConfigurationItem> =
-  s.discriminatedUnion<RenewalConfigurationItem>("item_type", {
-    Component: scheduledRenewalItemRequestBodyComponentSchema,
-    Product: scheduledRenewalItemRequestBodyProductSchema,
-  });
+  s.of<RenewalConfigurationItem>(
+    s.union([
+      s.lazy(() => scheduledRenewalItemRequestBodyComponentSchema),
+      s.lazy(() => scheduledRenewalItemRequestBodyProductSchema),
+    ]),
+  );
