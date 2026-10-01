@@ -1,8 +1,14 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/** Required when creating a subscription with Maxio Payments. */
 export type AgreementAcceptance = {
+  /** Required when providing agreement acceptance params. */
   ipAddress?: string;
+  /**
+   * Required when creating a subscription with Maxio Payments. Either terms_url or
+   * privacy_policy_url is required when providing agreement_acceptance params.
+   */
   termsUrl?: string;
   privacyPolicyUrl?: string;
   returnRefundPolicyUrl?: string;

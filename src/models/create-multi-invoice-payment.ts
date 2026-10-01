@@ -11,10 +11,15 @@ import {
 import { amount1Schema, type Amount1 } from "./unions/amount1.js";
 
 export type CreateMultiInvoicePayment = {
+  /** A description to be attached to the payment. */
   memo?: string;
+  /** Additional information related to the payment method (eg. Check #). */
   details?: string;
+  /** The type of payment method used. Defaults to other. */
   method?: InvoicePaymentMethodType;
+  /** Dollar amount of the sum of the invoices payment (eg. "10.50" => $10.50). */
   amount: Amount1;
+  /** Date reflecting when the payment was received from a customer. Must be in the past. */
   receivedOn?: string;
   applications: CreateInvoicePaymentApplication[];
 };

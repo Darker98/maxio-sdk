@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** A handle for the line item kind */
 export const LineItemKind = {
   Baseline: "baseline",
   Initial: "initial",

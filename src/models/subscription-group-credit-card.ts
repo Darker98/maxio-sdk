@@ -9,6 +9,10 @@ import { fullNumberSchema, type FullNumber } from "./unions/full-number.js";
 export type SubscriptionGroupCreditCard = {
   chargifyToken?: string;
   vaultToken?: string;
+  /**
+   * The vault that stores the payment profile with the provided `vault_token`. Use `bogus` for
+   * testing.
+   */
   currentVault?: CreditCardVault;
   gatewayHandle?: string;
   firstName?: string;
@@ -23,6 +27,7 @@ export type SubscriptionGroupCreditCard = {
   expirationMonth?: ExpirationMonth;
   expirationYear?: ExpirationYear;
   lastFour?: string;
+  /** The type of card used. */
   cardType?: CardType;
   customerVaultToken?: string;
   cvv?: string;

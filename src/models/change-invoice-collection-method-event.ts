@@ -4,14 +4,16 @@ import {
   changeInvoiceCollectionMethodEventDataSchema,
   type ChangeInvoiceCollectionMethodEventData,
 } from "./change-invoice-collection-method-event-data.js";
-import { invoiceEventTypeSchema, type InvoiceEventType } from "./invoice-event-type.js";
+import { InvoiceEventType, invoiceEventTypeSchema } from "./invoice-event-type.js";
 import { invoiceSchema, type Invoice } from "./invoice.js";
 
 export type ChangeInvoiceCollectionMethodEvent = {
   id: number;
   timestamp: Date;
   invoice: Invoice;
-  eventType: InvoiceEventType;
+  /** @default InvoiceEventType.ChangeInvoiceCollectionMethod */
+  eventType?: InvoiceEventType;
+  /** Example schema for an `change_invoice_collection_method` event */
   eventData: ChangeInvoiceCollectionMethodEventData;
 };
 
@@ -20,7 +22,7 @@ export const changeInvoiceCollectionMethodEventSchema: Schema<ChangeInvoiceColle
     id: s.number(),
     timestamp: s.dateTime(),
     invoice: invoiceSchema,
-    eventType: invoiceEventTypeSchema,
+    eventType: s.defaulted(invoiceEventTypeSchema, InvoiceEventType.ChangeInvoiceCollectionMethod),
     eventData: changeInvoiceCollectionMethodEventDataSchema,
     _keysMap: {
       eventType: "event_type",

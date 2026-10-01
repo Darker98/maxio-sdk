@@ -2,6 +2,7 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 import { webhookSubscriptionSchema, type WebhookSubscription } from "./webhook-subscription.js";
 
+/** Used to Create or Update Endpoint. */
 export type CreateOrUpdateEndpoint = {
   url: string;
   webhookSubscriptions: WebhookSubscription[];

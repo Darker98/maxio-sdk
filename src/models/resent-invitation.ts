@@ -2,7 +2,13 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
 export type ResentInvitation = {
+  /**
+   * @deprecated
+   */
   lastSentAt?: string;
+  /**
+   * @deprecated
+   */
   lastAcceptedAt?: string;
   sendInviteLinkText?: string;
   uninvitedCount?: number;

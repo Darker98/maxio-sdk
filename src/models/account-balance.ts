@@ -2,8 +2,11 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
 export type AccountBalance = {
+  /** The balance in cents. */
   balanceInCents?: number;
+  /** The automatic balance in cents. */
   automaticBalanceInCents?: number | null;
+  /** The remittance balance in cents. */
   remittanceBalanceInCents?: number | null;
 };
 

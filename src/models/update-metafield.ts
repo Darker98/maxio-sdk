@@ -6,8 +6,17 @@ import { metafieldScopeSchema, type MetafieldScope } from "./metafield-scope.js"
 export type UpdateMetafield = {
   currentName?: string;
   name?: string;
+  /**
+   * Warning: When updating a metafield's scope attribute, all scope attributes must be passed.
+   * Partially complete scope attributes will override the existing settings.
+   */
   scope?: MetafieldScope;
+  /**
+   * Indicates the type of metafield. A text metafield allows any string value. Dropdown and radio
+   * metafields have a set of values that can be selected. Defaults to 'text'.
+   */
   inputType?: MetafieldInput;
+  /** Only applicable when input_type is radio or dropdown. */
   enum?: string[];
 };
 

@@ -8,6 +8,7 @@ export type Mrr = {
   currency?: string;
   currencySymbol?: string;
   breakouts?: Breakouts;
+  /** ISO8601 timestamp */
   atTime?: Date;
 };
 

@@ -5,6 +5,10 @@ export type CreateProductFamily = {
   name: string;
   handle?: string | null;
   description?: string | null;
+  /**
+   * Whether surcharging applies to this product family. Defaults to `true` when omitted. Only
+   * applied on sites where surcharging is enabled.
+   */
   surcharging?: boolean;
 };
 

@@ -2,8 +2,14 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
 export type InvoicePrePayment = {
+  /** The subscription id for the prepayment account */
   subscriptionId?: number;
+  /** The amount in cents of the prepayment that was created as a result of this payment. */
   amountInCents?: number;
+  /**
+   * The total balance of the prepayment account for this subscription including any prior
+   * prepayments
+   */
   endingBalanceInCents?: number;
 };
 

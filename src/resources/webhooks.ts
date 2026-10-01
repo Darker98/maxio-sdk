@@ -1,9 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
+import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
   createOrUpdateEndpointRequestSchema,
@@ -44,6 +44,23 @@ export class Webhooks {
     this.#auth = auth;
   }
 
+  /**
+   * Create Endpoint
+   *
+   * @remarks
+   * Creates an endpoint and assigns a list of webhook subscriptions (events) to it. See the
+   * [Webhooks Reference](page:introduction/webhooks/webhooks-reference#events) page for available
+   * events.
+   *
+   * @returns OK
+   *
+   * @throws {@link Webhooks.CreateEndpointError} when the API answers with an error status — narrow
+   * on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   createEndpoint(
     request: Webhooks.CreateEndpointRequest,
     options?: RequestOptions,
@@ -52,7 +69,8 @@ export class Webhooks {
       {
         method: "POST",
         url: this.#servers.production("/endpoints.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -67,15 +85,30 @@ export class Webhooks {
     );
   }
 
+  /**
+   * Enable Webhooks
+   *
+   * @remarks
+   * Enables webhooks for your site.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   enableWebhooks(
     request: Webhooks.EnableWebhooksRequestParams,
     options?: RequestOptions,
-  ): ApiPromise<EnableWebhooksResponse, ResponseError> {
-    return this.#rawClient.execute<EnableWebhooksResponse, ResponseError>(
+  ): ApiPromise<EnableWebhooksResponse, ApiError> {
+    return this.#rawClient.execute<EnableWebhooksResponse, ApiError>(
       {
         method: "PUT",
         url: this.#servers.production("/webhooks/settings.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -84,37 +117,66 @@ export class Webhooks {
       },
       {
         success: { kind: "json", schema: enableWebhooksResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
-  listEndpoints(options?: RequestOptions): ApiPromise<Endpoint[], ResponseError> {
-    return this.#rawClient.execute<Endpoint[], ResponseError>(
+  /**
+   * List Endpoints
+   *
+   * @remarks
+   * Lists endpoints configured for a site.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
+  listEndpoints(options?: RequestOptions): ApiPromise<Endpoint[], ApiError> {
+    return this.#rawClient.execute<Endpoint[], ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/endpoints.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         body: { kind: "empty" },
       },
       {
         success: { kind: "json", schema: s.array(s.lazy(() => endpointSchema)) },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * List Webhooks
+   *
+   * @remarks
+   * Retrieves a list of webhooks. You can pass query parameters if you want to filter webhooks. See
+   * the [Webhooks](page:introduction/webhooks/webhooks) documentation for more information.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listWebhooks(
     request: Webhooks.ListWebhooksRequest,
     options?: RequestOptions,
-  ): ApiPromise<WebhookResponse[], ResponseError> {
-    return this.#rawClient.execute<WebhookResponse[], ResponseError>(
+  ): ApiPromise<WebhookResponse[], ApiError> {
+    return this.#rawClient.execute<WebhookResponse[], ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/webhooks.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [
           { name: "status", value: request.status, schema: s.optional(s.lazy(() => webhookStatusSchema)) },
           { name: "since_date", value: request.sinceDate, schema: s.optional(s.string()) },
@@ -128,21 +190,38 @@ export class Webhooks {
       },
       {
         success: { kind: "json", schema: s.array(s.lazy(() => webhookResponseSchema)) },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Replay Webhooks
+   *
+   * @remarks
+   * Replays webhooks. Posting to this endpoint does not immediately resend the webhooks. They are
+   * added to a queue and sent as soon as possible, depending on available system resources. You can
+   * submit an array of up to 1000 webhook IDs in the replay request.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   replayWebhooks(
     request: Webhooks.ReplayWebhooksRequestParams,
     options?: RequestOptions,
-  ): ApiPromise<ReplayWebhooksResponse, ResponseError> {
-    return this.#rawClient.execute<ReplayWebhooksResponse, ResponseError>(
+  ): ApiPromise<ReplayWebhooksResponse, ApiError> {
+    return this.#rawClient.execute<ReplayWebhooksResponse, ApiError>(
       {
         method: "POST",
         url: this.#servers.production("/webhooks/replay.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -151,12 +230,35 @@ export class Webhooks {
       },
       {
         success: { kind: "json", schema: replayWebhooksResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Update Endpoint
+   *
+   * @remarks
+   * Updates an Endpoint. You can change the `url` of your endpoint or the list of
+   * `webhook_subscriptions` to which you are subscribed. See the [Webhooks
+   * Reference](page:introduction/webhooks/webhooks-reference#events) page for available events.
+   *
+   * Always send a complete list of events to which you want to subscribe. Sending a PUT request for
+   * an existing endpoint with an empty list of `webhook_subscriptions` will unsubscribe all events.
+   *
+   * If you want to unsubscribe from a specific event, send a list of `webhook_subscriptions`
+   * without the specific event key.
+   *
+   * @returns OK
+   *
+   * @throws {@link Webhooks.UpdateEndpointError} when the API answers with an error status — narrow
+   * on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   updateEndpoint(
     request: Webhooks.UpdateEndpointRequest,
     options?: RequestOptions,
@@ -165,8 +267,9 @@ export class Webhooks {
       {
         method: "PUT",
         url: this.#servers.production("/endpoints/{endpoint_id}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "endpoint_id", value: request.endpointId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -187,7 +290,9 @@ export namespace Webhooks {
     body?: CreateOrUpdateEndpointRequest;
   };
 
-  export class CreateEndpointError extends ResponseError<Declared<"errorListResponse1", ErrorListResponse1>> {
+  export class CreateEndpointError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<CreateEndpointError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];
@@ -198,12 +303,39 @@ export namespace Webhooks {
   };
 
   export type ListWebhooksRequest = {
+    /** Webhooks with matching status would be returned. */
     status?: WebhookStatus;
+    /**
+     * Format YYYY-MM-DD. Returns Webhooks with the created_at date greater than or equal to the one
+     * specified.
+     */
     sinceDate?: string;
+    /**
+     * Format YYYY-MM-DD. Returns Webhooks with the created_at date less than or equal to the one
+     * specified.
+     */
     untilDate?: string;
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 20. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 20
+     */
     perPage?: number;
+    /** The order in which the Webhooks are returned. */
     order?: WebhookOrder;
+    /** The Advanced Billing id of a subscription you'd like to filter for */
     subscription?: number;
   };
 
@@ -212,13 +344,16 @@ export namespace Webhooks {
   };
 
   export type UpdateEndpointRequest = {
+    /** The Advanced Billing id for the endpoint that should be updated */
     endpointId: number;
     body?: CreateOrUpdateEndpointRequest;
   };
 
-  export class UpdateEndpointError extends ResponseError<
-    Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class UpdateEndpointError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<UpdateEndpointError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

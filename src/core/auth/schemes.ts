@@ -1,9 +1,9 @@
 import type { AuthParams, AuthScheme } from "../api-request.js";
 import type { BasicAuthCredentials, TokenProvider } from "./credentials.js";
-import { SdkError } from "../errors.js";
+import { ConfigurationError, CoreError } from "../errors.js";
 import * as s from "../validation/index.js";
 
-export const NO_PARAMS: AuthParams = {};
+const NO_PARAMS: AuthParams = {};
 
 export const noneAuth: AuthScheme = {
   resolve: () => NO_PARAMS,
@@ -12,8 +12,8 @@ export const noneAuth: AuthScheme = {
 
 export function bearerAuth(token: TokenProvider | undefined): AuthScheme {
   return {
-    async resolve() {
-      const value = await resolveToken(token);
+    async resolve(signal) {
+      const value = await resolveToken(token, signal);
       return value === undefined ? NO_PARAMS : header("Authorization", `Bearer ${value}`);
     },
     hasCredentials: () => hasToken(token),
@@ -22,9 +22,7 @@ export function bearerAuth(token: TokenProvider | undefined): AuthScheme {
 
 export function basicAuth(credentials: BasicAuthCredentials | undefined): AuthScheme {
   if (credentials !== undefined && credentials.username.includes(":")) {
-    throw new SdkError({
-      message: "A basic-auth username cannot contain a colon (RFC 7617 section 2).",
-    });
+    throw new ConfigurationError("A basic-auth username cannot contain a colon (RFC 7617 section 2).");
   }
   return {
     resolve() {
@@ -37,8 +35,8 @@ export function basicAuth(credentials: BasicAuthCredentials | undefined): AuthSc
 
 export function apiKeyHeaderAuth(config: { name: string; token: TokenProvider | undefined }): AuthScheme {
   return {
-    async resolve() {
-      const value = await resolveToken(config.token);
+    async resolve(signal) {
+      const value = await resolveToken(config.token, signal);
       return value === undefined ? NO_PARAMS : header(config.name, value);
     },
     hasCredentials: () => hasToken(config.token),
@@ -47,8 +45,8 @@ export function apiKeyHeaderAuth(config: { name: string; token: TokenProvider | 
 
 export function apiKeyQueryAuth(config: { name: string; token: TokenProvider | undefined }): AuthScheme {
   return {
-    async resolve() {
-      const value = await resolveToken(config.token);
+    async resolve(signal) {
+      const value = await resolveToken(config.token, signal);
       if (value === undefined) return NO_PARAMS;
       return { query: [{ name: config.name, value, schema: s.string() }] };
     },
@@ -58,8 +56,8 @@ export function apiKeyQueryAuth(config: { name: string; token: TokenProvider | u
 
 export function apiKeyCookieAuth(config: { name: string; token: TokenProvider | undefined }): AuthScheme {
   return {
-    async resolve() {
-      const value = await resolveToken(config.token);
+    async resolve(signal) {
+      const value = await resolveToken(config.token, signal);
       if (value === undefined) return NO_PARAMS;
       return { cookies: [{ name: config.name, value, schema: s.string() }] };
     },
@@ -87,11 +85,21 @@ export function allAuth(...schemes: readonly AuthScheme[]): AuthScheme {
 
 export function anyAuth(...schemes: readonly AuthScheme[]): AuthScheme {
   return {
-    resolve(signal) {
+    async resolve(signal) {
+      const failures: unknown[] = [];
       for (const scheme of schemes) {
-        if (scheme.hasCredentials()) return scheme.resolve(signal);
+        if (!scheme.hasCredentials()) continue;
+        try {
+          return await scheme.resolve(signal);
+        } catch (err) {
+          if (signal?.aborted) throw signal.reason;
+          if (err instanceof CoreError && err.kind === "timeout") throw err;
+          failures.push(err);
+        }
       }
-      return NO_PARAMS;
+      if (failures.length === 0) return NO_PARAMS;
+      if (failures.length === 1) throw failures[0];
+      throw new AggregateError(failures, "No authentication scheme succeeded.");
     },
     hasCredentials: () => schemes.some((scheme) => scheme.hasCredentials()),
     invalidate() {
@@ -114,8 +122,11 @@ export function base64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-async function resolveToken(token: TokenProvider | undefined): Promise<string | undefined> {
-  return present(typeof token === "function" ? await token() : token);
+async function resolveToken(
+  token: TokenProvider | undefined,
+  signal?: AbortSignal,
+): Promise<string | undefined> {
+  return present(typeof token === "function" ? await token(signal) : token);
 }
 
 function hasToken(token: TokenProvider | undefined): boolean {

@@ -11,7 +11,9 @@ import {
 import { lineItemTransactionTypeSchema, type LineItemTransactionType } from "./line-item-transaction-type.js";
 
 export type AllocationPreviewLineItem = {
+  /** A handle for the line item transaction type */
   transactionType?: LineItemTransactionType;
+  /** A handle for the line item kind for allocation preview */
   kind?: AllocationPreviewLineItemKind;
   amountInCents?: number;
   memo?: string;
@@ -19,6 +21,7 @@ export type AllocationPreviewLineItem = {
   taxableAmountInCents?: number;
   componentId?: number;
   componentHandle?: string;
+  /** Visible when using Fine-grained Component Control. */
   direction?: AllocationPreviewDirection;
 };
 

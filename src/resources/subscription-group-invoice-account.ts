@@ -1,9 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
+import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
   deductServiceCreditRequestSchema,
@@ -48,6 +48,23 @@ export class SubscriptionGroupInvoiceAccount {
     this.#auth = auth;
   }
 
+  /**
+   * Create Subscription Group Prepayment
+   *
+   * @remarks
+   * Adds a prepayment for a subscription group. This endpoint requires an `amount`, `details`,
+   * `method`, and `memo`. On success, the prepayment will be added to the group's prepayment
+   * balance.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError} when the
+   * API answers with an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   createSubscriptionGroupPrepayment(
     request: SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentRequest,
     options?: RequestOptions,
@@ -59,8 +76,9 @@ export class SubscriptionGroupInvoiceAccount {
       {
         method: "POST",
         url: this.#servers.production("/subscription_groups/{uid}/prepayments.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "uid", value: request.uid, schema: s.string() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -75,6 +93,22 @@ export class SubscriptionGroupInvoiceAccount {
     );
   }
 
+  /**
+   * Deduct Subscription Group Service Credit
+   *
+   * @remarks
+   * Deducts service credit for a subscription group. Credit will be deducted from the group in the
+   * amount specified in the request body.
+   *
+   * @returns Created
+   *
+   * @throws {@link SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError} when
+   * the API answers with an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   deductSubscriptionGroupServiceCredit(
     request: SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditRequest,
     options?: RequestOptions,
@@ -83,8 +117,9 @@ export class SubscriptionGroupInvoiceAccount {
       {
         method: "POST",
         url: this.#servers.production("/subscription_groups/{uid}/service_credit_deductions.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "uid", value: request.uid, schema: s.string() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -99,6 +134,23 @@ export class SubscriptionGroupInvoiceAccount {
     );
   }
 
+  /**
+   * Issue Subscription Group Service Credit
+   *
+   * @remarks
+   * Issues service credit for a subscription group. Credit will be added to the group in the amount
+   * specified in the request body. The credit will be applied to group member invoices as they are
+   * generated.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError} when
+   * the API answers with an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   issueSubscriptionGroupServiceCredit(
     request: SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditRequest,
     options?: RequestOptions,
@@ -110,8 +162,9 @@ export class SubscriptionGroupInvoiceAccount {
       {
         method: "POST",
         url: this.#servers.production("/subscription_groups/{uid}/service_credits.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "uid", value: request.uid, schema: s.string() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -126,6 +179,21 @@ export class SubscriptionGroupInvoiceAccount {
     );
   }
 
+  /**
+   * List Prepayments For Subscription Group
+   *
+   * @remarks
+   * Lists a subscription group's prepayments.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError} when
+   * the API answers with an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listPrepaymentsForSubscriptionGroup(
     request: SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupRequest,
     options?: RequestOptions,
@@ -137,7 +205,7 @@ export class SubscriptionGroupInvoiceAccount {
       {
         method: "GET",
         url: this.#servers.production("/subscription_groups/{uid}/prepayments.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "uid", value: request.uid, schema: s.string() }],
         query: [
           { name: "page", value: request.page, schema: s.defaulted(s.number(), 1) },
@@ -161,54 +229,75 @@ export class SubscriptionGroupInvoiceAccount {
 
 export namespace SubscriptionGroupInvoiceAccount {
   export type CreateSubscriptionGroupPrepaymentRequest = {
+    /** The uid of the subscription group */
     uid: string;
     body?: SubscriptionGroupPrepaymentRequest;
   };
 
-  export class CreateSubscriptionGroupPrepaymentError extends ResponseError<
-    Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class CreateSubscriptionGroupPrepaymentError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<CreateSubscriptionGroupPrepaymentError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];
   }
 
   export type DeductSubscriptionGroupServiceCreditRequest = {
+    /** The uid of the subscription group */
     uid: string;
     body?: DeductServiceCreditRequest;
   };
 
-  export class DeductSubscriptionGroupServiceCreditError extends ResponseError<
-    Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class DeductSubscriptionGroupServiceCreditError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<DeductSubscriptionGroupServiceCreditError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];
   }
 
   export type IssueSubscriptionGroupServiceCreditRequest = {
+    /** The uid of the subscription group */
     uid: string;
     body?: IssueServiceCreditRequest;
   };
 
-  export class IssueSubscriptionGroupServiceCreditError extends ResponseError<
-    Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class IssueSubscriptionGroupServiceCreditError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<IssueSubscriptionGroupServiceCreditError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];
   }
 
   export type ListPrepaymentsForSubscriptionGroupRequest = {
+    /** The uid of the subscription group */
     uid: string;
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 20. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 20
+     */
     perPage?: number;
+    /** Filter to use for List Prepayments operations */
     filter?: ListPrepaymentsFilter;
   };
 
-  export class ListPrepaymentsForSubscriptionGroupError extends ResponseError<
-    Declared<"error404", undefined>
-  > {
+  export class ListPrepaymentsForSubscriptionGroupError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+
     static readonly errors: ErrorDecoders<ListPrepaymentsForSubscriptionGroupError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
     ];

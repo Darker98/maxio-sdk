@@ -7,20 +7,54 @@ import { productPricePointIdSchema, type ProductPricePointId } from "./unions/pr
 import { quantity3Schema, type Quantity3 } from "./unions/quantity3.js";
 import { unitPrice7Schema, type UnitPrice7 } from "./unions/unit-price7.js";
 
+/**
+ * A line item change for a draft ad hoc invoice. Supports the same attributes as line items on
+ * invoice creation, plus `uid` and `_destroy` for updating or removing existing line items.
+ */
 export type UpdateInvoiceItem = {
   title?: string;
+  /**
+   * The quantity can contain up to 8 decimal places. e.g., 1.00 or 0.0012 or 0.00000065. If you
+   * submit a value with more than 8 decimal places, we will round it down to the 8th decimal place.
+   */
   quantity?: Quantity3;
+  /**
+   * The unit_price can contain up to 8 decimal places. e.g., 1.00 or 0.0012 or 0.00000065. If you
+   * submit a value with more than 8 decimal places, we will round it down to the 8th decimal place.
+   */
   unitPrice?: UnitPrice7;
+  /**
+   * Set to true to automatically calculate taxes. Site must be configured to use and calculate
+   * taxes. If using AvaTax, a tax_code parameter must also be sent.
+   */
   taxable?: boolean;
+  /**
+   * A string representing the tax code related to the product type. This is especially important
+   * when using AvaTax to tax based on locale. This attribute has a max length of 25 characters.
+   */
   taxCode?: string;
+  /** YYYY-MM-DD */
   periodRangeStart?: string;
+  /** YYYY-MM-DD */
   periodRangeEnd?: string;
+  /** Product handle or product id. */
   productId?: ProductId;
+  /** Component handle or component id. */
   componentId?: ComponentId3;
+  /** Price point handle or id. For component. */
   pricePointId?: PricePointId4;
   productPricePointId?: ProductPricePointId;
   description?: string;
+  /**
+   * Unique identifier of an existing line item on the invoice. When provided, the matching line
+   * item is updated with the submitted attributes. When omitted, a new line item is added to the
+   * invoice.
+   */
   uid?: string;
+  /**
+   * Set to `true` together with `uid` to remove the matching line item from the invoice. Line items
+   * not referenced in the request remain unchanged.
+   */
   destroy?: boolean;
 };
 

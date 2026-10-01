@@ -7,6 +7,7 @@ export type InvoiceRefund = {
   memo?: string;
   originalAmount?: string;
   appliedAmount?: string;
+  /** The transaction ID for the refund as returned from the payment gateway */
   gatewayTransactionId?: string | null;
   gatewayUsed?: string;
   gatewayHandle?: string | null;

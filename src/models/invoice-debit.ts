@@ -6,6 +6,7 @@ export type InvoiceDebit = {
   uid?: string;
   debitNoteNumber?: string;
   debitNoteUid?: string;
+  /** The role of the debit note. */
   role?: DebitNoteRole;
   transactionTime?: Date;
   memo?: string;

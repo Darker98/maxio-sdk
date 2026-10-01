@@ -4,11 +4,31 @@ import { reactivationBillingSchema, type ReactivationBilling } from "./reactivat
 import { resumeSchema, type Resume } from "./unions/resume.js";
 
 export type ReactivateSubscriptionRequest = {
+  /** These values are only applicable to subscriptions using calendar billing. */
   calendarBilling?: ReactivationBilling;
+  /**
+   * If `true` is sent, the reactivated Subscription will include a trial if one is available. If
+   * `false` is sent, the trial period will be ignored.
+   */
   includeTrial?: boolean;
+  /**
+   * If `true` is passed, the existing subscription balance will NOT be cleared/reset before adding
+   * the additional reactivation charges.
+   */
   preserveBalance?: boolean;
+  /** The coupon code to be applied during reactivation. */
   couponCode?: string;
+  /**
+   * If true is sent, Advanced Billing will use service credits and prepayments upon reactivation.
+   * If false is sent, the service credits and prepayments will be ignored.
+   */
   useCreditsAndPrepayments?: boolean;
+  /**
+   * If `true`, Advanced Billing will attempt to resume the subscription's billing period. If not
+   * resumable, the subscription will be reactivated with a new billing period. If `false` or
+   * omitted, Advanced Billing will only attempt to reactivate the subscription with a new billing
+   * period, regardless of whether or not the subscription is resumable.
+   */
   resume?: Resume;
 };
 

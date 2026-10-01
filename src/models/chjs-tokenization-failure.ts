@@ -4,6 +4,10 @@ import { paymentProfileParamsSchema, type PaymentProfileParams } from "./payment
 
 export type ChjsTokenizationFailure = {
   errors: string;
+  /**
+   * PCI-safe cardholder fields only. Full card numbers, CVV, and billing address are never
+   * included.
+   */
   paymentProfileParams?: PaymentProfileParams;
 };
 

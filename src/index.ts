@@ -1,32 +1,29 @@
 export { MaxioAdvancedBillingClient } from "./client.js";
-export { DEFAULT_CLIENT_OPTIONS, type ClientOptions } from "./client-options.js";
+export type { ClientOptions } from "./client-options.js";
 
-export type { BasicAuthCredentials, TokenProvider } from "./core/auth/credentials.js";
+export type { BasicAuthCredentials } from "./core/auth/credentials.js";
 
-export { ServerEnvironment, DEFAULT_SERVER_OPTIONS } from "./servers.js";
-export type {
-  ServerOptions,
-  ProductionServerOptions,
-  EbbServerOptions,
-  OauthServerOptions,
-} from "./servers.js";
+export { ServerEnvironment } from "./servers.js";
 
-export { MaxioGateway } from "./resources/maxio-gateway.js";
 export { ApiExports } from "./resources/api-exports.js";
 export { AdvanceInvoice } from "./resources/advance-invoice.js";
 export { BillingPortal } from "./resources/billing-portal.js";
 export { Coupons } from "./resources/coupons.js";
+export { ComponentFeatures } from "./resources/component-features.js";
 export { Components } from "./resources/components.js";
 export { ComponentPricePoints } from "./resources/component-price-points.js";
 export { Customers } from "./resources/customers.js";
 export { CustomFields } from "./resources/custom-fields.js";
+export { Entitlements } from "./resources/entitlements.js";
 export { Events } from "./resources/events.js";
 export { EventsBasedBillingSegments } from "./resources/events-based-billing-segments.js";
+export { FeatureTemplates } from "./resources/feature-templates.js";
 export { Insights } from "./resources/insights.js";
 export { Invoices } from "./resources/invoices.js";
 export { Offers } from "./resources/offers.js";
 export { PaymentProfiles } from "./resources/payment-profiles.js";
 export { ProductFamilies } from "./resources/product-families.js";
+export { ProductFeatures } from "./resources/product-features.js";
 export { Products } from "./resources/products.js";
 export { ProductPricePoints } from "./resources/product-price-points.js";
 export { ProformaInvoices } from "./resources/proforma-invoices.js";
@@ -63,6 +60,15 @@ export {
   type AddSubscriptionToAGroup,
 } from "./models/add-subscription-to-agroup.js";
 export { addressChangeSchema, type AddressChange } from "./models/address-change.js";
+export { aggregatedEntitlementSchema, type AggregatedEntitlement } from "./models/aggregated-entitlement.js";
+export {
+  aggregatedEntitlementPeriodicitySchema,
+  type AggregatedEntitlementPeriodicity,
+} from "./models/aggregated-entitlement-periodicity.js";
+export {
+  aggregatedEntitlementsResponseSchema,
+  type AggregatedEntitlementsResponse,
+} from "./models/aggregated-entitlements-response.js";
 export { agreementAcceptanceSchema, type AgreementAcceptance } from "./models/agreement-acceptance.js";
 export { AllVaults, allVaultsSchema } from "./models/all-vaults.js";
 export { allocateComponentsSchema, type AllocateComponents } from "./models/allocate-components.js";
@@ -356,6 +362,14 @@ export { createCustomerSchema, type CreateCustomer } from "./models/create-custo
 export { createCustomerRequestSchema, type CreateCustomerRequest } from "./models/create-customer-request.js";
 export { createDebitNoteEventSchema, type CreateDebitNoteEvent } from "./models/create-debit-note-event.js";
 export { createEbbComponentSchema, type CreateEbbComponent } from "./models/create-ebb-component.js";
+export {
+  createFeatureCatalogItemRequestSchema,
+  type CreateFeatureCatalogItemRequest,
+} from "./models/create-feature-catalog-item-request.js";
+export {
+  createFeatureTemplateRequestSchema,
+  type CreateFeatureTemplateRequest,
+} from "./models/create-feature-template-request.js";
 export { createInvoiceSchema, type CreateInvoice } from "./models/create-invoice.js";
 export { createInvoiceAddressSchema, type CreateInvoiceAddress } from "./models/create-invoice-address.js";
 export { createInvoiceCouponSchema, type CreateInvoiceCoupon } from "./models/create-invoice-coupon.js";
@@ -510,6 +524,7 @@ export {
 export { CreditCardVault, creditCardVaultSchema } from "./models/credit-card-vault.js";
 export { creditNoteSchema, type CreditNote } from "./models/credit-note.js";
 export { creditNoteApplicationSchema, type CreditNoteApplication } from "./models/credit-note-application.js";
+export { CreditNoteDateField, creditNoteDateFieldSchema } from "./models/credit-note-date-field.js";
 export { creditNoteLineItemSchema, type CreditNoteLineItem } from "./models/credit-note-line-item.js";
 export { CreditNoteStatus, creditNoteStatusSchema } from "./models/credit-note-status.js";
 export { CreditScheme, creditSchemeSchema } from "./models/credit-scheme.js";
@@ -588,6 +603,10 @@ export {
 export { endingQuantitySchema, type EndingQuantity } from "./models/unions/ending-quantity.js";
 export { endpointSchema, type Endpoint } from "./models/endpoint.js";
 export { endpointResponseSchema, type EndpointResponse } from "./models/endpoint-response.js";
+export {
+  EntitlementPeriodicityUnit,
+  entitlementPeriodicityUnitSchema,
+} from "./models/entitlement-periodicity-unit.js";
 export { enumSchema, type Enum } from "./models/unions/enum.js";
 export {
   errorArrayMapResponseSchema,
@@ -656,12 +675,44 @@ export {
   failedPaymentEventDataSchema,
   type FailedPaymentEventData,
 } from "./models/failed-payment-event-data.js";
+export { featureSchema, type Feature } from "./models/feature.js";
+export { featureCatalogItemSchema, type FeatureCatalogItem } from "./models/feature-catalog-item.js";
+export {
+  featureCatalogItemResponseSchema,
+  type FeatureCatalogItemResponse,
+} from "./models/feature-catalog-item-response.js";
+export {
+  featureCatalogItemsListResponseSchema,
+  type FeatureCatalogItemsListResponse,
+} from "./models/feature-catalog-items-list-response.js";
+export { FeatureKind, featureKindSchema } from "./models/feature-kind.js";
+export {
+  FeatureOwnerPricePointType,
+  featureOwnerPricePointTypeSchema,
+} from "./models/feature-owner-price-point-type.js";
+export { featureTemplateSchema, type FeatureTemplate } from "./models/feature-template.js";
+export {
+  featureTemplateResponseSchema,
+  type FeatureTemplateResponse,
+} from "./models/feature-template-response.js";
+export {
+  featureTemplatesListResponseSchema,
+  type FeatureTemplatesListResponse,
+} from "./models/feature-templates-list-response.js";
+export { FeatureValueType, featureValueTypeSchema } from "./models/feature-value-type.js";
+export { feature1Schema, type Feature1 } from "./models/feature1.js";
+export { feature2Schema, type Feature2 } from "./models/feature2.js";
+export { feature3Schema, type Feature3 } from "./models/feature3.js";
 export { FirstChargeType, firstChargeTypeSchema } from "./models/first-charge-type.js";
 export {
   fullSubscriptionGroupResponseSchema,
   type FullSubscriptionGroupResponse,
 } from "./models/full-subscription-group-response.js";
 export { fullNumberSchema, type FullNumber } from "./models/unions/full-number.js";
+export {
+  getOneTimeTokenBankAccountPaymentProfileSchema,
+  type GetOneTimeTokenBankAccountPaymentProfile,
+} from "./models/get-one-time-token-bank-account-payment-profile.js";
 export {
   getOneTimeTokenPaymentProfileSchema,
   type GetOneTimeTokenPaymentProfile,
@@ -918,22 +969,6 @@ export {
 export { mrrSchema, type Mrr } from "./models/mrr.js";
 export { mrrMovementSchema, type MrrMovement } from "./models/mrr-movement.js";
 export { mrrResponseSchema, type MrrResponse } from "./models/mrr-response.js";
-export {
-  maxioGatewayOAuthAccessTokenSchema,
-  type MaxioGatewayOAuthAccessToken,
-} from "./models/maxio-gateway-oauth-access-token.js";
-export {
-  maxioGatewayOAuthErrorSchema,
-  type MaxioGatewayOAuthError,
-} from "./models/maxio-gateway-oauth-error.js";
-export {
-  maxioGatewayOAuthErrorErrorSchema,
-  type MaxioGatewayOAuthErrorError,
-} from "./models/maxio-gateway-oauth-error-error.js";
-export {
-  maxioGatewayOAuthTokenRequestSchema,
-  type MaxioGatewayOAuthTokenRequest,
-} from "./models/maxio-gateway-oauth-token-request.js";
 export { metadataSchema, type Metadata } from "./models/metadata.js";
 export { metafieldSchema, type Metafield } from "./models/metafield.js";
 export { MetafieldInput, metafieldInputSchema } from "./models/metafield-input.js";
@@ -955,6 +990,11 @@ export {
 } from "./models/nested-subscription-group.js";
 export { netTermsSchema, type NetTerms } from "./models/net-terms.js";
 export { netTerms1Schema, type NetTerms1 } from "./models/unions/net-terms1.js";
+export {
+  newOverageUnitBalanceSchema,
+  type NewOverageUnitBalance,
+} from "./models/unions/new-overage-unit-balance.js";
+export { newUnitBalanceSchema, type NewUnitBalance } from "./models/unions/new-unit-balance.js";
 export { offerSchema, type Offer } from "./models/offer.js";
 export { offerDiscountSchema, type OfferDiscount } from "./models/offer-discount.js";
 export { offerItemSchema, type OfferItem } from "./models/offer-item.js";
@@ -1008,6 +1048,10 @@ export { paymentProfile1Schema, type PaymentProfile1 } from "./models/unions/pay
 export { paymentRelatedEventsSchema, type PaymentRelatedEvents } from "./models/payment-related-events.js";
 export { PaymentType, paymentTypeSchema } from "./models/payment-type.js";
 export { paymentForAllocationSchema, type PaymentForAllocation } from "./models/payment-for-allocation.js";
+export {
+  paymentProfileModelSchema,
+  type PaymentProfileModel,
+} from "./models/unions/payment-profile-model.js";
 export { paymentProfileParamsSchema, type PaymentProfileParams } from "./models/payment-profile-params.js";
 export { paypalPaymentProfileSchema, type PaypalPaymentProfile } from "./models/paypal-payment-profile.js";
 export {
@@ -1579,10 +1623,6 @@ export {
   type SubscriptionProductChange,
 } from "./models/subscription-product-change.js";
 export {
-  subscriptionProductChangeScheduledSchema,
-  type SubscriptionProductChangeScheduled,
-} from "./models/subscription-product-change-scheduled.js";
-export {
   subscriptionProductMigrationSchema,
   type SubscriptionProductMigration,
 } from "./models/subscription-product-migration.js";
@@ -1645,6 +1685,8 @@ export { TrialType, trialTypeSchema } from "./models/trial-type.js";
 export { trialIntervalSchema, type TrialInterval } from "./models/unions/trial-interval.js";
 export { trialPriceInCentsSchema, type TrialPriceInCents } from "./models/unions/trial-price-in-cents.js";
 export { unitBalanceSchema, type UnitBalance } from "./models/unions/unit-balance.js";
+export { unitBalance1Schema, type UnitBalance1 } from "./models/unions/unit-balance1.js";
+export { unitBalance2Schema, type UnitBalance2 } from "./models/unions/unit-balance2.js";
 export { unitPriceSchema, type UnitPrice } from "./models/unions/unit-price.js";
 export { unitPrice1Schema, type UnitPrice1 } from "./models/unions/unit-price1.js";
 export { unitPrice3Schema, type UnitPrice3 } from "./models/unions/unit-price3.js";
@@ -1676,6 +1718,14 @@ export {
 } from "./models/update-currency-prices-request.js";
 export { updateCustomerSchema, type UpdateCustomer } from "./models/update-customer.js";
 export { updateCustomerRequestSchema, type UpdateCustomerRequest } from "./models/update-customer-request.js";
+export {
+  updateFeatureCatalogItemRequestSchema,
+  type UpdateFeatureCatalogItemRequest,
+} from "./models/update-feature-catalog-item-request.js";
+export {
+  updateFeatureTemplateRequestSchema,
+  type UpdateFeatureTemplateRequest,
+} from "./models/update-feature-template-request.js";
 export { updateInvoiceSchema, type UpdateInvoice } from "./models/update-invoice.js";
 export { updateInvoiceItemSchema, type UpdateInvoiceItem } from "./models/update-invoice-item.js";
 export { updateInvoiceRequestSchema, type UpdateInvoiceRequest } from "./models/update-invoice-request.js";
@@ -1746,6 +1796,7 @@ export {
 } from "./models/upsert-prepaid-configuration-request.js";
 export { usageSchema, type Usage } from "./models/usage.js";
 export { usageResponseSchema, type UsageResponse } from "./models/usage-response.js";
+export { valueSchema, type Value } from "./models/unions/value.js";
 export { voidInvoiceSchema, type VoidInvoice } from "./models/void-invoice.js";
 export { voidInvoiceEventSchema, type VoidInvoiceEvent } from "./models/void-invoice-event.js";
 export { voidInvoiceEventDataSchema, type VoidInvoiceEventData } from "./models/void-invoice-event-data.js";
@@ -1760,11 +1811,19 @@ export { WebhookOrder, webhookOrderSchema } from "./models/webhook-order.js";
 export { webhookResponseSchema, type WebhookResponse } from "./models/webhook-response.js";
 export { WebhookStatus, webhookStatusSchema } from "./models/webhook-status.js";
 export { WebhookSubscription, webhookSubscriptionSchema } from "./models/webhook-subscription.js";
+export { CollectionMethod1, collectionMethod1Schema } from "./models/collection-method1.js";
 export { componentIdModelSchema, type ComponentIdModel } from "./models/unions/component-id-model.js";
 export { Direction, directionSchema } from "./models/direction.js";
+export { GroupStatus, groupStatusSchema } from "./models/group-status.js";
+export { Kind, kindSchema } from "./models/kind.js";
 export { pricePointIdModelSchema, type PricePointIdModel } from "./models/unions/price-point-id-model.js";
+export { product1Schema, type Product1 } from "./models/unions/product1.js";
 export { productIdModelSchema, type ProductIdModel } from "./models/unions/product-id-model.js";
+export { QScope, qScopeSchema } from "./models/qscope.js";
+export { SortBy, sortBySchema } from "./models/sort-by.js";
+export { SortDirection, sortDirectionSchema } from "./models/sort-direction.js";
 export { Status, statusSchema } from "./models/status.js";
+export { Status1, status1Schema } from "./models/status1.js";
 export {
   subscriptionIdOrReferenceSchema,
   type SubscriptionIdOrReference,
@@ -1772,16 +1831,20 @@ export {
 
 export {
   CoreError as MaxioAdvancedBillingError,
+  ResponseError,
+  DecodeError,
+  EncodeError,
   ConnectionError,
   TimeoutError,
-  AbortError,
-  SdkError,
   AuthError,
+  ConfigurationError,
 } from "./core/errors.js";
-export { ResponseError } from "./core/response-error.js";
+export { ApiError } from "./core/api-error.js";
 export { SchemaError } from "./core/validation/schema-error.js";
 export type { ApiPromise, ApiResult } from "./core/api-promise.js";
-export type { RequestOptions } from "./core/api-request.js";
+export type { HttpMethod, RequestOptions } from "./core/api-request.js";
+export type { RetryOptions, RequestRetryOptions, RetryAttempt, RetryReason } from "./core/retry.js";
+export type { BinaryContent, BinaryData, BinaryErrorContent, FileData, FileInput } from "./core/binary.js";
 export type { ErrorKind } from "./core/errors.js";
-export type { ErrorPayload, Declared } from "./core/response-error.js";
+export type { ErrorPayload, Declared, Undeclared } from "./core/api-error.js";
 export type { Schema, EnumSchema, Encoded } from "./core/validation/schema.js";

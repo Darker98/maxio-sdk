@@ -2,19 +2,24 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
 export type NetTerms = {
+  /** @default 0 */
   defaultNetTerms?: number;
+  /** @default 0 */
   automaticNetTerms?: number;
+  /** @default 0 */
   remittanceNetTerms?: number;
+  /** @default false */
   netTermsOnRemittanceSignupsEnabled?: boolean;
+  /** @default false */
   customNetTermsEnabled?: boolean;
 };
 
 export const netTermsSchema: Schema<NetTerms> = s.object<NetTerms>({
-  defaultNetTerms: s.optional(s.number()),
-  automaticNetTerms: s.optional(s.number()),
-  remittanceNetTerms: s.optional(s.number()),
-  netTermsOnRemittanceSignupsEnabled: s.optional(s.boolean()),
-  customNetTermsEnabled: s.optional(s.boolean()),
+  defaultNetTerms: s.defaulted(s.number(), 0),
+  automaticNetTerms: s.defaulted(s.number(), 0),
+  remittanceNetTerms: s.defaulted(s.number(), 0),
+  netTermsOnRemittanceSignupsEnabled: s.defaulted(s.boolean(), false),
+  customNetTermsEnabled: s.defaulted(s.boolean(), false),
   _keysMap: {
     defaultNetTerms: "default_net_terms",
     automaticNetTerms: "automatic_net_terms",

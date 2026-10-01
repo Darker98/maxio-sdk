@@ -7,26 +7,90 @@ import { previousQuantitySchema, type PreviousQuantity } from "./unions/previous
 import { quantitySchema, type Quantity } from "./unions/quantity.js";
 
 export type Allocation = {
+  /** The allocation unique ID */
   allocationId?: number;
+  /**
+   * The integer component ID for the allocation. This references a component that you have created
+   * in your Product setup.
+   */
   componentId?: number;
+  /**
+   * The handle of the component. This references a component that you have created in your Product
+   * setup.
+   */
   componentHandle?: string | null;
+  /**
+   * The integer subscription ID for the allocation. This references a unique subscription in your
+   * Site.
+   */
   subscriptionId?: number;
+  /**
+   * The allocated quantity set into effect by the allocation. String for components supporting
+   * fractional quantities
+   */
   quantity?: Quantity;
+  /**
+   * The allocated quantity that was in effect before this allocation was created. String for
+   * components supporting fractional quantities
+   */
   previousQuantity?: PreviousQuantity;
+  /** The memo passed when the allocation was created */
   memo?: string | null;
+  /**
+   * The time that the allocation was recorded, in ISO 8601 format and UTC timezone, e.g.,
+   * 2012-11-20T22:00:37Z
+   */
   timestamp?: Date;
+  /** Timestamp indicating when this allocation was created */
   createdAt?: Date;
+  /**
+   * The scheme used if the proration was an upgrade. This is only present when the allocation was
+   * created mid-period.
+   *
+   * @deprecated
+   */
   prorationUpgradeScheme?: string;
+  /**
+   * The scheme used if the proration was a downgrade. This is only present when the allocation was
+   * created mid-period.
+   *
+   * @deprecated
+   */
   prorationDowngradeScheme?: string;
   pricePointId?: number;
   pricePointName?: string;
   pricePointHandle?: string;
+  /**
+   * The numerical interval. e.g., an interval of ‘30’ coupled with an interval_unit of day would
+   * mean this component price point would renew every 30 days. This property is only available for
+   * sites with Multifrequency enabled.
+   */
   interval?: number;
+  /**
+   * A string representing the interval unit for this component price point, either month or day.
+   * This property is only available for sites with Multifrequency enabled.
+   */
   intervalUnit?: IntervalUnit | null;
   previousPricePointId?: number;
+  /**
+   * If the change in cost is an upgrade, this determines if the charge should accrue to the next
+   * renewal or if capture should be attempted immediately.
+   */
   accrueCharge?: boolean;
+  /**
+   * If true, if the immediate component payment fails, initiate dunning for the subscription.
+   * Otherwise, leave the charges on the subscription to pay for at renewal.
+   */
   initiateDunning?: boolean;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   upgradeCharge?: CreditType | null;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   downgradeCredit?: CreditType | null;
   payment?: PaymentForAllocation | null;
   expiresAt?: Date;

@@ -4,16 +4,17 @@
 
 Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9 operations · Request and error types: namespace `CustomFields`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### createMetadata
 
 - **Signature**: `createMetadata(request: CustomFields.CreateMetadataRequestParams, options?: RequestOptions): ApiPromise<Metadata[], CustomFields.CreateMetadataError>`
 - **Wire**: `POST /{resource_type}/{resource_id}/metadata.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Metadata[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `CustomFields.CreateMetadataError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `CustomFields.CreateMetadataError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"singleErrorResponse1"` [422] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `CustomFields.CreateMetadataRequestParams` (3):
@@ -35,10 +36,11 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 - **Signature**: `createMetafields(request: CustomFields.CreateMetafieldsRequestParams, options?: RequestOptions): ApiPromise<Metafield[], CustomFields.CreateMetafieldsError>`
 - **Wire**: `POST /{resource_type}/metafields.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Metafield[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `CustomFields.CreateMetafieldsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `CustomFields.CreateMetafieldsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"singleErrorResponse1"` [422] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `CustomFields.CreateMetafieldsRequestParams` (2):
@@ -59,10 +61,11 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 - **Signature**: `deleteMetadata(request: CustomFields.DeleteMetadataRequest, options?: RequestOptions): ApiPromise<undefined, CustomFields.DeleteMetadataError>`
 - **Wire**: `DELETE /{resource_type}/{resource_id}/metadata.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `CustomFields.DeleteMetadataError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `CustomFields.DeleteMetadataError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `CustomFields.DeleteMetadataRequest` (4):
@@ -82,10 +85,11 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 - **Signature**: `deleteMetafield(request: CustomFields.DeleteMetafieldRequest, options?: RequestOptions): ApiPromise<undefined, CustomFields.DeleteMetafieldError>`
 - **Wire**: `DELETE /{resource_type}/metafields.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `CustomFields.DeleteMetafieldError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `CustomFields.DeleteMetafieldError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `CustomFields.DeleteMetafieldRequest` (2):
@@ -101,12 +105,12 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 ### listMetadata
 
-- **Signature**: `listMetadata(request: CustomFields.ListMetadataRequest, options?: RequestOptions): ApiPromise<PaginatedMetadata, ResponseError>`
+- **Signature**: `listMetadata(request: CustomFields.ListMetadataRequest, options?: RequestOptions): ApiPromise<PaginatedMetadata, ApiError>`
 - **Wire**: `GET /{resource_type}/{resource_id}/metadata.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `PaginatedMetadata`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `CustomFields.ListMetadataRequest` (4):
 
@@ -124,12 +128,12 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 ### listMetadataForResourceType
 
-- **Signature**: `listMetadataForResourceType(request: CustomFields.ListMetadataForResourceTypeRequest, options?: RequestOptions): ApiPromise<PaginatedMetadata, ResponseError>`
+- **Signature**: `listMetadataForResourceType(request: CustomFields.ListMetadataForResourceTypeRequest, options?: RequestOptions): ApiPromise<PaginatedMetadata, ApiError>`
 - **Wire**: `GET /{resource_type}/metadata.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `PaginatedMetadata`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `CustomFields.ListMetadataForResourceTypeRequest` (11):
 
@@ -156,12 +160,12 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 ### listMetafields
 
-- **Signature**: `listMetafields(request: CustomFields.ListMetafieldsRequest, options?: RequestOptions): ApiPromise<ListMetafieldsResponse, ResponseError>`
+- **Signature**: `listMetafields(request: CustomFields.ListMetafieldsRequest, options?: RequestOptions): ApiPromise<ListMetafieldsResponse, ApiError>`
 - **Wire**: `GET /{resource_type}/metafields.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListMetafieldsResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `CustomFields.ListMetafieldsRequest` (5):
 
@@ -183,10 +187,11 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 - **Signature**: `updateMetadata(request: CustomFields.UpdateMetadataRequestParams, options?: RequestOptions): ApiPromise<Metadata[], CustomFields.UpdateMetadataError>`
 - **Wire**: `PUT /{resource_type}/{resource_id}/metadata.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Metadata[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `CustomFields.UpdateMetadataError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `CustomFields.UpdateMetadataError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"singleErrorResponse1"` [422] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `CustomFields.UpdateMetadataRequestParams` (3):
@@ -208,10 +213,11 @@ Accessor: `client.customFields` · Source: `src/resources/custom-fields.ts` · 9
 
 - **Signature**: `updateMetafield(request: CustomFields.UpdateMetafieldRequest, options?: RequestOptions): ApiPromise<Metafield[], CustomFields.UpdateMetafieldError>`
 - **Wire**: `PUT /{resource_type}/metafields.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Metafield[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `CustomFields.UpdateMetafieldError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `CustomFields.UpdateMetafieldError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"singleErrorResponse1"` [422] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `CustomFields.UpdateMetafieldRequest` (2):

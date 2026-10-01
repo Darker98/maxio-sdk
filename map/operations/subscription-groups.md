@@ -4,16 +4,17 @@
 
 Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-groups.ts` · 9 operations · Request and error types: namespace `SubscriptionGroups`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### addSubscriptionToGroup
 
-- **Signature**: `addSubscriptionToGroup(request: SubscriptionGroups.AddSubscriptionToGroupRequest, options?: RequestOptions): ApiPromise<SubscriptionGroupResponse, ResponseError>`
+- **Signature**: `addSubscriptionToGroup(request: SubscriptionGroups.AddSubscriptionToGroupRequest, options?: RequestOptions): ApiPromise<SubscriptionGroupResponse, ApiError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/group.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionGroupResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionGroups.AddSubscriptionToGroupRequest` (2):
 
@@ -31,10 +32,11 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 - **Signature**: `createSubscriptionGroup(request: SubscriptionGroups.CreateSubscriptionGroupRequestParams, options?: RequestOptions): ApiPromise<SubscriptionGroupResponse, SubscriptionGroups.CreateSubscriptionGroupError>`
 - **Wire**: `POST /subscription_groups.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionGroupResponse`
-- **Error**: `SubscriptionGroups.CreateSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroups.CreateSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"subscriptionGroupCreateErrorResponse1"` [422] `SubscriptionGroupCreateErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroups.CreateSubscriptionGroupRequestParams` (1):
@@ -53,10 +55,11 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 - **Signature**: `deleteSubscriptionGroup(request: SubscriptionGroups.DeleteSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<DeleteSubscriptionGroupResponse, SubscriptionGroups.DeleteSubscriptionGroupError>`
 - **Wire**: `DELETE /subscription_groups/{uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `DeleteSubscriptionGroupResponse`
-- **Error**: `SubscriptionGroups.DeleteSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroups.DeleteSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroups.DeleteSubscriptionGroupRequest` (1):
@@ -73,10 +76,10 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 - **Signature**: `findSubscriptionGroup(request: SubscriptionGroups.FindSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<FullSubscriptionGroupResponse, SubscriptionGroups.FindSubscriptionGroupError>`
 - **Wire**: `GET /subscription_groups/lookup.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `FullSubscriptionGroupResponse`
-- **Error**: `SubscriptionGroups.FindSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroups.FindSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroups.FindSubscriptionGroupRequest` (1):
@@ -91,12 +94,12 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 ### listSubscriptionGroups
 
-- **Signature**: `listSubscriptionGroups(request: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise<ListSubscriptionGroupsResponse, ResponseError>`
+- **Signature**: `listSubscriptionGroups(request: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise<ListSubscriptionGroupsResponse, ApiError>`
 - **Wire**: `GET /subscription_groups.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListSubscriptionGroupsResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionGroups.ListSubscriptionGroupsRequest` (3):
 
@@ -113,12 +116,12 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 ### readSubscriptionGroup
 
-- **Signature**: `readSubscriptionGroup(request: SubscriptionGroups.ReadSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<FullSubscriptionGroupResponse, ResponseError>`
+- **Signature**: `readSubscriptionGroup(request: SubscriptionGroups.ReadSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<FullSubscriptionGroupResponse, ApiError>`
 - **Wire**: `GET /subscription_groups/{uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `FullSubscriptionGroupResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionGroups.ReadSubscriptionGroupRequest` (2):
 
@@ -136,10 +139,11 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 - **Signature**: `removeSubscriptionFromGroup(request: SubscriptionGroups.RemoveSubscriptionFromGroupRequest, options?: RequestOptions): ApiPromise<undefined, SubscriptionGroups.RemoveSubscriptionFromGroupError>`
 - **Wire**: `DELETE /subscriptions/{subscription_id}/group.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `SubscriptionGroups.RemoveSubscriptionFromGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroups.RemoveSubscriptionFromGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroups.RemoveSubscriptionFromGroupRequest` (1):
@@ -156,10 +160,11 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 - **Signature**: `signupWithSubscriptionGroup(request: SubscriptionGroups.SignupWithSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<SubscriptionGroupSignupResponse, SubscriptionGroups.SignupWithSubscriptionGroupError>`
 - **Wire**: `POST /subscription_groups/signup.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionGroupSignupResponse`
-- **Error**: `SubscriptionGroups.SignupWithSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroups.SignupWithSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"subscriptionGroupSignupErrorResponse1"` [422] `SubscriptionGroupSignupErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroups.SignupWithSubscriptionGroupRequest` (1):
@@ -178,10 +183,11 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 - **Signature**: `updateSubscriptionGroupMembers(request: SubscriptionGroups.UpdateSubscriptionGroupMembersRequest, options?: RequestOptions): ApiPromise<SubscriptionGroupResponse, SubscriptionGroups.UpdateSubscriptionGroupMembersError>`
 - **Wire**: `PUT /subscription_groups/{uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionGroupResponse`
-- **Error**: `SubscriptionGroups.UpdateSubscriptionGroupMembersError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroups.UpdateSubscriptionGroupMembersError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"subscriptionGroupUpdateErrorResponse1"` [422] `SubscriptionGroupUpdateErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroups.UpdateSubscriptionGroupMembersRequest` (2):

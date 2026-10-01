@@ -1,6 +1,10 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/**
+ * Indicates the type of metafield. A text metafield allows any string value. Dropdown and radio
+ * metafields have a set of values that can be selected. Defaults to 'text'.
+ */
 export const MetafieldInput = {
   BalanceTracker: "balance_tracker",
   Text: "text",

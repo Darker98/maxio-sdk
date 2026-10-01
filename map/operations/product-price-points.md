@@ -4,16 +4,17 @@
 
 Accessor: `client.productPricePoints` · Source: `src/resources/product-price-points.ts` · 11 operations · Request and error types: namespace `ProductPricePoints`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### archiveProductPricePoint
 
 - **Signature**: `archiveProductPricePoint(request: ProductPricePoints.ArchiveProductPricePointRequest, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ProductPricePoints.ArchiveProductPricePointError>`
 - **Wire**: `DELETE /products/{product_id}/price_points/{price_point_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProductPricePointResponse`
-- **Error**: `ProductPricePoints.ArchiveProductPricePointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductPricePoints.ArchiveProductPricePointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductPricePoints.ArchiveProductPricePointRequest` (2):
@@ -34,10 +35,11 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 - **Signature**: `bulkCreateProductPricePoints(request: ProductPricePoints.BulkCreateProductPricePointsRequestParams, options?: RequestOptions): ApiPromise<BulkCreateProductPricePointsResponse, ProductPricePoints.BulkCreateProductPricePointsError>`
 - **Wire**: `POST /products/{product_id}/price_points/bulk.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `BulkCreateProductPricePointsResponse`
-- **Error**: `ProductPricePoints.BulkCreateProductPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductPricePoints.BulkCreateProductPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error422"` [422] `Record<string, unknown>` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductPricePoints.BulkCreateProductPricePointsRequestParams` (2):
@@ -56,10 +58,11 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 - **Signature**: `createProductCurrencyPrices(request: ProductPricePoints.CreateProductCurrencyPricesRequestParams, options?: RequestOptions): ApiPromise<CurrencyPricesResponse, ProductPricePoints.CreateProductCurrencyPricesError>`
 - **Wire**: `POST /product_price_points/{product_price_point_id}/currency_prices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CurrencyPricesResponse`
-- **Error**: `ProductPricePoints.CreateProductCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductPricePoints.CreateProductCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductPricePoints.CreateProductCurrencyPricesRequestParams` (2):
@@ -79,10 +82,11 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 - **Signature**: `createProductPricePoint(request: ProductPricePoints.CreateProductPricePointRequestParams, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ProductPricePoints.CreateProductPricePointError>`
 - **Wire**: `POST /products/{product_id}/price_points.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProductPricePointResponse`
-- **Error**: `ProductPricePoints.CreateProductPricePointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductPricePoints.CreateProductPricePointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"productPricePointErrorResponse1"` [422] `ProductPricePointErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductPricePoints.CreateProductPricePointRequestParams` (2):
@@ -103,10 +107,10 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 - **Signature**: `listAllProductPricePoints(request: ProductPricePoints.ListAllProductPricePointsRequest, options?: RequestOptions): ApiPromise<ListProductPricePointsResponse, ProductPricePoints.ListAllProductPricePointsError>`
 - **Wire**: `GET /products_price_points.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListProductPricePointsResponse`
-- **Error**: `ProductPricePoints.ListAllProductPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductPricePoints.ListAllProductPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductPricePoints.ListAllProductPricePointsRequest` (5):
@@ -129,12 +133,12 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 ### listProductPricePoints
 
-- **Signature**: `listProductPricePoints(request: ProductPricePoints.ListProductPricePointsRequest, options?: RequestOptions): ApiPromise<ListProductPricePointsResponse, ResponseError>`
+- **Signature**: `listProductPricePoints(request: ProductPricePoints.ListProductPricePointsRequest, options?: RequestOptions): ApiPromise<ListProductPricePointsResponse, ApiError>`
 - **Wire**: `GET /products/{product_id}/price_points.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListProductPricePointsResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProductPricePoints.ListProductPricePointsRequest` (6):
 
@@ -155,12 +159,13 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 ### promoteProductPricePointToDefault
 
-- **Signature**: `promoteProductPricePointToDefault(request: ProductPricePoints.PromoteProductPricePointToDefaultRequest, options?: RequestOptions): ApiPromise<ProductResponse, ResponseError>`
+- **Signature**: `promoteProductPricePointToDefault(request: ProductPricePoints.PromoteProductPricePointToDefaultRequest, options?: RequestOptions): ApiPromise<ProductResponse, ApiError>`
 - **Wire**: `PATCH /products/{product_id}/price_points/{price_point_id}/default.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProductResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProductPricePoints.PromoteProductPricePointToDefaultRequest` (2):
 
@@ -175,12 +180,12 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 ### readProductPricePoint
 
-- **Signature**: `readProductPricePoint(request: ProductPricePoints.ReadProductPricePointRequest, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ResponseError>`
+- **Signature**: `readProductPricePoint(request: ProductPricePoints.ReadProductPricePointRequest, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ApiError>`
 - **Wire**: `GET /products/{product_id}/price_points/{price_point_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ProductPricePointResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProductPricePoints.ReadProductPricePointRequest` (3):
 
@@ -198,12 +203,13 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 ### unarchiveProductPricePoint
 
-- **Signature**: `unarchiveProductPricePoint(request: ProductPricePoints.UnarchiveProductPricePointRequest, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ResponseError>`
+- **Signature**: `unarchiveProductPricePoint(request: ProductPricePoints.UnarchiveProductPricePointRequest, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ApiError>`
 - **Wire**: `PATCH /products/{product_id}/price_points/{price_point_id}/unarchive.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProductPricePointResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProductPricePoints.UnarchiveProductPricePointRequest` (2):
 
@@ -220,10 +226,11 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 - **Signature**: `updateProductCurrencyPrices(request: ProductPricePoints.UpdateProductCurrencyPricesRequest, options?: RequestOptions): ApiPromise<CurrencyPricesResponse, ProductPricePoints.UpdateProductCurrencyPricesError>`
 - **Wire**: `PUT /product_price_points/{product_price_point_id}/currency_prices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CurrencyPricesResponse`
-- **Error**: `ProductPricePoints.UpdateProductCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductPricePoints.UpdateProductCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductPricePoints.UpdateProductCurrencyPricesRequest` (2):
@@ -241,12 +248,13 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 ### updateProductPricePoint
 
-- **Signature**: `updateProductPricePoint(request: ProductPricePoints.UpdateProductPricePointRequestParams, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ResponseError>`
+- **Signature**: `updateProductPricePoint(request: ProductPricePoints.UpdateProductPricePointRequestParams, options?: RequestOptions): ApiPromise<ProductPricePointResponse, ApiError>`
 - **Wire**: `PUT /products/{product_id}/price_points/{price_point_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProductPricePointResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProductPricePoints.UpdateProductPricePointRequestParams` (3):
 

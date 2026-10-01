@@ -1,9 +1,8 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
 import * as s from "../core/validation/index.js";
 import { directionSchema, type Direction } from "../models/direction.js";
 import { listMrrFilterSchema, type ListMrrFilter } from "../models/list-mrr-filter.js";
@@ -32,15 +31,58 @@ export class Insights {
     this.#auth = auth;
   }
 
+  /**
+   * List MRR Movements
+   *
+   * @remarks
+   * Lists your site's MRR movements.
+   *
+   * ## Understanding MRR movements
+   *
+   * This endpoint will aid in accessing your site's [MRR
+   * Report](https://maxio.zendesk.com/hc/en-us/articles/24285894587021-MRR-Analytics) data.
+   *
+   * Whenever a subscription event occurs that causes your site's MRR to change (such as a signup or
+   * upgrade), we record an MRR movement. These records are accessible via the MRR Movements
+   * endpoint.
+   *
+   * Each MRR Movement belongs to a subscription and contains a timestamp, category, and an amount.
+   * `line_items` represent the subscription's product configuration at the time of the movement.
+   *
+   * ### Plan & Usage Breakouts
+   *
+   * In the MRR Report UI, we support a setting to [include or
+   * exclude](https://maxio.zendesk.com/hc/en-us/articles/24285894587021-MRR-Analytics#displaying-component-based-metered-usage-in-mrr)
+   * usage revenue. In the MRR APIs, responses include `plan` and `usage` breakouts.
+   *
+   * Plan includes revenue from:
+   * * Products
+   * * Quantity-Based Components
+   * * On/Off Components
+   *
+   * Usage includes revenue from:
+   * * Metered Components
+   * * Prepaid Usage Components
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   *
+   * @deprecated
+   */
   listMrrMovements(
     request: Insights.ListMrrMovementsRequest,
     options?: RequestOptions,
-  ): ApiPromise<ListMrrResponse, ResponseError> {
-    return this.#rawClient.execute<ListMrrResponse, ResponseError>(
+  ): ApiPromise<ListMrrResponse, ApiError> {
+    return this.#rawClient.execute<ListMrrResponse, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/mrr_movements.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [
           { name: "subscription_id", value: request.subscriptionId, schema: s.optional(s.number()) },
           { name: "page", value: request.page, schema: s.defaulted(s.number(), 1) },
@@ -55,12 +97,29 @@ export class Insights {
       },
       {
         success: { kind: "json", schema: listMrrResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * List MRR per subscription
+   *
+   * @remarks
+   * Lists your site's current MRR, including plan and usage breakouts split per subscription.
+   *
+   * @returns OK
+   *
+   * @throws {@link Insights.ListMrrPerSubscriptionError} when the API answers with an error status
+   * — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   *
+   * @deprecated
+   */
   listMrrPerSubscription(
     request: Insights.ListMrrPerSubscriptionRequest,
     options?: RequestOptions,
@@ -69,7 +128,7 @@ export class Insights {
       {
         method: "GET",
         url: this.#servers.production("/subscriptions_mrr.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [
           { name: "filter", value: request.filter, schema: s.optional(s.lazy(() => listMrrFilterSchema)) },
           { name: "at_time", value: request.atTime, schema: s.optional(s.string()) },
@@ -87,15 +146,28 @@ export class Insights {
     );
   }
 
-  readMrr(
-    request: Insights.ReadMrrRequest,
-    options?: RequestOptions,
-  ): ApiPromise<MrrResponse, ResponseError> {
-    return this.#rawClient.execute<MrrResponse, ResponseError>(
+  /**
+   * Read MRR
+   *
+   * @remarks
+   * Returns your site's current MRR, including plan and usage breakouts.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   *
+   * @deprecated
+   */
+  readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise<MrrResponse, ApiError> {
+    return this.#rawClient.execute<MrrResponse, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/mrr.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [
           { name: "at_time", value: request.atTime, schema: s.optional(s.dateTime()) },
           { name: "subscription_id", value: request.subscriptionId, schema: s.optional(s.number()) },
@@ -104,23 +176,48 @@ export class Insights {
       },
       {
         success: { kind: "json", schema: mrrResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
-  readSiteStats(options?: RequestOptions): ApiPromise<SiteSummary, ResponseError> {
-    return this.#rawClient.execute<SiteSummary, ResponseError>(
+  /**
+   * Read Site Stats
+   *
+   * @remarks
+   * Returns basic site-level stats. This API call only answers with JSON responses. An XML version
+   * is not provided.
+   *
+   * ## Stats Documentation
+   *
+   * There currently is not a complimentary matching set of documentation that compliments this
+   * endpoint. However, each Site's dashboard will reflect the summary of information provided in
+   * the Stats response.
+   *
+   * ```
+   * https://subdomain.chargify.com/dashboard
+   * ```
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
+  readSiteStats(options?: RequestOptions): ApiPromise<SiteSummary, ApiError> {
+    return this.#rawClient.execute<SiteSummary, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/stats.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         body: { kind: "empty" },
       },
       {
         success: { kind: "json", schema: siteSummarySchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
@@ -129,23 +226,68 @@ export class Insights {
 
 export namespace Insights {
   export type ListMrrMovementsRequest = {
+    /** (Optional) Filter results by subscription. */
     subscriptionId?: number;
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 10. The
+     * maximum allowed values is 50; any per_page value over 50 will be changed to 50. Use in query
+     * `per_page=20`.
+     *
+     * @default 10
+     */
     perPage?: number;
+    /** Controls the order in which results are returned. Use in query `direction=asc`. */
     direction?: SortingDirection;
   };
 
   export type ListMrrPerSubscriptionRequest = {
+    /** Filter to use for List MRR per subscription operation */
     filter?: ListMrrFilter;
+    /**
+     * Submit a timestamp in ISO8601 format to request MRR for a historic time. Use in query:
+     * `at_time=2022-01-10T10:00:00-05:00`.
+     */
     atTime?: string;
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 20. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 20
+     */
     perPage?: number;
+    /**
+     * Controls the order in which results are returned. Records are ordered by subscription_id in
+     * ascending order by default. Use in query `direction=desc`.
+     */
     direction?: Direction;
   };
 
-  export class ListMrrPerSubscriptionError extends ResponseError<
-    Declared<"subscriptionsMrrErrorResponse1", SubscriptionsMrrErrorResponse1>
-  > {
+  export class ListMrrPerSubscriptionError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"subscriptionsMrrErrorResponse1", SubscriptionsMrrErrorResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<ListMrrPerSubscriptionError> = [
       {
         on: 400,
@@ -156,7 +298,9 @@ export namespace Insights {
   }
 
   export type ReadMrrRequest = {
+    /** submit a timestamp in ISO8601 format to request MRR for a historic time. */
     atTime?: Date;
+    /** submit the id of a subscription in order to limit results. */
     subscriptionId?: number;
   };
 }

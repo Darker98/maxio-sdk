@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** The type of card used. */
 export const CardType = {
   Visa: "visa",
   Master: "master",

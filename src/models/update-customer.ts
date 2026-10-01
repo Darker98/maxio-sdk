@@ -15,14 +15,30 @@ export type UpdateCustomer = {
   zip?: string;
   country?: string;
   phone?: string;
+  /** Set a specific language on a customer record. */
   locale?: string;
   vatNumber?: string;
   taxExempt?: boolean;
+  /**
+   * Whether surcharging is enabled for the customer. Only applied on sites where surcharging
+   * control is enabled.
+   */
   surcharging?: boolean;
   taxExemptReason?: string;
   parentId?: number | null;
+  /**
+   * Is the customer verified to use ACH as a payment method. Available only on the Authorize.Net
+   * gateway.
+   */
   verified?: boolean | null;
+  /** The Salesforce ID of the customer */
   salesforceId?: string | null;
+  /**
+   * The ID of the Branding Theme assigned to this customer as the customer's default Branding
+   * Theme. This customer-level Branding Theme is used when a subscription does not have its own
+   * subscription-level Branding Theme. Available only when Branding Themes are enabled for the
+   * site.
+   */
   brandingThemeId?: number | null;
 };
 

@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** A handle for the billing manifest line item kind */
 export const BillingManifestLineItemKind = {
   Baseline: "baseline",
   Initial: "initial",

@@ -4,16 +4,17 @@
 
 Accessor: `client.subscriptionGroupInvoiceAccount` · Source: `src/resources/subscription-group-invoice-account.ts` · 4 operations · Request and error types: namespace `SubscriptionGroupInvoiceAccount`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### createSubscriptionGroupPrepayment
 
 - **Signature**: `createSubscriptionGroupPrepayment(request: SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentRequest, options?: RequestOptions): ApiPromise<SubscriptionGroupPrepaymentResponse, SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError>`
 - **Wire**: `POST /subscription_groups/{uid}/prepayments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionGroupPrepaymentResponse`
-- **Error**: `SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentRequest` (2):
@@ -33,10 +34,11 @@ Accessor: `client.subscriptionGroupInvoiceAccount` · Source: `src/resources/sub
 
 - **Signature**: `deductSubscriptionGroupServiceCredit(request: SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditRequest, options?: RequestOptions): ApiPromise<ServiceCredit, SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError>`
 - **Wire**: `POST /subscription_groups/{uid}/service_credit_deductions.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ServiceCredit`
-- **Error**: `SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditRequest` (2):
@@ -56,10 +58,11 @@ Accessor: `client.subscriptionGroupInvoiceAccount` · Source: `src/resources/sub
 
 - **Signature**: `issueSubscriptionGroupServiceCredit(request: SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditRequest, options?: RequestOptions): ApiPromise<ServiceCreditResponse, SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError>`
 - **Wire**: `POST /subscription_groups/{uid}/service_credits.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ServiceCreditResponse`
-- **Error**: `SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditRequest` (2):
@@ -79,10 +82,10 @@ Accessor: `client.subscriptionGroupInvoiceAccount` · Source: `src/resources/sub
 
 - **Signature**: `listPrepaymentsForSubscriptionGroup(request: SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<ListSubscriptionGroupPrepaymentResponse, SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError>`
 - **Wire**: `GET /subscription_groups/{uid}/prepayments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListSubscriptionGroupPrepaymentResponse`
-- **Error**: `SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupRequest` (4):

@@ -7,7 +7,9 @@ import {
 import { lineItemTransactionTypeSchema, type LineItemTransactionType } from "./line-item-transaction-type.js";
 
 export type BillingManifestItem = {
+  /** A handle for the line item transaction type */
   transactionType?: LineItemTransactionType;
+  /** A handle for the billing manifest line item kind */
   kind?: BillingManifestLineItemKind;
   amountInCents?: number;
   memo?: string;

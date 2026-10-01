@@ -1,8 +1,11 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/** Example schema for an `change_invoice_collection_method` event */
 export type ChangeInvoiceCollectionMethodEventData = {
+  /** The previous collection method of the invoice. */
   fromCollectionMethod: string;
+  /** The new collection method of the invoice. */
   toCollectionMethod: string;
 };
 

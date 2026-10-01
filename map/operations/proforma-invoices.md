@@ -4,16 +4,17 @@
 
 Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.ts` · 10 operations · Request and error types: namespace `ProformaInvoices`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### createConsolidatedProformaInvoice
 
 - **Signature**: `createConsolidatedProformaInvoice(request: ProformaInvoices.CreateConsolidatedProformaInvoiceRequest, options?: RequestOptions): ApiPromise<undefined, ProformaInvoices.CreateConsolidatedProformaInvoiceError>`
 - **Wire**: `POST /subscription_groups/{uid}/proforma_invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ProformaInvoices.CreateConsolidatedProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.CreateConsolidatedProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.CreateConsolidatedProformaInvoiceRequest` (1):
@@ -30,10 +31,11 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `createProformaInvoice(request: ProformaInvoices.CreateProformaInvoiceRequest, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.CreateProformaInvoiceError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/proforma_invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProformaInvoice`
-- **Error**: `ProformaInvoices.CreateProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.CreateProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.CreateProformaInvoiceRequest` (1):
@@ -51,10 +53,11 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `createSignupProformaInvoice(request: ProformaInvoices.CreateSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.CreateSignupProformaInvoiceError>`
 - **Wire**: `POST /subscriptions/proforma_invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProformaInvoice`
-- **Error**: `ProformaInvoices.CreateSignupProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.CreateSignupProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"proformaBadRequestErrorResponse1"` [400] `ProformaBadRequestErrorResponse1` · `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.CreateSignupProformaInvoiceRequest` (1):
@@ -74,10 +77,11 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `deliverProformaInvoice(request: ProformaInvoices.DeliverProformaInvoiceRequestParams, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.DeliverProformaInvoiceError>`
 - **Wire**: `POST /proforma_invoices/{proforma_invoice_uid}/deliveries.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProformaInvoice`
-- **Error**: `ProformaInvoices.DeliverProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.DeliverProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.DeliverProformaInvoiceRequestParams` (2):
@@ -95,12 +99,12 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 ### listProformaInvoices
 
-- **Signature**: `listProformaInvoices(request: ProformaInvoices.ListProformaInvoicesRequest, options?: RequestOptions): ApiPromise<ListProformaInvoicesResponse, ResponseError>`
+- **Signature**: `listProformaInvoices(request: ProformaInvoices.ListProformaInvoicesRequest, options?: RequestOptions): ApiPromise<ListProformaInvoicesResponse, ApiError>`
 - **Wire**: `GET /subscriptions/{subscription_id}/proforma_invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListProformaInvoicesResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProformaInvoices.ListProformaInvoicesRequest` (13):
 
@@ -130,10 +134,10 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `listSubscriptionGroupProformaInvoices(request: ProformaInvoices.ListSubscriptionGroupProformaInvoicesRequest, options?: RequestOptions): ApiPromise<ListProformaInvoicesResponse, ProformaInvoices.ListSubscriptionGroupProformaInvoicesError>`
 - **Wire**: `GET /subscription_groups/{uid}/proforma_invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListProformaInvoicesResponse`
-- **Error**: `ProformaInvoices.ListSubscriptionGroupProformaInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.ListSubscriptionGroupProformaInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.ListSubscriptionGroupProformaInvoicesRequest` (7):
@@ -156,10 +160,11 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `previewProformaInvoice(request: ProformaInvoices.PreviewProformaInvoiceRequest, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.PreviewProformaInvoiceError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/proforma_invoices/preview.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProformaInvoice`
-- **Error**: `ProformaInvoices.PreviewProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.PreviewProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.PreviewProformaInvoiceRequest` (1):
@@ -177,10 +182,11 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `previewSignupProformaInvoice(request: ProformaInvoices.PreviewSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise<SignupProformaPreviewResponse, ProformaInvoices.PreviewSignupProformaInvoiceError>`
 - **Wire**: `POST /subscriptions/proforma_invoices/preview.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SignupProformaPreviewResponse`
-- **Error**: `ProformaInvoices.PreviewSignupProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.PreviewSignupProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"proformaBadRequestErrorResponse1"` [400] `ProformaBadRequestErrorResponse1` · `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.PreviewSignupProformaInvoiceRequest` (2):
@@ -202,10 +208,10 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `readProformaInvoice(request: ProformaInvoices.ReadProformaInvoiceRequest, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.ReadProformaInvoiceError>`
 - **Wire**: `GET /proforma_invoices/{proforma_invoice_uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ProformaInvoice`
-- **Error**: `ProformaInvoices.ReadProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.ReadProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.ReadProformaInvoiceRequest` (1):
@@ -222,10 +228,11 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 - **Signature**: `voidProformaInvoice(request: ProformaInvoices.VoidProformaInvoiceRequest, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.VoidProformaInvoiceError>`
 - **Wire**: `POST /proforma_invoices/{proforma_invoice_uid}/void.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProformaInvoice`
-- **Error**: `ProformaInvoices.VoidProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProformaInvoices.VoidProformaInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProformaInvoices.VoidProformaInvoiceRequest` (2):

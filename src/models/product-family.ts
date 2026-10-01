@@ -7,9 +7,17 @@ export type ProductFamily = {
   handle?: string;
   accountingCode?: string | null;
   description?: string | null;
+  /**
+   * Whether surcharging applies to this product family. Only included on sites where surcharging is
+   * enabled.
+   */
   surcharging?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  /**
+   * Timestamp indicating when this product family was archived. `null` if the product family is not
+   * archived.
+   */
   archivedAt?: Date | null;
 };
 

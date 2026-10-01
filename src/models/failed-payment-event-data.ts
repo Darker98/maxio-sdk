@@ -5,11 +5,16 @@ import {
   type InvoicePaymentMethodType,
 } from "./invoice-payment-method-type.js";
 
+/** Example schema for an `failed_payment` event */
 export type FailedPaymentEventData = {
+  /** The monetary value of the payment, expressed in cents. */
   amountInCents: number;
+  /** The monetary value of the payment, expressed in dollars. */
   appliedAmount: number;
+  /** The memo passed when the payment was created. */
   memo?: string | null;
   paymentMethod: InvoicePaymentMethodType;
+  /** The transaction ID of the failed payment. */
   transactionId: number;
 };
 

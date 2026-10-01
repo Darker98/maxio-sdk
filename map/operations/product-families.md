@@ -4,16 +4,17 @@
 
 Accessor: `client.productFamilies` · Source: `src/resources/product-families.ts` · 4 operations · Request and error types: namespace `ProductFamilies`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### createProductFamily
 
 - **Signature**: `createProductFamily(request: ProductFamilies.CreateProductFamilyRequestParams, options?: RequestOptions): ApiPromise<ProductFamilyResponse, ProductFamilies.CreateProductFamilyError>`
 - **Wire**: `POST /product_families.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ProductFamilyResponse`
-- **Error**: `ProductFamilies.CreateProductFamilyError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductFamilies.CreateProductFamilyError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductFamilies.CreateProductFamilyRequestParams` (1):
@@ -30,12 +31,12 @@ Accessor: `client.productFamilies` · Source: `src/resources/product-families.ts
 
 ### listProductFamilies
 
-- **Signature**: `listProductFamilies(request: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise<ProductFamilyResponse[], ResponseError>`
+- **Signature**: `listProductFamilies(request: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise<ProductFamilyResponse[], ApiError>`
 - **Wire**: `GET /product_families.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ProductFamilyResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProductFamilies.ListProductFamiliesRequest` (5):
 
@@ -56,10 +57,10 @@ Accessor: `client.productFamilies` · Source: `src/resources/product-families.ts
 
 - **Signature**: `listProductsForProductFamily(request: ProductFamilies.ListProductsForProductFamilyRequest, options?: RequestOptions): ApiPromise<ProductResponse[], ProductFamilies.ListProductsForProductFamilyError>`
 - **Wire**: `GET /product_families/{product_family_id}/products.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ProductResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ProductFamilies.ListProductsForProductFamilyError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ProductFamilies.ListProductsForProductFamilyError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] `string` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ProductFamilies.ListProductsForProductFamilyRequest` (11):
@@ -87,12 +88,12 @@ Accessor: `client.productFamilies` · Source: `src/resources/product-families.ts
 
 ### readProductFamily
 
-- **Signature**: `readProductFamily(request: ProductFamilies.ReadProductFamilyRequest, options?: RequestOptions): ApiPromise<ProductFamilyResponse, ResponseError>`
+- **Signature**: `readProductFamily(request: ProductFamilies.ReadProductFamilyRequest, options?: RequestOptions): ApiPromise<ProductFamilyResponse, ApiError>`
 - **Wire**: `GET /product_families/{id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ProductFamilyResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ProductFamilies.ReadProductFamilyRequest` (1):
 

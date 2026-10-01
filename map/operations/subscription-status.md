@@ -4,16 +4,17 @@
 
 Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-status.ts` · 10 operations · Request and error types: namespace `SubscriptionStatus`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### cancelDelayedCancellation
 
 - **Signature**: `cancelDelayedCancellation(request: SubscriptionStatus.CancelDelayedCancellationRequest, options?: RequestOptions): ApiPromise<DelayedCancellationResponse, SubscriptionStatus.CancelDelayedCancellationError>`
 - **Wire**: `DELETE /subscriptions/{subscription_id}/delayed_cancel.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `DelayedCancellationResponse`
-- **Error**: `SubscriptionStatus.CancelDelayedCancellationError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.CancelDelayedCancellationError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.CancelDelayedCancellationRequest` (1):
@@ -30,10 +31,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `cancelDunning(request: SubscriptionStatus.CancelDunningRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, SubscriptionStatus.CancelDunningError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/cancel_dunning.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `SubscriptionStatus.CancelDunningError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.CancelDunningError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.CancelDunningRequest` (1):
@@ -51,10 +53,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `cancelSubscription(request: SubscriptionStatus.CancelSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, SubscriptionStatus.CancelSubscriptionError>`
 - **Wire**: `DELETE /subscriptions/{subscription_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `SubscriptionStatus.CancelSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.CancelSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"cancelSubscriptionErrorResponse"` [422] `CancelSubscriptionErrorResponse` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.CancelSubscriptionRequest` (2):
@@ -74,10 +77,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `initiateDelayedCancellation(request: SubscriptionStatus.InitiateDelayedCancellationRequest, options?: RequestOptions): ApiPromise<DelayedCancellationResponse, SubscriptionStatus.InitiateDelayedCancellationError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/delayed_cancel.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `DelayedCancellationResponse`
-- **Error**: `SubscriptionStatus.InitiateDelayedCancellationError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.InitiateDelayedCancellationError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.InitiateDelayedCancellationRequest` (2):
@@ -97,10 +101,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `pauseSubscription(request: SubscriptionStatus.PauseSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, SubscriptionStatus.PauseSubscriptionError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/hold.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `SubscriptionStatus.PauseSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.PauseSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.PauseSubscriptionRequest` (2):
@@ -120,10 +125,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `previewRenewal(request: SubscriptionStatus.PreviewRenewalRequest, options?: RequestOptions): ApiPromise<RenewalPreviewResponse, SubscriptionStatus.PreviewRenewalError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/renewals/preview.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `RenewalPreviewResponse`
-- **Error**: `SubscriptionStatus.PreviewRenewalError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.PreviewRenewalError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.PreviewRenewalRequest` (2):
@@ -143,10 +149,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `reactivateSubscription(request: SubscriptionStatus.ReactivateSubscriptionRequestParams, options?: RequestOptions): ApiPromise<SubscriptionResponse, SubscriptionStatus.ReactivateSubscriptionError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}/reactivate.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `SubscriptionStatus.ReactivateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.ReactivateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.ReactivateSubscriptionRequestParams` (2):
@@ -166,10 +173,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `resumeSubscription(request: SubscriptionStatus.ResumeSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, SubscriptionStatus.ResumeSubscriptionError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/resume.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `SubscriptionStatus.ResumeSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.ResumeSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.ResumeSubscriptionRequest` (2):
@@ -189,10 +197,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `retrySubscription(request: SubscriptionStatus.RetrySubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, SubscriptionStatus.RetrySubscriptionError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}/retry.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `SubscriptionStatus.RetrySubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.RetrySubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.RetrySubscriptionRequest` (1):
@@ -210,10 +219,11 @@ Accessor: `client.subscriptionStatus` · Source: `src/resources/subscription-sta
 
 - **Signature**: `updateAutomaticSubscriptionResumption(request: SubscriptionStatus.UpdateAutomaticSubscriptionResumptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}/hold.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionStatus.UpdateAutomaticSubscriptionResumptionRequest` (2):

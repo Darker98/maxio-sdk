@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/** Object which contains subscription errors. */
 export type SubscriptionGroupSubscriptionError = {
   product?: string[];
   productPricePointId?: string[];

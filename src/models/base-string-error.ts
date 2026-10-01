@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/** The error is base if it is not directly associated with a single attribute. */
 export type BaseStringError = {
   base?: string[];
 };

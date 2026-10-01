@@ -16,6 +16,10 @@ export type Coupon = {
   productFamilyId?: number;
   productFamilyName?: string | null;
   startDate?: Date;
+  /**
+   * After the given time, this coupon code will be invalid for new signups. Recurring discounts
+   * started before this date will continue to recur even after this date.
+   */
   endDate?: Date | null;
   percentage?: string | null;
   recurring?: boolean;
@@ -24,10 +28,18 @@ export type Coupon = {
   durationInterval?: number | null;
   durationIntervalUnit?: string | null;
   durationIntervalSpan?: string | null;
+  /** If set to true, discount is not limited (credits will carry forward to next billing). */
   allowNegativeBalance?: boolean;
   archivedAt?: Date | null;
   conversionLimit?: string | null;
+  /** A stackable coupon can be combined with other coupons on a Subscription. */
   stackable?: boolean;
+  /**
+   * Applicable only to stackable coupons. For `compound`, Percentage-based discounts will be
+   * calculated against the remaining price, after prior discounts have been calculated. For
+   * `full-price`, Percentage-based discounts will always be calculated against the original item
+   * price, before other discounts are applied.
+   */
   compoundingStrategy?: CompoundingStrategy | null;
   useSiteExchangeRate?: boolean;
   createdAt?: Date;
@@ -37,6 +49,7 @@ export type Coupon = {
   applyOnCancelAtEndOfPeriod?: boolean;
   applyOnSubscriptionExpiration?: boolean;
   couponRestrictions?: CouponRestriction[];
+  /** Returned in read, find, and list endpoints if the query parameter is provided. */
   currencyPrices?: CouponCurrency[];
 };
 

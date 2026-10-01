@@ -7,8 +7,11 @@ import {
 } from "./scheduled-renewal-configuration-item.js";
 
 export type ScheduledRenewalConfiguration = {
+  /** ID of the renewal. */
   id?: number;
+  /** ID of the site to which the renewal belongs. */
   siteId?: number;
+  /** The id of the subscription. */
   subscriptionId?: number;
   startsAt?: Date;
   endsAt?: Date;
@@ -16,6 +19,7 @@ export type ScheduledRenewalConfiguration = {
   createdAt?: Date;
   status?: string;
   scheduledRenewalConfigurationItems?: ScheduledRenewalConfigurationItem[];
+  /** Contract linked to the scheduled renewal configuration. */
   contract?: Contract;
 };
 

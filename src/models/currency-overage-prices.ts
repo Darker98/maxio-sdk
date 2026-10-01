@@ -7,11 +7,29 @@ import { intervalUnitSchema, type IntervalUnit } from "./interval-unit.js";
 import { pricePointTypeSchema, type PricePointType } from "./price-point-type.js";
 import { pricingSchemeSchema, type PricingScheme } from "./pricing-scheme.js";
 
+/** Extends a component price point with currency overage prices. */
 export type CurrencyOveragePrices = {
   id?: number;
+  /**
+   * Price point type. We expose the following types:
+   * 1. **default**: a price point that is marked as a default price for a certain product.
+   * 2. **custom**: a custom price point.
+   * 3. **catalog**: a price point that is **not** marked as a default price for a certain product
+   *    and is **not** a custom one.
+   */
   type?: PricePointType;
+  /**
+   * Note: Refer to type attribute instead.
+   *
+   * @deprecated
+   */
   default?: boolean;
   name?: string;
+  /**
+   * The identifier for the pricing scheme. See [Product
+   * Components](https://help.chargify.com/products/product-components.html) for an overview of
+   * pricing schemes.
+   */
   pricingScheme?: PricingScheme;
   componentId?: number;
   handle?: string | null;
@@ -19,18 +37,63 @@ export type CurrencyOveragePrices = {
   createdAt?: Date;
   updatedAt?: Date;
   prices?: ComponentPrice[];
+  /**
+   * Whether to use the site level exchange rate or define your own prices for each currency if you
+   * have multiple currencies defined on the site. Defaults to true during creation.
+   */
   useSiteExchangeRate?: boolean;
+  /**
+   * (only used for Custom Pricing - ie. when the price point's type is `custom`) The id of the
+   * subscription that the custom price point is for.
+   */
   subscriptionId?: number;
   taxIncluded?: boolean;
+  /**
+   * The numerical interval. e.g., an interval of ‘30’ coupled with an interval_unit of day would
+   * mean this component price point would renew every 30 days. This property is only available for
+   * sites with Multifrequency enabled.
+   */
   interval?: number | null;
+  /**
+   * A string representing the interval unit for this component price point, either month or day.
+   * This property is only available for sites with Multifrequency enabled.
+   */
   intervalUnit?: IntervalUnit | null;
+  /**
+   * An array of currency pricing data is available when multiple currencies are defined for the
+   * site. It varies based on the use_site_exchange_rate setting for the price point. This parameter
+   * is present only in the response of read endpoints, after including the appropriate query
+   * parameter. The clone endpoint always returns currency prices if they are present.
+   */
   currencyPrices?: ComponentCurrencyPrice[];
+  /** Applicable only to prepaid usage components. An array of overage price brackets. */
   overagePrices?: ComponentPrice[];
+  /** Applicable only to prepaid usage components. Pricing scheme for overage pricing. */
   overagePricingScheme?: PricingScheme;
+  /**
+   * Applicable only to prepaid usage components. Boolean which controls whether or not the
+   * allocated quantity should be renewed at the beginning of each period.
+   */
   renewPrepaidAllocation?: boolean;
+  /**
+   * Applicable only to prepaid usage components. Boolean which controls whether or not remaining
+   * units should be rolled over to the next period.
+   */
   rolloverPrepaidRemainder?: boolean;
+  /**
+   * Applicable only to prepaid usage components where rollover_prepaid_remainder is true. The
+   * number of `expiration_interval_unit`s after which rollover amounts should expire.
+   */
   expirationInterval?: number | null;
+  /**
+   * Applicable only to prepaid usage components where rollover_prepaid_remainder is true. A string
+   * representing the expiration interval unit for this component, either month or day.
+   */
   expirationIntervalUnit?: ExpirationIntervalUnit | null;
+  /**
+   * Applicable only to prepaid usage components. An array of currency pricing data for overage
+   * prices.
+   */
   currencyOveragePrices?: ComponentCurrencyPrice[];
 };
 

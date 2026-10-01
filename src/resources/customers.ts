@@ -1,9 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
+import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { basicDateFieldSchema, type BasicDateField } from "../models/basic-date-field.js";
 import {
@@ -34,6 +34,54 @@ export class Customers {
     this.#auth = auth;
   }
 
+  /**
+   * Create Customer
+   *
+   * @remarks
+   * Creates a new customer; can also be created alongside a new subscription. The only validation
+   * restriction is that you can only create one customer for a given reference value.
+   *
+   * If provided, the `reference` value must be unique. It represents a unique identifier for the
+   * customer from your own app, i.e. the customer’s ID. This allows you to retrieve a given
+   * customer via a piece of shared information. Alternatively, you can choose to leave `reference`
+   * blank, and store the system-assigned unique ID for the customer, which is in the `id`
+   * attribute.
+   *
+   * For more information, see [Customer
+   * Details](https://maxio.zendesk.com/hc/en-us/articles/24252190590093-Customer-Details).
+   *
+   * ## Required Country Format
+   *
+   * Format the country attribute of the customer using the ISO Standard Country codes.
+   *
+   * Countries should be formatted as two characters. For more information, see [ISO
+   * 3166-1](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
+   *
+   * ## Required State Format
+   *
+   * Format the state attribute of the customer using the ISO Standard State codes.
+   *
+   * + US States (two characters): see [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2:US).
+   *
+   * + States Outside the US (two to three characters): To find the correct state codes outside the
+   *   US, go to [ISO 3166-1](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) and click on
+   *   the link in the “ISO 3166-2 codes” column next to the country you wish to populate.
+   *
+   * ## Locale
+   *
+   * You can attribute a language/region to the customer to deliver invoices in any required
+   * language. For more information, see [Customer
+   * Locale](https://maxio.zendesk.com/hc/en-us/articles/24286672013709-Customer-Locale).
+   *
+   * @returns OK
+   *
+   * @throws {@link Customers.CreateCustomerError} when the API answers with an error status —
+   * narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   createCustomer(
     request: Customers.CreateCustomerRequestParams,
     options?: RequestOptions,
@@ -42,7 +90,8 @@ export class Customers {
       {
         method: "POST",
         url: this.#servers.production("/customers.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -57,55 +106,120 @@ export class Customers {
     );
   }
 
+  /**
+   * Delete Customer
+   *
+   * @remarks
+   * Deletes the customer.
+   *
+   * @returns No Content
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   deleteCustomer(
     request: Customers.DeleteCustomerRequest,
     options?: RequestOptions,
-  ): ApiPromise<undefined, ResponseError> {
-    return this.#rawClient.execute<undefined, ResponseError>(
+  ): ApiPromise<undefined, ApiError> {
+    return this.#rawClient.execute<undefined, ApiError>(
       {
         method: "DELETE",
         url: this.#servers.production("/customers/{id}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "id", value: request.id, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: { kind: "empty" },
       },
       {
         success: { kind: "empty" },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * List Customer Subscriptions
+   *
+   * @remarks
+   * Lists all subscriptions that belong to a customer.
+   *
+   * If you have the new [Catalog
+   * experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology)
+   * enabled, subscriptions no longer require an associated product. For subscriptions without an
+   * associated product, 'product', 'product_price_point_id', and 'product_price_point_type' are
+   * returned as 'null'.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listCustomerSubscriptions(
     request: Customers.ListCustomerSubscriptionsRequest,
     options?: RequestOptions,
-  ): ApiPromise<SubscriptionResponse[], ResponseError> {
-    return this.#rawClient.execute<SubscriptionResponse[], ResponseError>(
+  ): ApiPromise<SubscriptionResponse[], ApiError> {
+    return this.#rawClient.execute<SubscriptionResponse[], ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/customers/{customer_id}/subscriptions.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "customer_id", value: request.customerId, schema: s.number() }],
         body: { kind: "empty" },
       },
       {
         success: { kind: "json", schema: s.array(s.lazy(() => subscriptionResponseSchema)) },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * List or Find Customers
+   *
+   * @remarks
+   * Lists all customers associated with your site, or filters results using the search parameter.
+   *
+   * ## Find Customer
+   *
+   * Use the search feature with the `q` query parameter to retrieve an array of customers that
+   * matches the search query.
+   *
+   * Common use cases are:
+   *
+   * + Search by an email
+   * + Search by an Advanced Billing ID
+   * + Search by an organization
+   * + Search by a reference value from your application
+   * + Search by a first or last name
+   *
+   * To retrieve a single, exact match by reference, use the [lookup
+   * endpoint](https://developers.chargify.com/docs/api-docs/b710d8fbef104-read-customer-by-reference).
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listCustomers(
     request: Customers.ListCustomersRequest,
     options?: RequestOptions,
-  ): ApiPromise<CustomerResponse[], ResponseError> {
-    return this.#rawClient.execute<CustomerResponse[], ResponseError>(
+  ): ApiPromise<CustomerResponse[], ApiError> {
+    return this.#rawClient.execute<CustomerResponse[], ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/customers.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [
           {
             name: "direction",
@@ -129,52 +243,95 @@ export class Customers {
       },
       {
         success: { kind: "json", schema: s.array(s.lazy(() => customerResponseSchema)) },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Read Customer
+   *
+   * @remarks
+   * Retrieves the Customer properties by Advanced Billing-generated Customer ID.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   readCustomer(
     request: Customers.ReadCustomerRequest,
     options?: RequestOptions,
-  ): ApiPromise<CustomerResponse, ResponseError> {
-    return this.#rawClient.execute<CustomerResponse, ResponseError>(
+  ): ApiPromise<CustomerResponse, ApiError> {
+    return this.#rawClient.execute<CustomerResponse, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/customers/{id}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "id", value: request.id, schema: s.number() }],
         body: { kind: "empty" },
       },
       {
         success: { kind: "json", schema: customerResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Read Customer by Reference
+   *
+   * @remarks
+   * Returns a customer by their unique reference ID. It will return a single match.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   readCustomerByReference(
     request: Customers.ReadCustomerByReferenceRequest,
     options?: RequestOptions,
-  ): ApiPromise<CustomerResponse, ResponseError> {
-    return this.#rawClient.execute<CustomerResponse, ResponseError>(
+  ): ApiPromise<CustomerResponse, ApiError> {
+    return this.#rawClient.execute<CustomerResponse, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/customers/lookup.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [{ name: "reference", value: request.reference, schema: s.string() }],
         body: { kind: "empty" },
       },
       {
         success: { kind: "json", schema: customerResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Update Customer
+   *
+   * @remarks
+   * Updates the customer.
+   *
+   * @returns OK
+   *
+   * @throws {@link Customers.UpdateCustomerError} when the API answers with an error status —
+   * narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   updateCustomer(
     request: Customers.UpdateCustomerRequestParams,
     options?: RequestOptions,
@@ -183,8 +340,9 @@ export class Customers {
       {
         method: "PUT",
         url: this.#servers.production("/customers/{id}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "id", value: request.id, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -205,9 +363,9 @@ export namespace Customers {
     body?: CreateCustomerRequest;
   };
 
-  export class CreateCustomerError extends ResponseError<
-    Declared<"customerErrorResponse1", CustomerErrorResponse1>
-  > {
+  export class CreateCustomerError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"customerErrorResponse1", CustomerErrorResponse1>>;
+
     static readonly errors: ErrorDecoders<CreateCustomerError> = [
       {
         on: 422,
@@ -218,41 +376,95 @@ export namespace Customers {
   }
 
   export type DeleteCustomerRequest = {
+    /** The Advanced Billing id of the customer */
     id: number;
   };
 
   export type ListCustomerSubscriptionsRequest = {
+    /** The Chargify id of the customer */
     customerId: number;
   };
 
   export type ListCustomersRequest = {
+    /** Direction to sort customers by time of creation */
     direction?: SortingDirection;
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 50. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 50
+     */
     perPage?: number;
+    /**
+     * The type of filter you would like to apply to your search. Use in query:
+     * `date_field=created_at`.
+     */
     dateField?: BasicDateField;
+    /**
+     * The start date (format YYYY-MM-DD) with which to filter the date_field. Returns subscriptions
+     * with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date
+     * specified.
+     */
     startDate?: string;
+    /**
+     * The end date (format YYYY-MM-DD) with which to filter the date_field. Returns subscriptions
+     * with a timestamp up to and including 11:59:59PM in your site’s time zone on the date
+     * specified.
+     */
     endDate?: string;
+    /**
+     * The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field.
+     * Returns subscriptions with a timestamp at or after exact time provided in query. You can
+     * specify timezone in query - otherwise your site's time zone will be used. If provided, this
+     * parameter will be used instead of start_date.
+     */
     startDatetime?: string;
+    /**
+     * The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field.
+     * Returns subscriptions with a timestamp at or before exact time provided in query. You can
+     * specify timezone in query - otherwise your site's time zone will be used. If provided, this
+     * parameter will be used instead of end_date.
+     */
     endDatetime?: string;
+    /**
+     * A search query by which to filter customers (can be an email, an ID, a reference,
+     * organization)
+     */
     q?: string;
   };
 
   export type ReadCustomerRequest = {
+    /** The Advanced Billing id of the customer */
     id: number;
   };
 
   export type ReadCustomerByReferenceRequest = {
+    /** Customer reference */
     reference: string;
   };
 
   export type UpdateCustomerRequestParams = {
+    /** The Advanced Billing id of the customer */
     id: number;
     body?: UpdateCustomerRequest;
   };
 
-  export class UpdateCustomerError extends ResponseError<
-    Declared<"error404", undefined> | Declared<"customerErrorResponse1", CustomerErrorResponse1>
-  > {
+  export class UpdateCustomerError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"error404", undefined> | Declared<"customerErrorResponse1", CustomerErrorResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<UpdateCustomerError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
       {

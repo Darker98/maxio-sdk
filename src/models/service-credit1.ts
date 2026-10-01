@@ -4,12 +4,19 @@ import { serviceCreditTypeSchema, type ServiceCreditType } from "./service-credi
 
 export type ServiceCredit1 = {
   id?: number;
+  /** The amount in cents of the entry */
   amountInCents?: number;
+  /** The new balance for the credit account */
   endingBalanceInCents?: number;
+  /** The type of entry */
   entryType?: ServiceCreditType;
+  /** The memo attached to the entry */
   memo?: string;
+  /** The invoice uid associated with the entry. Only present for debit entries. */
   invoiceUid?: string | null;
+  /** The remaining balance for the entry */
   remainingBalanceInCents?: number;
+  /** The date and time the entry was created */
   createdAt?: Date;
 };
 

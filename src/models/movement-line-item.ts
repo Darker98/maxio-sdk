@@ -4,6 +4,7 @@ import { mrrMovementSchema, type MrrMovement } from "./mrr-movement.js";
 
 export type MovementLineItem = {
   productId?: number;
+  /** For Product (or "baseline") line items, this field will have a value of `0`. */
   componentId?: number;
   pricePointId?: number;
   name?: string;
@@ -11,6 +12,10 @@ export type MovementLineItem = {
   mrrMovements?: MrrMovement[];
   quantity?: number;
   prevQuantity?: number;
+  /**
+   * When `true`, the line item's MRR value will contribute to the `plan` breakout. When `false`,
+   * the line item contributes to the `usage` breakout.
+   */
   recurring?: boolean;
 };
 

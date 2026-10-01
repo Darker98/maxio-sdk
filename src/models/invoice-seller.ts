@@ -2,6 +2,7 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 import { invoiceAddressSchema, type InvoiceAddress } from "./invoice-address.js";
 
+/** Information about the seller (merchant) listed on the masthead of the invoice. */
 export type InvoiceSeller = {
   name?: string;
   address?: InvoiceAddress;

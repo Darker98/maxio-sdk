@@ -11,22 +11,37 @@ import {
   type SubscriptionComponentSubscription,
 } from "./subscription-component-subscription.js";
 import { allocatedQuantity2Schema, type AllocatedQuantity2 } from "./unions/allocated-quantity2.js";
+import { unitBalance1Schema, type UnitBalance1 } from "./unions/unit-balance1.js";
 
 export type SubscriptionComponent = {
   id?: number;
   name?: string;
+  /** A handle for the component type */
   kind?: ComponentKind;
   unitName?: string;
+  /** (for on/off components) indicates if the component is enabled for the subscription. */
   enabled?: boolean;
-  unitBalance?: number;
+  unitBalance?: UnitBalance1;
   currency?: string;
+  /**
+   * For Quantity-based components: The current allocation for the component on the given
+   * subscription. For On/Off components: Use 1 for on. Use 0 for off.
+   */
   allocatedQuantity?: AllocatedQuantity2;
   pricingScheme?: PricingScheme | null;
   componentId?: number;
   componentHandle?: string | null;
   subscriptionId?: number;
   recurring?: boolean;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   upgradeCharge?: CreditType | null;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   downgradeCredit?: CreditType | null;
   archivedAt?: Date | null;
   pricePointId?: number | null;
@@ -40,10 +55,22 @@ export type SubscriptionComponent = {
   useSiteExchangeRate?: boolean | null;
   description?: string | null;
   allowFractionalQuantities?: boolean;
+  /**
+   * (Optional) Object that will be returned if the `include=subscription` query param is provided.
+   */
   subscription?: SubscriptionComponentSubscription;
   historicUsages?: HistoricUsage[];
   displayOnHostedPage?: boolean;
+  /**
+   * The numerical interval. e.g., an interval of '30' coupled with an interval_unit of day would
+   * mean this component price point would renew every 30 days. This property is only available for
+   * sites with Multifrequency enabled.
+   */
   interval?: number;
+  /**
+   * A string representing the interval unit for this component price point, either month or day.
+   * This property is only available for sites with Multifrequency enabled.
+   */
   intervalUnit?: IntervalUnit | null;
 };
 
@@ -53,7 +80,7 @@ export const subscriptionComponentSchema: Schema<SubscriptionComponent> = s.obje
   kind: s.optional(s.lazy(() => componentKindSchema)),
   unitName: s.optional(s.string()),
   enabled: s.optional(s.boolean()),
-  unitBalance: s.optional(s.number()),
+  unitBalance: s.optional(s.lazy(() => unitBalance1Schema)),
   currency: s.optional(s.string()),
   allocatedQuantity: s.optional(s.lazy(() => allocatedQuantity2Schema)),
   pricingScheme: s.optionalNullable(s.lazy(() => pricingSchemeSchema)),

@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** The type of payment to be applied to an Invoice. Defaults to external. */
 export const InvoicePaymentType = {
   External: "external",
   Prepayment: "prepayment",

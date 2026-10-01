@@ -10,7 +10,9 @@ export type InvoiceIssued = {
   number: string;
   role: string;
   dueDate: string | null;
+  /** Invoice issue date. Can be an empty string if value is missing. */
   issueDate: string;
+  /** Paid date. Can be an empty string if value is missing. */
   paidDate: string;
   dueAmount: string;
   paidAmount: string;

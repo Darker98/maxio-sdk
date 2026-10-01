@@ -4,16 +4,17 @@
 
 Accessor: `client.subscriptionGroupStatus` · Source: `src/resources/subscription-group-status.ts` · 4 operations · Request and error types: namespace `SubscriptionGroupStatus`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### cancelDelayedCancellationForGroup
 
 - **Signature**: `cancelDelayedCancellationForGroup(request: SubscriptionGroupStatus.CancelDelayedCancellationForGroupRequest, options?: RequestOptions): ApiPromise<undefined, SubscriptionGroupStatus.CancelDelayedCancellationForGroupError>`
 - **Wire**: `DELETE /subscription_groups/{uid}/delayed_cancel.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `SubscriptionGroupStatus.CancelDelayedCancellationForGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupStatus.CancelDelayedCancellationForGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupStatus.CancelDelayedCancellationForGroupRequest` (1):
@@ -30,10 +31,11 @@ Accessor: `client.subscriptionGroupStatus` · Source: `src/resources/subscriptio
 
 - **Signature**: `cancelSubscriptionsInGroup(request: SubscriptionGroupStatus.CancelSubscriptionsInGroupRequest, options?: RequestOptions): ApiPromise<undefined, SubscriptionGroupStatus.CancelSubscriptionsInGroupError>`
 - **Wire**: `POST /subscription_groups/{uid}/cancel.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `SubscriptionGroupStatus.CancelSubscriptionsInGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupStatus.CancelSubscriptionsInGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupStatus.CancelSubscriptionsInGroupRequest` (2):
@@ -52,10 +54,11 @@ Accessor: `client.subscriptionGroupStatus` · Source: `src/resources/subscriptio
 
 - **Signature**: `initiateDelayedCancellationForGroup(request: SubscriptionGroupStatus.InitiateDelayedCancellationForGroupRequest, options?: RequestOptions): ApiPromise<undefined, SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError>`
 - **Wire**: `POST /subscription_groups/{uid}/delayed_cancel.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupStatus.InitiateDelayedCancellationForGroupRequest` (1):
@@ -72,10 +75,11 @@ Accessor: `client.subscriptionGroupStatus` · Source: `src/resources/subscriptio
 
 - **Signature**: `reactivateSubscriptionGroup(request: SubscriptionGroupStatus.ReactivateSubscriptionGroupRequestParams, options?: RequestOptions): ApiPromise<ReactivateSubscriptionGroupResponse, SubscriptionGroupStatus.ReactivateSubscriptionGroupError>`
 - **Wire**: `POST /subscription_groups/{uid}/reactivate.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ReactivateSubscriptionGroupResponse`
-- **Error**: `SubscriptionGroupStatus.ReactivateSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionGroupStatus.ReactivateSubscriptionGroupError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionGroupStatus.ReactivateSubscriptionGroupRequestParams` (2):

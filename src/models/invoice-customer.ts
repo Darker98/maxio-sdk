@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/** Information about the customer who is owner or recipient of the invoiced subscription. */
 export type InvoiceCustomer = {
   chargifyId?: number | null;
   firstName?: string;

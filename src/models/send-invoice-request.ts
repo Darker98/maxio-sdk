@@ -5,6 +5,7 @@ export type SendInvoiceRequest = {
   recipientEmails?: string[];
   ccRecipientEmails?: string[];
   bccRecipientEmails?: string[];
+  /** Array of URLs to files to attach to the invoice email. Max 10 files, 10MB each. */
   attachmentUrls?: string[];
 };
 

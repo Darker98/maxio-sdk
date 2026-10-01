@@ -12,19 +12,19 @@ import {
 import { paymentMethodExternalSchema, type PaymentMethodExternal } from "../payment-method-external.js";
 import { paymentMethodPaypalSchema, type PaymentMethodPaypal } from "../payment-method-paypal.js";
 
+/** A nested data structure detailing the method of payment */
 export type InvoiceEventPayment =
-  | PaymentMethodApplePay
-  | PaymentMethodBankAccount
-  | PaymentMethodCreditCard
-  | PaymentMethodExternal
-  | PaymentMethodPaypal;
+  | (PaymentMethodApplePay & { type: "apple_pay" })
+  | (PaymentMethodBankAccount & { type: "bank_account" })
+  | (PaymentMethodCreditCard & { type: "credit_card" })
+  | (PaymentMethodExternal & { type: "external" })
+  | (PaymentMethodPaypal & { type: "paypal_account" });
 
-export const invoiceEventPaymentSchema: Schema<InvoiceEventPayment> = s.of<InvoiceEventPayment>(
-  s.union([
-    s.lazy(() => paymentMethodApplePaySchema),
-    s.lazy(() => paymentMethodBankAccountSchema),
-    s.lazy(() => paymentMethodCreditCardSchema),
-    s.lazy(() => paymentMethodExternalSchema),
-    s.lazy(() => paymentMethodPaypalSchema),
-  ]),
-);
+export const invoiceEventPaymentSchema: Schema<InvoiceEventPayment> =
+  s.discriminatedUnion<InvoiceEventPayment>("type", {
+    apple_pay: paymentMethodApplePaySchema,
+    bank_account: paymentMethodBankAccountSchema,
+    credit_card: paymentMethodCreditCardSchema,
+    external: paymentMethodExternalSchema,
+    paypal_account: paymentMethodPaypalSchema,
+  });

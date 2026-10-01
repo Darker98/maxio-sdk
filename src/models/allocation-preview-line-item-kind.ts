@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** A handle for the line item kind for allocation preview */
 export const AllocationPreviewLineItemKind = {
   QuantityBasedComponent: "quantity_based_component",
   OnOffComponent: "on_off_component",

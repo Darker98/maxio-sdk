@@ -7,16 +7,47 @@ import { paymentTypeSchema, type PaymentType } from "./payment-type.js";
 
 export type BankAccountAttributes = {
   chargifyToken?: string;
+  /**
+   * (Required when creating a subscription with ACH or GoCardless) The name of the bank where the
+   * customer’s account resides
+   */
   bankName?: string;
+  /**
+   * (Required when creating a subscription with ACH; optional when creating a subscription with
+   * GoCardless). The routing number of the bank. It becomes bank_code while passing via GoCardless
+   * API.
+   */
   bankRoutingNumber?: string;
+  /**
+   * (Required when creating a subscription with ACH. Required when creating a subscription with
+   * GoCardless and bank_iban is blank) The customerʼs bank account number
+   */
   bankAccountNumber?: string;
+  /** Defaults to checking */
   bankAccountType?: BankAccountType;
+  /**
+   * (Optional when creating a subscription with GoCardless) Branch code. Alternatively, an IBAN can
+   * be provided.
+   */
   bankBranchCode?: string;
+  /**
+   * (Optional when creating a subscription with GoCardless). International Bank Account Number.
+   * Alternatively, local bank details can be provided.
+   */
   bankIban?: string;
+  /** Defaults to personal */
   bankAccountHolderType?: BankAccountHolderType;
   paymentType?: PaymentType;
+  /**
+   * The vault that stores the payment profile with the provided vault_token. Use `bogus` for
+   * testing.
+   */
   currentVault?: BankAccountVault;
   vaultToken?: string;
+  /**
+   * (only for Authorize.Net CIM storage or Square) The customerProfileId for the owner of the
+   * customerPaymentProfileId provided as the vault_token
+   */
   customerVaultToken?: string;
 };
 

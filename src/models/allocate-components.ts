@@ -5,13 +5,35 @@ import { createAllocationSchema, type CreateAllocation } from "./create-allocati
 import { creditTypeSchema, type CreditType } from "./credit-type.js";
 
 export type AllocateComponents = {
+  /**
+   * @deprecated
+   */
   prorationUpgradeScheme?: string;
+  /**
+   * @deprecated
+   */
   prorationDowngradeScheme?: string;
   allocations?: CreateAllocation[];
   accrueCharge?: boolean;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   upgradeCharge?: CreditType | null;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   downgradeCredit?: CreditType | null;
+  /**
+   * (Optional) If not passed, the allocation(s) will use the payment collection method on the
+   * subscription.
+   */
   paymentCollectionMethod?: CollectionMethod;
+  /**
+   * If true, if the immediate component payment fails, initiate dunning for the subscription.
+   * Otherwise, leave the charges on the subscription to pay for at renewal.
+   */
   initiateDunning?: boolean;
 };
 

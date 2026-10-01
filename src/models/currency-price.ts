@@ -10,6 +10,7 @@ export type CurrencyPrice = {
   priceId?: number;
   pricePointId?: number;
   productPricePointId?: number;
+  /** Role for the price. */
   role?: CurrencyPriceRole;
 };
 

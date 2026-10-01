@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/** Information for captured payment, if applicable */
 export type PaymentForAllocation = {
   id?: number;
   amountInCents?: number;

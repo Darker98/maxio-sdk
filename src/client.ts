@@ -1,22 +1,28 @@
 import { buildAuthSchemes, type AuthSchemes } from "./auth-schemes.js";
-import { DEFAULT_CLIENT_OPTIONS, type ClientOptions } from "./client-options.js";
+import type { ClientOptions } from "./client-options.js";
+import { buildCoreClientOptions } from "./core/client-options.js";
 import { RawClient } from "./core/raw-client.js";
+import * as host from "./core/runtime-environment.js";
+import * as s from "./core/validation/index.js";
 import { AdvanceInvoice } from "./resources/advance-invoice.js";
 import { ApiExports } from "./resources/api-exports.js";
 import { BillingPortal } from "./resources/billing-portal.js";
+import { ComponentFeatures } from "./resources/component-features.js";
 import { ComponentPricePoints } from "./resources/component-price-points.js";
 import { Components } from "./resources/components.js";
 import { Coupons } from "./resources/coupons.js";
 import { CustomFields } from "./resources/custom-fields.js";
 import { Customers } from "./resources/customers.js";
+import { Entitlements } from "./resources/entitlements.js";
 import { EventsBasedBillingSegments } from "./resources/events-based-billing-segments.js";
 import { Events } from "./resources/events.js";
+import { FeatureTemplates } from "./resources/feature-templates.js";
 import { Insights } from "./resources/insights.js";
 import { Invoices } from "./resources/invoices.js";
-import { MaxioGateway } from "./resources/maxio-gateway.js";
 import { Offers } from "./resources/offers.js";
 import { PaymentProfiles } from "./resources/payment-profiles.js";
 import { ProductFamilies } from "./resources/product-families.js";
+import { ProductFeatures } from "./resources/product-features.js";
 import { ProductPricePoints } from "./resources/product-price-points.js";
 import { Products } from "./resources/products.js";
 import { ProformaInvoices } from "./resources/proforma-invoices.js";
@@ -37,26 +43,62 @@ import { Subscriptions } from "./resources/subscriptions.js";
 import { Webhooks } from "./resources/webhooks.js";
 import { buildServers, type Servers } from "./servers.js";
 
+/**
+ *
+ * Maxio Advanced Billing (formerly Chargify) provides an HTTP-based API that conforms to the
+ * principles of REST. One of the many reasons to use Advanced Billing is the immense feature set
+ * and [client libraries](page:development-tools/client-libraries). The Maxio API returns JSON
+ * responses as the primary and recommended format, but XML is also provided as a backwards
+ * compatible option for merchants who require it.
+ *
+ * ## Steps to make your first Maxio Advanced Billing API call
+ *
+ * 1. [Sign-up](https://app.chargify.com/signup/maxio-billing-sandbox) or
+ *    [log-in](https://app.chargify.com/login.html) to your [test
+ *    site](https://maxio.zendesk.com/hc/en-us/articles/24250712113165-Testing-Overview) account.
+ * 2. [Setup authentication](https://maxio.zendesk.com/hc/en-us/articles/24294819360525-API-Keys)
+ *    credentials.
+ * 3. [Submit an API request and verify the
+ *    response](page:development-tools/client-libraries#make-your-first-maxio-advanced-billing-api-request).
+ * 5. Test the Advanced Billing [integrations](https://www.maxio.com/integrations).
+ *
+ * Next, you can explore [authentication methods](page:introduction/authentication), [basic
+ * concepts](page:introduction/basic-concepts/connected-sites) for interacting with Advanced Billing
+ * via the API, and the entire set of [application-based
+ * documentation](https://docs.maxio.com/hc/en-us) to aid in your discovery of the product.
+ *
+ * ### Request Example
+ *
+ * The following example uses the curl command-line tool to make an API request.
+ *
+ * **Request**
+ *
+ * curl -u <api_key>:x -H Accept:application/json -H Content-Type:application/json
+ * https://acme.chargify.com/subscriptions.json
+ */
 export class MaxioAdvancedBillingClient {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
   readonly #auth: AuthSchemes;
-  #maxioGateway?: MaxioGateway;
   #apiExports?: ApiExports;
   #advanceInvoice?: AdvanceInvoice;
   #billingPortal?: BillingPortal;
   #coupons?: Coupons;
+  #componentFeatures?: ComponentFeatures;
   #components?: Components;
   #componentPricePoints?: ComponentPricePoints;
   #customers?: Customers;
   #customFields?: CustomFields;
+  #entitlements?: Entitlements;
   #events?: Events;
   #eventsBasedBillingSegments?: EventsBasedBillingSegments;
+  #featureTemplates?: FeatureTemplates;
   #insights?: Insights;
   #invoices?: Invoices;
   #offers?: Offers;
   #paymentProfiles?: PaymentProfiles;
   #productFamilies?: ProductFamilies;
+  #productFeatures?: ProductFeatures;
   #products?: Products;
   #productPricePoints?: ProductPricePoints;
   #proformaInvoices?: ProformaInvoices;
@@ -76,24 +118,24 @@ export class MaxioAdvancedBillingClient {
   #subscriptionStatus?: SubscriptionStatus;
   #webhooks?: Webhooks;
 
-  constructor(clientOptions: Partial<ClientOptions> = {}) {
-    const options = { ...DEFAULT_CLIENT_OPTIONS, ...clientOptions };
-
+  constructor(options: ClientOptions = {}) {
     this.#rawClient = new RawClient({
-      timeout: options.timeout,
-      defaultHeaders: [],
+      ...buildCoreClientOptions(options),
+      defaultHeaders: [
+        { name: "User-Agent", value: "MaxioAdvancedBillingClient/1.0.0 TypeScript", schema: s.string() },
+        { name: "X-APIMatic-Lang", value: "TypeScript", schema: s.string() },
+        { name: "X-APIMatic-Package-Version", value: "1.0.0", schema: s.string() },
+        { name: "X-APIMatic-Gen-Version", value: "4.0.0", schema: s.string() },
+        { name: "X-APIMatic-OS", value: host.operatingSystem(), schema: s.optional(s.string()) },
+        { name: "X-APIMatic-Runtime", value: host.runtimeDescription(), schema: s.optional(s.string()) },
+      ],
       defaultQuery: [],
       defaultPathParams: [],
-      fetch: options.fetch,
     });
 
-    this.#servers = buildServers(options.serverEnvironment, options.serverOptions);
+    this.#servers = buildServers(options);
 
     this.#auth = buildAuthSchemes(options);
-  }
-
-  get maxioGateway(): MaxioGateway {
-    return (this.#maxioGateway ??= new MaxioGateway(this.#rawClient, this.#servers));
   }
 
   get apiExports(): ApiExports {
@@ -110,6 +152,10 @@ export class MaxioAdvancedBillingClient {
 
   get coupons(): Coupons {
     return (this.#coupons ??= new Coupons(this.#rawClient, this.#servers, this.#auth));
+  }
+
+  get componentFeatures(): ComponentFeatures {
+    return (this.#componentFeatures ??= new ComponentFeatures(this.#rawClient, this.#servers, this.#auth));
   }
 
   get components(): Components {
@@ -132,6 +178,10 @@ export class MaxioAdvancedBillingClient {
     return (this.#customFields ??= new CustomFields(this.#rawClient, this.#servers, this.#auth));
   }
 
+  get entitlements(): Entitlements {
+    return (this.#entitlements ??= new Entitlements(this.#rawClient, this.#servers, this.#auth));
+  }
+
   get events(): Events {
     return (this.#events ??= new Events(this.#rawClient, this.#servers, this.#auth));
   }
@@ -142,6 +192,10 @@ export class MaxioAdvancedBillingClient {
       this.#servers,
       this.#auth,
     ));
+  }
+
+  get featureTemplates(): FeatureTemplates {
+    return (this.#featureTemplates ??= new FeatureTemplates(this.#rawClient, this.#servers, this.#auth));
   }
 
   get insights(): Insights {
@@ -162,6 +216,10 @@ export class MaxioAdvancedBillingClient {
 
   get productFamilies(): ProductFamilies {
     return (this.#productFamilies ??= new ProductFamilies(this.#rawClient, this.#servers, this.#auth));
+  }
+
+  get productFeatures(): ProductFeatures {
+    return (this.#productFeatures ??= new ProductFeatures(this.#rawClient, this.#servers, this.#auth));
   }
 
   get products(): Products {

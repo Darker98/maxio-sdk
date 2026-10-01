@@ -4,7 +4,16 @@ import { componentCustomPriceSchema, type ComponentCustomPrice } from "./compone
 import { priceSchema, type Price } from "./price.js";
 import { pricingSchemeSchema, type PricingScheme } from "./pricing-scheme.js";
 
+/**
+ * Used in place of `price_point_id` to define a custom price point unique to the subscription. You
+ * still need to provide `component_id`.
+ */
 export type SubscriptionGroupComponentCustomPrice = {
+  /**
+   * The identifier for the pricing scheme. See [Product
+   * Components](https://help.chargify.com/products/product-components.html) for an overview of
+   * pricing schemes.
+   */
   pricingScheme?: PricingScheme;
   prices?: Price[];
   overagePricing?: ComponentCustomPrice[];

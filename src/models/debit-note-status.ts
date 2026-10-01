@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** Current status of the debit note. */
 export const DebitNoteStatus = {
   Open: "open",
   Applied: "applied",

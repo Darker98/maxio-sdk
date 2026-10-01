@@ -4,16 +4,17 @@
 
 Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 operations · Request and error types: namespace `ApiExports`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### exportInvoices
 
 - **Signature**: `exportInvoices(options?: RequestOptions): ApiPromise<BatchJobResponse, ApiExports.ExportInvoicesError>`
 - **Wire**: `POST /api_exports/invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `BatchJobResponse`
-- **Error**: `ApiExports.ExportInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ExportInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"singleErrorResponse1"` [409] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 | Type | Schema value | Source |
@@ -25,10 +26,11 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `exportProformaInvoices(options?: RequestOptions): ApiPromise<BatchJobResponse, ApiExports.ExportProformaInvoicesError>`
 - **Wire**: `POST /api_exports/proforma_invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `BatchJobResponse`
-- **Error**: `ApiExports.ExportProformaInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ExportProformaInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"singleErrorResponse1"` [409] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 | Type | Schema value | Source |
@@ -40,10 +42,11 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `exportSubscriptions(options?: RequestOptions): ApiPromise<BatchJobResponse, ApiExports.ExportSubscriptionsError>`
 - **Wire**: `POST /api_exports/subscriptions.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `BatchJobResponse`
-- **Error**: `ApiExports.ExportSubscriptionsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ExportSubscriptionsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"singleErrorResponse1"` [409] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 | Type | Schema value | Source |
@@ -55,10 +58,10 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `listExportedInvoices(request: ApiExports.ListExportedInvoicesRequest, options?: RequestOptions): ApiPromise<Invoice[], ApiExports.ListExportedInvoicesError>`
 - **Wire**: `GET /api_exports/invoices/{batch_id}/rows.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `Invoice[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ApiExports.ListExportedInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ListExportedInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ApiExports.ListExportedInvoicesRequest` (3):
@@ -77,10 +80,10 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `listExportedProformaInvoices(request: ApiExports.ListExportedProformaInvoicesRequest, options?: RequestOptions): ApiPromise<ProformaInvoice[], ApiExports.ListExportedProformaInvoicesError>`
 - **Wire**: `GET /api_exports/proforma_invoices/{batch_id}/rows.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ProformaInvoice[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ApiExports.ListExportedProformaInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ListExportedProformaInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ApiExports.ListExportedProformaInvoicesRequest` (3):
@@ -99,10 +102,10 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `listExportedSubscriptions(request: ApiExports.ListExportedSubscriptionsRequest, options?: RequestOptions): ApiPromise<Subscription[], ApiExports.ListExportedSubscriptionsError>`
 - **Wire**: `GET /api_exports/subscriptions/{batch_id}/rows.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `Subscription[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ApiExports.ListExportedSubscriptionsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ListExportedSubscriptionsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ApiExports.ListExportedSubscriptionsRequest` (3):
@@ -121,10 +124,10 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `readInvoicesExport(request: ApiExports.ReadInvoicesExportRequest, options?: RequestOptions): ApiPromise<BatchJobResponse, ApiExports.ReadInvoicesExportError>`
 - **Wire**: `GET /api_exports/invoices/{batch_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `BatchJobResponse`
-- **Error**: `ApiExports.ReadInvoicesExportError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ReadInvoicesExportError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ApiExports.ReadInvoicesExportRequest` (1):
@@ -141,10 +144,10 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `readProformaInvoicesExport(request: ApiExports.ReadProformaInvoicesExportRequest, options?: RequestOptions): ApiPromise<BatchJobResponse, ApiExports.ReadProformaInvoicesExportError>`
 - **Wire**: `GET /api_exports/proforma_invoices/{batch_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `BatchJobResponse`
-- **Error**: `ApiExports.ReadProformaInvoicesExportError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ReadProformaInvoicesExportError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ApiExports.ReadProformaInvoicesExportRequest` (1):
@@ -161,10 +164,10 @@ Accessor: `client.apiExports` · Source: `src/resources/api-exports.ts` · 9 ope
 
 - **Signature**: `readSubscriptionsExport(request: ApiExports.ReadSubscriptionsExportRequest, options?: RequestOptions): ApiPromise<BatchJobResponse, ApiExports.ReadSubscriptionsExportError>`
 - **Wire**: `GET /api_exports/subscriptions/{batch_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `BatchJobResponse`
-- **Error**: `ApiExports.ReadSubscriptionsExportError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ApiExports.ReadSubscriptionsExportError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ApiExports.ReadSubscriptionsExportRequest` (1):

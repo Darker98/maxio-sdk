@@ -5,6 +5,7 @@ import {
   type RefundPrepaymentBaseRefundError,
 } from "./refund-prepayment-base-refund-error.js";
 
+/** Errors returned on creating a refund prepayment when bad request */
 export type RefundPrepaymentBaseErrorsResponse = {
   errors?: RefundPrepaymentBaseRefundError;
 };

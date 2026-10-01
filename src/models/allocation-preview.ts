@@ -23,6 +23,7 @@ export type AllocationPreview = {
   accrueCharge?: boolean;
   allocations?: AllocationPreviewItem[];
   periodType?: string;
+  /** An integer representing the amount of the subscription's current balance */
   existingBalanceInCents?: number;
 };
 

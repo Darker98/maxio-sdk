@@ -3,46 +3,121 @@ import type { Schema } from "../core/validation/schema.js";
 import { componentKindSchema, type ComponentKind } from "./component-kind.js";
 import { componentPriceSchema, type ComponentPrice } from "./component-price.js";
 import { creditTypeSchema, type CreditType } from "./credit-type.js";
+import { featureCatalogItemSchema, type FeatureCatalogItem } from "./feature-catalog-item.js";
 import { intervalUnitSchema, type IntervalUnit } from "./interval-unit.js";
 import { itemCategorySchema, type ItemCategory } from "./item-category.js";
 import { pricingSchemeSchema, type PricingScheme } from "./pricing-scheme.js";
 
 export type Component = {
+  /**
+   * The unique ID assigned to the component by Chargify. This ID can be used to fetch the component
+   * from the API.
+   */
   id?: number;
+  /** The name of the Component, suitable for display on statements. e.g., Text Messages. */
   name?: string;
+  /** The component API handle */
   handle?: string | null;
   pricingScheme?: PricingScheme | null;
+  /** The name of the unit that the component’s usage is measured in. e.g., message */
   unitName?: string;
+  /**
+   * The amount the customer will be charged per unit. This field is only populated for ‘per_unit’
+   * pricing schemes, otherwise it may be null.
+   */
   unitPrice?: string | null;
+  /** The id of the Product Family to which the Component belongs */
   productFamilyId?: number;
+  /** The name of the Product Family to which the Component belongs */
   productFamilyName?: string;
+  /** The handle of the Product Family to which the Component belongs */
   productFamilyHandle?: string;
+  /** deprecated - use unit_price instead. */
   pricePerUnitInCents?: number | null;
+  /** A handle for the component type */
   kind?: ComponentKind;
+  /** Boolean flag describing whether a component is archived or not. */
   archived?: boolean;
+  /** The description of the component. */
   description?: string | null;
   defaultPricePointId?: number | null;
+  /** Applicable only to prepaid usage components. An array of overage price brackets. */
   overagePrices?: ComponentPrice[] | null;
+  /**
+   * An array of price brackets. If the component uses the ‘per_unit’ pricing scheme, this array
+   * will be empty.
+   */
   prices?: ComponentPrice[] | null;
+  /** Count for the number of price points associated with the component */
   pricePointCount?: number;
+  /** URL that points to the location to read the existing price points via GET request */
   pricePointsUrl?: string | null;
   defaultPricePointName?: string;
+  /** Boolean flag describing whether a component is taxable or not. */
   taxable?: boolean;
+  /**
+   * A string representing the tax code related to the component type. This is especially important
+   * when using AvaTax to tax based on locale. This attribute has a max length of 25 characters.
+   */
   taxCode?: string | null;
   recurring?: boolean;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   upgradeCharge?: CreditType | null;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   downgradeCredit?: CreditType | null;
+  /** Timestamp indicating when this component was created */
   createdAt?: Date;
+  /** Timestamp indicating when this component was updated */
   updatedAt?: Date;
+  /** Timestamp indicating when this component was archived */
   archivedAt?: Date | null;
+  /**
+   * (Only available on Relationship Invoicing sites) Boolean flag describing if the service date
+   * range should show for the component on generated invoices.
+   */
   hideDateRangeOnInvoice?: boolean;
   allowFractionalQuantities?: boolean;
+  /**
+   * One of the following: Business Software, Consumer Software, Digital Services, Physical Goods,
+   * Other
+   */
   itemCategory?: ItemCategory | null;
   useSiteExchangeRate?: boolean | null;
+  /** E.g. Internal ID or SKU Number */
   accountingCode?: string | null;
+  /**
+   * (Only for Event Based Components) This is an ID of a metric attached to the component. This
+   * metric is used to bill upon collected events.
+   */
   eventBasedBillingMetricId?: number;
+  /**
+   * The numerical interval. e.g., an interval of ‘30’ coupled with an interval_unit of day would
+   * mean this component’s default price point would renew every 30 days. This property is only
+   * available for sites with Multifrequency enabled.
+   */
   interval?: number;
+  /**
+   * A string representing the interval unit for this component's default price point, either month
+   * or day. This property is only available for sites with Multifrequency enabled.
+   */
   intervalUnit?: IntervalUnit | null;
+  /**
+   * (Optional) Custom UNSPSC commodity code for Level 3/CEDP payment data. When set, this value is
+   * sent as the commodity code on invoice line items for this component instead of the default
+   * derived from item_category.
+   */
+  unspscCode?: string | null;
+  /**
+   * The active feature catalog items attached to this component. Present only when the request
+   * includes `include_features=true`.
+   */
+  features?: FeatureCatalogItem[] | null;
 };
 
 export const componentSchema: Schema<Component> = s.object<Component>({
@@ -81,6 +156,8 @@ export const componentSchema: Schema<Component> = s.object<Component>({
   eventBasedBillingMetricId: s.optional(s.number()),
   interval: s.optional(s.number()),
   intervalUnit: s.optionalNullable(s.lazy(() => intervalUnitSchema)),
+  unspscCode: s.optionalNullable(s.string()),
+  features: s.optionalNullable(s.array(s.lazy(() => featureCatalogItemSchema))),
   _keysMap: {
     pricingScheme: "pricing_scheme",
     unitName: "unit_name",
@@ -107,5 +184,6 @@ export const componentSchema: Schema<Component> = s.object<Component>({
     accountingCode: "accounting_code",
     eventBasedBillingMetricId: "event_based_billing_metric_id",
     intervalUnit: "interval_unit",
+    unspscCode: "unspsc_code",
   },
 });

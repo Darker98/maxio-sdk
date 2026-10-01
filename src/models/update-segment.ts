@@ -7,6 +7,11 @@ import {
 import { pricingSchemeSchema, type PricingScheme } from "./pricing-scheme.js";
 
 export type UpdateSegment = {
+  /**
+   * The identifier for the pricing scheme. See [Product
+   * Components](https://help.chargify.com/products/product-components.html) for an overview of
+   * pricing schemes.
+   */
   pricingScheme: PricingScheme;
   prices?: CreateOrUpdateSegmentPrice[];
 };

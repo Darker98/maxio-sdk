@@ -28,14 +28,36 @@ export type ProformaInvoice = {
   createdAt?: Date;
   deliveryDate?: string;
   status?: ProformaInvoiceStatus;
+  /**
+   * The type of payment collection to be used in the subscription. For legacy Statements
+   * Architecture valid options are - `invoice`, `automatic`. For current Relationship Invoicing
+   * Architecture valid options are - `remittance`, `automatic`, `prepaid`.
+   */
   collectionMethod?: CollectionMethod;
   paymentInstructions?: string;
   currency?: string;
+  /**
+   * Consolidation level of the invoice, which is applicable to invoice consolidation. It will hold
+   * one of the following values:
+   *
+   * * "none": A normal invoice with no consolidation.
+   * * "child": An invoice segment which has been combined into a consolidated invoice.
+   * * "parent": A consolidated invoice, whose contents are composed of invoice segments.
+   *
+   * "Parent" invoices do not have lines of their own, but they have subtotals and totals which
+   * aggregate the member invoice segments.
+   *
+   * See also the [invoice consolidation
+   * documentation](https://maxio.zendesk.com/hc/en-us/articles/24252269909389-Invoice-Consolidation).
+   */
   consolidationLevel?: InvoiceConsolidationLevel;
   productName?: string;
   productFamilyName?: string;
+  /** 'proforma' value is deprecated in favor of proforma_adhoc and proforma_automatic. */
   role?: ProformaInvoiceRole;
+  /** Information about the seller (merchant) listed on the masthead of the invoice. */
   seller?: InvoiceSeller;
+  /** Information about the customer who is owner or recipient of the invoiced subscription. */
   customer?: InvoiceCustomer;
   memo?: string;
   billingAddress?: InvoiceAddress;

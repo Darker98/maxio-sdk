@@ -7,6 +7,7 @@ import { unitPriceSchema, type UnitPrice } from "./unions/unit-price.js";
 export type UpdatePrice = {
   id?: number;
   endingQuantity?: EndingQuantity;
+  /** The price can contain up to 8 decimal places. e.g., 1.00 or 0.0012 or 0.00000065 */
   unitPrice?: UnitPrice;
   destroy?: boolean;
   startingQuantity?: StartingQuantity;

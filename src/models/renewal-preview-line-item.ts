@@ -4,7 +4,9 @@ import { lineItemKindSchema, type LineItemKind } from "./line-item-kind.js";
 import { lineItemTransactionTypeSchema, type LineItemTransactionType } from "./line-item-transaction-type.js";
 
 export type RenewalPreviewLineItem = {
+  /** A handle for the line item transaction type */
   transactionType?: LineItemTransactionType;
+  /** A handle for the line item kind */
   kind?: LineItemKind;
   amountInCents?: number;
   memo?: string;

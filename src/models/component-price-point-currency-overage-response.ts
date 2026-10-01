@@ -3,6 +3,7 @@ import type { Schema } from "../core/validation/schema.js";
 import { currencyOveragePricesSchema, type CurrencyOveragePrices } from "./currency-overage-prices.js";
 
 export type ComponentPricePointCurrencyOverageResponse = {
+  /** Extends a component price point with currency overage prices. */
   pricePoint: CurrencyOveragePrices;
 };
 

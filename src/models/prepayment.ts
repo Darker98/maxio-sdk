@@ -11,6 +11,7 @@ export type Prepayment = {
   details?: string;
   external: boolean;
   memo: string;
+  /** The payment type of the prepayment. */
   paymentType?: PrepaymentMethod;
   createdAt: Date;
 };

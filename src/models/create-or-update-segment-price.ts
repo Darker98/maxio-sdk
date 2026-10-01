@@ -5,6 +5,7 @@ import { unitPrice8Schema, type UnitPrice8 } from "./unions/unit-price8.js";
 export type CreateOrUpdateSegmentPrice = {
   startingQuantity?: number;
   endingQuantity?: number;
+  /** The price can contain up to 8 decimal places. e.g., 1.00 or 0.0012 or 0.00000065 */
   unitPrice: UnitPrice8;
 };
 

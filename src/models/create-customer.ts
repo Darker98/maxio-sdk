@@ -15,13 +15,26 @@ export type CreateCustomer = {
   zip?: string;
   country?: string;
   phone?: string;
+  /** Set a specific language on a customer record. */
   locale?: string;
   vatNumber?: string;
   taxExempt?: boolean;
+  /**
+   * Whether surcharging is enabled for the customer. Defaults to `true` when omitted. Only applied
+   * on sites where surcharging control is enabled.
+   */
   surcharging?: boolean;
   taxExemptReason?: string;
+  /** The parent ID in Chargify if applicable. Parent is another Customer object. */
   parentId?: number | null;
+  /** The Salesforce ID of the customer */
   salesforceId?: string | null;
+  /**
+   * The ID of the Branding Theme assigned to this customer as the customer's default Branding
+   * Theme. This customer-level Branding Theme is used when a subscription does not have its own
+   * subscription-level Branding Theme. Available only when Branding Themes are enabled for the
+   * site.
+   */
   brandingThemeId?: number | null;
 };
 

@@ -1,18 +1,58 @@
-import type { FetchLike } from "./core/api-request.js";
-import type { BasicAuthCredentials, TokenProvider } from "./core/auth/credentials.js";
-import { ServerEnvironment, type ServerOptions } from "./servers.js";
+import type { BasicAuthCredentials } from "./core/auth/credentials.js";
+import type { CoreClientOptions } from "./core/client-options.js";
+import { ServerEnvironment } from "./servers.js";
 
-export type ClientOptions = {
-  readonly serverEnvironment: ServerEnvironment;
-  readonly serverOptions: ServerOptions;
-  readonly timeout: number;
-  readonly fetch?: FetchLike | undefined;
+export type ClientOptions = SdkClientOptions & CoreClientOptions;
+
+type SdkClientOptions = ServerOptions & {
+  /** The `username` is a Maxio Chargify API key. The `password` is `x`. */
   readonly basicAuth?: BasicAuthCredentials | undefined;
-  readonly bearerAuth?: TokenProvider | undefined;
 };
 
-export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
-  serverEnvironment: ServerEnvironment.Us,
-  serverOptions: {},
-  timeout: 60_000,
-};
+type ServerOptions =
+  | {
+      readonly serverEnvironment?: typeof ServerEnvironment.Us;
+      readonly serverOptions?: {
+        /**
+         * Default Advanced Billing environment hosted in US. Valid for the majority of our
+         * customers.
+         */
+        production?: {
+          baseUrl?: string;
+          /** The subdomain for your Advanced Billing site. @default "subdomain" */
+          site?: string;
+        };
+        /**
+         * Default Advanced Billing environment hosted in US. Valid for the majority of our
+         * customers.
+         */
+        ebb?: {
+          baseUrl?: string;
+          /** The subdomain for your Advanced Billing site. @default "subdomain" */
+          site?: string;
+        };
+      };
+    }
+  | {
+      readonly serverEnvironment: typeof ServerEnvironment.Eu;
+      readonly serverOptions?: {
+        /**
+         * Default Advanced Billing environment hosted in US. Valid for the majority of our
+         * customers.
+         */
+        production?: {
+          baseUrl?: string;
+          /** The subdomain for your Advanced Billing site. @default "subdomain" */
+          site?: string;
+        };
+        /**
+         * Default Advanced Billing environment hosted in US. Valid for the majority of our
+         * customers.
+         */
+        ebb?: {
+          baseUrl?: string;
+          /** The subdomain for your Advanced Billing site. @default "subdomain" */
+          site?: string;
+        };
+      };
+    };

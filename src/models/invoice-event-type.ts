@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** Invoice Event Type */
 export const InvoiceEventType = {
   IssueInvoice: "issue_invoice",
   ApplyCreditNote: "apply_credit_note",

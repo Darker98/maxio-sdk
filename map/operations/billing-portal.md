@@ -4,16 +4,17 @@
 
 Accessor: `client.billingPortal` · Source: `src/resources/billing-portal.ts` · 4 operations · Request and error types: namespace `BillingPortal`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### enableBillingPortalForCustomer
 
 - **Signature**: `enableBillingPortalForCustomer(request: BillingPortal.EnableBillingPortalForCustomerRequest, options?: RequestOptions): ApiPromise<CustomerResponse, BillingPortal.EnableBillingPortalForCustomerError>`
 - **Wire**: `POST /portal/customers/{customer_id}/enable.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CustomerResponse`
-- **Error**: `BillingPortal.EnableBillingPortalForCustomerError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `BillingPortal.EnableBillingPortalForCustomerError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `BillingPortal.EnableBillingPortalForCustomerRequest` (2):
@@ -33,10 +34,10 @@ Accessor: `client.billingPortal` · Source: `src/resources/billing-portal.ts` ·
 
 - **Signature**: `readBillingPortalLink(request: BillingPortal.ReadBillingPortalLinkRequest, options?: RequestOptions): ApiPromise<PortalManagementLink, BillingPortal.ReadBillingPortalLinkError>`
 - **Wire**: `GET /portal/customers/{customer_id}/management_link.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `PortalManagementLink`
-- **Error**: `BillingPortal.ReadBillingPortalLinkError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `BillingPortal.ReadBillingPortalLinkError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"tooManyManagementLinkRequestsError1"` [429] `TooManyManagementLinkRequestsError1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `BillingPortal.ReadBillingPortalLinkRequest` (1):
@@ -55,10 +56,11 @@ Accessor: `client.billingPortal` · Source: `src/resources/billing-portal.ts` ·
 
 - **Signature**: `resendBillingPortalInvitation(request: BillingPortal.ResendBillingPortalInvitationRequest, options?: RequestOptions): ApiPromise<ResentInvitation, BillingPortal.ResendBillingPortalInvitationError>`
 - **Wire**: `POST /portal/customers/{customer_id}/invitations/invite.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ResentInvitation`
-- **Error**: `BillingPortal.ResendBillingPortalInvitationError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `BillingPortal.ResendBillingPortalInvitationError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `BillingPortal.ResendBillingPortalInvitationRequest` (1):
@@ -74,12 +76,13 @@ Accessor: `client.billingPortal` · Source: `src/resources/billing-portal.ts` ·
 
 ### revokeBillingPortalAccess
 
-- **Signature**: `revokeBillingPortalAccess(request: BillingPortal.RevokeBillingPortalAccessRequest, options?: RequestOptions): ApiPromise<RevokedInvitation, ResponseError>`
+- **Signature**: `revokeBillingPortalAccess(request: BillingPortal.RevokeBillingPortalAccessRequest, options?: RequestOptions): ApiPromise<RevokedInvitation, ApiError>`
 - **Wire**: `DELETE /portal/customers/{customer_id}/invitations/revoke.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `RevokedInvitation`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `BillingPortal.RevokeBillingPortalAccessRequest` (1):
 

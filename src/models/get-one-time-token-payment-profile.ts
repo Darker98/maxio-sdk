@@ -8,10 +8,15 @@ export type GetOneTimeTokenPaymentProfile = {
   firstName: string;
   lastName: string;
   maskedCardNumber: string;
+  /** The type of card used. */
   cardType: CardType;
   expirationMonth: number;
   expirationYear: number;
   customerId?: string | null;
+  /**
+   * The vault that stores the payment profile with the provided `vault_token`. Use `bogus` for
+   * testing.
+   */
   currentVault: CreditCardVault;
   vaultToken: string;
   billingAddress: string;

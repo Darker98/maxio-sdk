@@ -1,6 +1,9 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/**
+ * PCI-safe cardholder fields only. Full card numbers, CVV, and billing address are never included.
+ */
 export type PaymentProfileParams = {
   firstName?: string;
   lastName?: string;

@@ -1,9 +1,10 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
+import { newUnitBalanceSchema, type NewUnitBalance } from "./unions/new-unit-balance.js";
 
 export type MeteredUsage = {
   previousUnitBalance: string;
-  newUnitBalance: number;
+  newUnitBalance: NewUnitBalance;
   usageQuantity: number;
   componentId: number;
   componentHandle: string;
@@ -12,7 +13,7 @@ export type MeteredUsage = {
 
 export const meteredUsageSchema: Schema<MeteredUsage> = s.object<MeteredUsage>({
   previousUnitBalance: s.string(),
-  newUnitBalance: s.number(),
+  newUnitBalance: newUnitBalanceSchema,
   usageQuantity: s.number(),
   componentId: s.number(),
   componentHandle: s.string(),

@@ -1,40 +1,30 @@
 import type { Param } from "./param-value.js";
 import { encodedParam, flattenValue } from "./param-value.js";
 import { percentEncode } from "./params.js";
-import type { ContentType } from "./request-body.js";
 
 export function buildHeaders(
-  contentType: ContentType | undefined,
-  layers: ReadonlyArray<readonly Param[] | undefined>,
+  headersByPrecedence: ReadonlyArray<readonly Param[] | undefined>,
   cookies?: readonly Param[],
+  base?: Headers,
 ): Headers {
-  const merged = new Map<string, string | null>();
-  if (contentType !== undefined) merged.set("content-type", contentType);
-  for (const layer of layers) {
-    for (const source of layer ?? []) {
-      const value = encodedParam(source);
+  const headers = new Headers(base);
+  for (const contributed of headersByPrecedence) {
+    for (const header of contributed ?? []) {
+      const value = encodedParam(header);
       if (value === undefined) continue;
       const parts = flattenValue(value);
-      merged.set(source.name.toLowerCase(), parts.length === 0 ? null : parts.join(","));
+      if (parts.length === 0) headers.delete(header.name);
+      else headers.set(header.name, parts.join(","));
     }
   }
 
-  const cookie = mergeCookies(merged.get("cookie") ?? undefined, cookies);
-  if (cookie !== undefined) merged.set("cookie", cookie);
-
-  const headers = new Headers();
-  for (const [name, value] of merged) {
-    if (value === null) continue;
-    headers.set(name, value);
-  }
+  const cookie = mergeCookies(headers.get("cookie"), cookies);
+  if (cookie !== undefined) headers.set("cookie", cookie);
   return headers;
 }
 
-function mergeCookies(
-  existing: string | undefined,
-  cookies: readonly Param[] | undefined,
-): string | undefined {
-  if (cookies === undefined || cookies.length === 0) return existing;
+function mergeCookies(existing: string | null, cookies: readonly Param[] | undefined): string | undefined {
+  if (cookies === undefined || cookies.length === 0) return existing ?? undefined;
 
   const pairs = new Map<string, string>();
   for (const part of (existing ?? "").split(";")) {

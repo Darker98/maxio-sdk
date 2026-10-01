@@ -12,7 +12,12 @@ export type InvoicePayment = {
   prepayment?: boolean;
   gatewayHandle?: string | null;
   gatewayUsed?: string;
+  /** The transaction ID for the payment as returned from the payment gateway */
   gatewayTransactionId?: string | null;
+  /**
+   * Date reflecting when the payment was received from a customer. Must be in the past. Applicable
+   * only to `external` payments.
+   */
   receivedOn?: string | null;
   uid?: string;
 };

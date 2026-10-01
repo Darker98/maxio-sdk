@@ -1,6 +1,9 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/**
+ * The vault that stores the payment profile with the provided vault_token. Use `bogus` for testing.
+ */
 export const BankAccountVault = {
   Authorizenet: "authorizenet",
   BlueSnap: "blue_snap",

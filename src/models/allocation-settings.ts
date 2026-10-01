@@ -3,8 +3,17 @@ import type { Schema } from "../core/validation/schema.js";
 import { creditTypeSchema, type CreditType } from "./credit-type.js";
 
 export type AllocationSettings = {
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   upgradeCharge?: CreditType | null;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   downgradeCredit?: CreditType | null;
+  /** Either "true" or "false". */
   accrueCharge?: string;
 };
 

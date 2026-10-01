@@ -6,8 +6,14 @@ import {
 } from "./invoice-payment-application.js";
 
 export type MultiInvoicePayment = {
+  /** The numeric ID of the transaction. */
   transactionId?: number;
+  /** Dollar amount of the sum of the paid invoices. */
   totalAmount?: string;
+  /**
+   * The ISO 4217 currency code (3 character string) representing the currency of invoice
+   * transaction.
+   */
   currencyCode?: string;
   applications?: InvoicePaymentApplication[];
 };

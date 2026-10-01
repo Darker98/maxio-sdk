@@ -4,16 +4,17 @@
 
 Accessor: `client.components` · Source: `src/resources/components.ts` · 12 operations · Request and error types: namespace `Components`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### archiveComponent
 
 - **Signature**: `archiveComponent(request: Components.ArchiveComponentRequest, options?: RequestOptions): ApiPromise<Component, Components.ArchiveComponentError>`
 - **Wire**: `DELETE /product_families/{product_family_id}/components/{component_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Component`
-- **Error**: `Components.ArchiveComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.ArchiveComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.ArchiveComponentRequest` (2):
@@ -32,10 +33,11 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 - **Signature**: `createEventBasedComponent(request: Components.CreateEventBasedComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, Components.CreateEventBasedComponentError>`
 - **Wire**: `POST /product_families/{product_family_id}/event_based_components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `Components.CreateEventBasedComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.CreateEventBasedComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.CreateEventBasedComponentRequest` (2):
@@ -55,10 +57,11 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 - **Signature**: `createMeteredComponent(request: Components.CreateMeteredComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, Components.CreateMeteredComponentError>`
 - **Wire**: `POST /product_families/{product_family_id}/metered_components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `Components.CreateMeteredComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.CreateMeteredComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.CreateMeteredComponentRequest` (2):
@@ -78,10 +81,11 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 - **Signature**: `createOnOffComponent(request: Components.CreateOnOffComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, Components.CreateOnOffComponentError>`
 - **Wire**: `POST /product_families/{product_family_id}/on_off_components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `Components.CreateOnOffComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.CreateOnOffComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.CreateOnOffComponentRequest` (2):
@@ -101,10 +105,11 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 - **Signature**: `createPrepaidUsageComponent(request: Components.CreatePrepaidUsageComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, Components.CreatePrepaidUsageComponentError>`
 - **Wire**: `POST /product_families/{product_family_id}/prepaid_usage_components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `Components.CreatePrepaidUsageComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.CreatePrepaidUsageComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.CreatePrepaidUsageComponentRequest` (2):
@@ -124,10 +129,11 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 - **Signature**: `createQuantityBasedComponent(request: Components.CreateQuantityBasedComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, Components.CreateQuantityBasedComponentError>`
 - **Wire**: `POST /product_families/{product_family_id}/quantity_based_components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `Components.CreateQuantityBasedComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.CreateQuantityBasedComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.CreateQuantityBasedComponentRequest` (2):
@@ -145,12 +151,12 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 ### findComponent
 
-- **Signature**: `findComponent(request: Components.FindComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, ResponseError>`
+- **Signature**: `findComponent(request: Components.FindComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, ApiError>`
 - **Wire**: `GET /components/lookup.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ComponentResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Components.FindComponentRequest` (1):
 
@@ -164,12 +170,12 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 ### listComponents
 
-- **Signature**: `listComponents(request: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise<ComponentResponse[], ResponseError>`
+- **Signature**: `listComponents(request: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise<ComponentResponse[], ApiError>`
 - **Wire**: `GET /components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ComponentResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Components.ListComponentsRequest` (9):
 
@@ -193,12 +199,12 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 ### listComponentsForProductFamily
 
-- **Signature**: `listComponentsForProductFamily(request: Components.ListComponentsForProductFamilyRequest, options?: RequestOptions): ApiPromise<ComponentResponse[], ResponseError>`
+- **Signature**: `listComponentsForProductFamily(request: Components.ListComponentsForProductFamilyRequest, options?: RequestOptions): ApiPromise<ComponentResponse[], ApiError>`
 - **Wire**: `GET /product_families/{product_family_id}/components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ComponentResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Components.ListComponentsForProductFamilyRequest` (10):
 
@@ -223,19 +229,20 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 ### readComponent
 
-- **Signature**: `readComponent(request: Components.ReadComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, ResponseError>`
+- **Signature**: `readComponent(request: Components.ReadComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, ApiError>`
 - **Wire**: `GET /product_families/{product_family_id}/components/{component_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ComponentResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
-**Fields** — `Components.ReadComponentRequest` (2):
+**Fields** — `Components.ReadComponentRequest` (3):
 
-| Field | Channel | Wire | Type | Req |
-| --- | --- | --- | --- | --- |
-| `productFamilyId` | `path` | `product_family_id` | `number` | yes |
-| `componentId` | `path` | `component_id` | `string` | yes |
+| Field | Channel | Wire | Type | Req | Default |
+| --- | --- | --- | --- | --- | --- |
+| `productFamilyId` | `path` | `product_family_id` | `number` | yes | — |
+| `componentId` | `path` | `component_id` | `string` | yes | — |
+| `includeFeatures` | `query` | `include_features` | `boolean` | no | `false` |
 
 | Type | Schema value | Source |
 | --- | --- | --- |
@@ -245,10 +252,11 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 - **Signature**: `updateComponent(request: Components.UpdateComponentRequestParams, options?: RequestOptions): ApiPromise<ComponentResponse, Components.UpdateComponentError>`
 - **Wire**: `PUT /components/{component_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `Components.UpdateComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.UpdateComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.UpdateComponentRequestParams` (2):
@@ -268,10 +276,11 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 - **Signature**: `updateProductFamilyComponent(request: Components.UpdateProductFamilyComponentRequest, options?: RequestOptions): ApiPromise<ComponentResponse, Components.UpdateProductFamilyComponentError>`
 - **Wire**: `PUT /product_families/{product_family_id}/components/{component_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `Components.UpdateProductFamilyComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Components.UpdateProductFamilyComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Components.UpdateProductFamilyComponentRequest` (3):

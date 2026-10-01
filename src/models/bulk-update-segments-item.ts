@@ -7,7 +7,13 @@ import {
 import { pricingSchemeSchema, type PricingScheme } from "./pricing-scheme.js";
 
 export type BulkUpdateSegmentsItem = {
+  /** The ID of the segment you want to update. */
   id: number;
+  /**
+   * The identifier for the pricing scheme. See [Product
+   * Components](https://help.chargify.com/products/product-components.html) for an overview of
+   * pricing schemes.
+   */
   pricingScheme: PricingScheme;
   prices: CreateOrUpdateSegmentPrice[];
 };

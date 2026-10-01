@@ -6,12 +6,35 @@ import { bankAccountVaultSchema, type BankAccountVault } from "./bank-account-va
 import { paymentTypeSchema, type PaymentType } from "./payment-type.js";
 
 export type SubscriptionGroupBankAccount = {
+  /**
+   * (Required when creating a subscription with ACH or GoCardless) The name of the bank where the
+   * customer’s account resides
+   */
   bankName?: string;
+  /**
+   * (Required when creating a subscription with ACH. Required when creating a subscription with
+   * GoCardless and bank_iban is blank) The customerʼs bank account number
+   */
   bankAccountNumber?: string;
+  /**
+   * (Required when creating a subscription with ACH. Optional when creating a subscription with
+   * GoCardless.) The routing number of the bank. It becomes bank_code while passing via GoCardless
+   * API.
+   */
   bankRoutingNumber?: string;
+  /**
+   * (Optional when creating a subscription with GoCardless). International Bank Account Number.
+   * Alternatively, local bank details can be provided.
+   */
   bankIban?: string;
+  /**
+   * (Optional when creating a subscription with GoCardless) Branch code. Alternatively, an IBAN can
+   * be provided.
+   */
   bankBranchCode?: string;
+  /** Defaults to checking */
   bankAccountType?: BankAccountType;
+  /** Defaults to personal */
   bankAccountHolderType?: BankAccountHolderType;
   paymentType?: PaymentType;
   billingAddress?: string;
@@ -20,6 +43,10 @@ export type SubscriptionGroupBankAccount = {
   billingZip?: string;
   billingCountry?: string;
   chargifyToken?: string;
+  /**
+   * The vault that stores the payment profile with the provided vault_token. Use `bogus` for
+   * testing.
+   */
   currentVault?: BankAccountVault;
   gatewayHandle?: string;
 };

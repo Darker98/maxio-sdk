@@ -2,38 +2,93 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
 export type Customer = {
+  /** The first name of the customer */
   firstName?: string;
+  /** The last name of the customer */
   lastName?: string;
+  /** The email address of the customer */
   email?: string;
+  /**
+   * “A comma-separated list of emails that should be cc’d on all customer communications (e.g.,
+   * “joe@example.com, sue@example.com”)”
+   */
   ccEmails?: string | null;
+  /**
+   * The organization of the customer. If no value, `null` or empty string is provided,
+   * `organization` will be populated with the customer's first and last name, separated with a
+   * space.
+   */
   organization?: string | null;
+  /** The unique identifier used within your own application for this customer */
   reference?: string | null;
+  /** The customer ID in Chargify */
   id?: number;
+  /** The timestamp in which the customer object was created in Chargify */
   createdAt?: Date;
+  /** The timestamp in which the customer object was last edited */
   updatedAt?: Date;
+  /** The customer’s shipping street address (e.g., “123 Main St.”) */
   address?: string | null;
+  /** Second line of the customer’s shipping address e.g., “Apt. 100” */
   address2?: string | null;
+  /** The customer’s shipping address city (e.g., “Boston”) */
   city?: string | null;
+  /** The customer’s shipping address state (e.g., “MA”) */
   state?: string | null;
+  /** The customer's full name of state */
   stateName?: string | null;
+  /** The customer’s shipping address zip code (e.g., “12345”) */
   zip?: string | null;
+  /** The customer shipping address country */
   country?: string | null;
+  /** The customer's full name of country */
   countryName?: string | null;
+  /** The phone number of the customer */
   phone?: string | null;
+  /** Is the customer verified to use ACH as a payment method. */
   verified?: boolean | null;
+  /** The timestamp of when the Billing Portal entry was created at for the customer */
   portalCustomerCreatedAt?: Date | null;
+  /** The timestamp of when the Billing Portal invite was last sent at */
   portalInviteLastSentAt?: Date | null;
+  /** The timestamp of when the Billing Portal invite was last accepted */
   portalInviteLastAcceptedAt?: Date | null;
+  /**
+   * The tax exempt status for the customer. Acceptable values are true or 1 for true and false or 0
+   * for false.
+   */
   taxExempt?: boolean;
+  /**
+   * Whether surcharging is enabled for the customer. Only included on sites where surcharging
+   * control is enabled.
+   */
   surcharging?: boolean;
+  /**
+   * The VAT business identification number for the customer. This number is used to determine VAT
+   * tax opt out rules. It is not validated when added or updated on a customer record. Instead, it
+   * is validated via VIES before calculating taxes. Only valid business identification numbers will
+   * allow for VAT opt out.
+   */
   vatNumber?: string | null;
+  /** The parent ID in Chargify if applicable. Parent is another Customer object. */
   parentId?: number | null;
+  /** The locale for the customer to identify language-region */
   locale?: string | null;
   defaultSubscriptionGroupUid?: string | null;
+  /** The Salesforce ID for the customer */
   salesforceId?: string | null;
+  /** The Tax Exemption Reason Code for the customer */
   taxExemptReason?: string | null;
+  /** The default auto-renewal profile ID for the customer */
   defaultAutoRenewalProfileId?: number | null;
+  /** The Maxio-generated unique identifier for the customer. */
   maxioid?: string | null;
+  /**
+   * The ID of the Branding Theme assigned to this customer as the customer's default Branding
+   * Theme. This customer-level Branding Theme is used when a subscription does not have its own
+   * subscription-level Branding Theme. Available only when Branding Themes are enabled for the
+   * site.
+   */
   brandingThemeId?: number | null;
 };
 

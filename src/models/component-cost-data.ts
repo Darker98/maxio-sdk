@@ -12,6 +12,11 @@ export type ComponentCostData = {
   productId?: number;
   quantity?: string;
   amount?: string;
+  /**
+   * The identifier for the pricing scheme. See [Product
+   * Components](https://help.chargify.com/products/product-components.html) for an overview of
+   * pricing schemes.
+   */
   pricingScheme?: PricingScheme;
   tiers?: ComponentCostDataRateTier[];
 };

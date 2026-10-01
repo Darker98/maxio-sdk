@@ -4,16 +4,17 @@
 
 Accessor: `client.insights` · Source: `src/resources/insights.ts` · 4 operations · Request and error types: namespace `Insights`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### listMrrMovements
 
-- **Signature**: `listMrrMovements(request: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise<ListMrrResponse, ResponseError>`
+- **Signature**: `listMrrMovements(request: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise<ListMrrResponse, ApiError>`
+- **Deprecated**: the method carries `@deprecated`, so an IDE strikes the call site through; it still works
 - **Wire**: `GET /mrr_movements.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListMrrResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Insights.ListMrrMovementsRequest` (4):
 
@@ -32,11 +33,12 @@ Accessor: `client.insights` · Source: `src/resources/insights.ts` · 4 operatio
 ### listMrrPerSubscription
 
 - **Signature**: `listMrrPerSubscription(request: Insights.ListMrrPerSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionMrrResponse, Insights.ListMrrPerSubscriptionError>`
+- **Deprecated**: the method carries `@deprecated`, so an IDE strikes the call site through; it still works
 - **Wire**: `GET /subscriptions_mrr.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SubscriptionMrrResponse`
-- **Error**: `Insights.ListMrrPerSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Insights.ListMrrPerSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"subscriptionsMrrErrorResponse1"` [400] `SubscriptionsMrrErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Insights.ListMrrPerSubscriptionRequest` (5):
@@ -58,12 +60,13 @@ Accessor: `client.insights` · Source: `src/resources/insights.ts` · 4 operatio
 
 ### readMrr
 
-- **Signature**: `readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise<MrrResponse, ResponseError>`
+- **Signature**: `readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise<MrrResponse, ApiError>`
+- **Deprecated**: the method carries `@deprecated`, so an IDE strikes the call site through; it still works
 - **Wire**: `GET /mrr.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `MrrResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Insights.ReadMrrRequest` (2):
 
@@ -78,12 +81,12 @@ Accessor: `client.insights` · Source: `src/resources/insights.ts` · 4 operatio
 
 ### readSiteStats
 
-- **Signature**: `readSiteStats(options?: RequestOptions): ApiPromise<SiteSummary, ResponseError>`
+- **Signature**: `readSiteStats(options?: RequestOptions): ApiPromise<SiteSummary, ApiError>`
 - **Wire**: `GET /stats.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SiteSummary`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 | Type | Schema value | Source |
 | --- | --- | --- |

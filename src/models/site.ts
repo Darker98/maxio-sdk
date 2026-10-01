@@ -22,8 +22,14 @@ export type Site = {
   organizationAddress?: OrganizationAddress;
   taxConfiguration?: TaxConfiguration;
   netTerms?: NetTerms;
+  /**
+   * Whether the site has the multi-frequency billing feature enabled. Only present when
+   * relationship invoicing is active.
+   */
   multiFrequencyEnabled?: boolean;
+  /** Whether the auto-renewals feature is enabled for this site. */
   autoRenewalsEnabled?: boolean;
+  /** Whether the Billing Portal is enabled for this site. */
   portalEnabled?: boolean;
   test?: boolean;
 };

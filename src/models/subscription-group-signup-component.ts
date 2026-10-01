@@ -10,10 +10,15 @@ import { pricePointIdSchema, type PricePointId } from "./unions/price-point-id.j
 import { unitBalanceSchema, type UnitBalance } from "./unions/unit-balance.js";
 
 export type SubscriptionGroupSignupComponent = {
+  /** Required if passing any component to `components` attribute. */
   componentId?: ComponentId;
   allocatedQuantity?: AllocatedQuantity1;
   unitBalance?: UnitBalance;
   pricePointId?: PricePointId;
+  /**
+   * Used in place of `price_point_id` to define a custom price point unique to the subscription.
+   * You still need to provide `component_id`.
+   */
   customPrice?: SubscriptionGroupComponentCustomPrice;
 };
 

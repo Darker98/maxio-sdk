@@ -4,12 +4,17 @@ import {
   prepaidUsageAllocationDetailSchema,
   type PrepaidUsageAllocationDetail,
 } from "./prepaid-usage-allocation-detail.js";
+import {
+  newOverageUnitBalanceSchema,
+  type NewOverageUnitBalance,
+} from "./unions/new-overage-unit-balance.js";
+import { newUnitBalanceSchema, type NewUnitBalance } from "./unions/new-unit-balance.js";
 
 export type PrepaidUsage = {
   previousUnitBalance: string;
   previousOverageUnitBalance: string;
-  newUnitBalance: number;
-  newOverageUnitBalance: number;
+  newUnitBalance: NewUnitBalance;
+  newOverageUnitBalance: NewOverageUnitBalance;
   usageQuantity: number;
   overageUsageQuantity: number;
   componentId: number;
@@ -21,8 +26,8 @@ export type PrepaidUsage = {
 export const prepaidUsageSchema: Schema<PrepaidUsage> = s.object<PrepaidUsage>({
   previousUnitBalance: s.string(),
   previousOverageUnitBalance: s.string(),
-  newUnitBalance: s.number(),
-  newOverageUnitBalance: s.number(),
+  newUnitBalance: newUnitBalanceSchema,
+  newOverageUnitBalance: newOverageUnitBalanceSchema,
   usageQuantity: s.number(),
   overageUsageQuantity: s.number(),
   componentId: s.number(),

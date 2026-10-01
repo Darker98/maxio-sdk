@@ -7,8 +7,17 @@ import { enumSchema, type Enum } from "./unions/enum.js";
 export type Metafield = {
   id?: number;
   name?: string;
+  /**
+   * Warning: When updating a metafield's scope attribute, all scope attributes must be passed.
+   * Partially complete scope attributes will override the existing settings.
+   */
   scope?: MetafieldScope;
+  /** The amount of subscriptions this metafield has been applied to in Advanced Billing. */
   dataCount?: number;
+  /**
+   * Indicates the type of metafield. A text metafield allows any string value. Dropdown and radio
+   * metafields have a set of values that can be selected. Defaults to 'text'.
+   */
   inputType?: MetafieldInput;
   enum?: Enum | null;
 };

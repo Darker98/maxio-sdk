@@ -19,6 +19,11 @@ export type SubscriptionGroupSignup = {
   paymentProfileId?: number;
   payerId?: number;
   payerReference?: string;
+  /**
+   * The type of payment collection to be used in the subscription. For legacy Statements
+   * Architecture valid options are - `invoice`, `automatic`. For current Relationship Invoicing
+   * Architecture valid options are - `remittance`, `automatic`, `prepaid`.
+   */
   paymentCollectionMethod?: CollectionMethod;
   payerAttributes?: PayerAttributes;
   creditCardAttributes?: SubscriptionGroupCreditCard;

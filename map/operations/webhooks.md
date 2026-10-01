@@ -4,16 +4,17 @@
 
 Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operations · Request and error types: namespace `Webhooks`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### createEndpoint
 
 - **Signature**: `createEndpoint(request: Webhooks.CreateEndpointRequest, options?: RequestOptions): ApiPromise<EndpointResponse, Webhooks.CreateEndpointError>`
 - **Wire**: `POST /endpoints.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `EndpointResponse`
-- **Error**: `Webhooks.CreateEndpointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Webhooks.CreateEndpointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Webhooks.CreateEndpointRequest` (1):
@@ -30,12 +31,13 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 
 ### enableWebhooks
 
-- **Signature**: `enableWebhooks(request: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise<EnableWebhooksResponse, ResponseError>`
+- **Signature**: `enableWebhooks(request: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise<EnableWebhooksResponse, ApiError>`
 - **Wire**: `PUT /webhooks/settings.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `EnableWebhooksResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Webhooks.EnableWebhooksRequestParams` (1):
 
@@ -50,12 +52,12 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 
 ### listEndpoints
 
-- **Signature**: `listEndpoints(options?: RequestOptions): ApiPromise<Endpoint[], ResponseError>`
+- **Signature**: `listEndpoints(options?: RequestOptions): ApiPromise<Endpoint[], ApiError>`
 - **Wire**: `GET /endpoints.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `Endpoint[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 | Type | Schema value | Source |
 | --- | --- | --- |
@@ -63,12 +65,12 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 
 ### listWebhooks
 
-- **Signature**: `listWebhooks(request: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise<WebhookResponse[], ResponseError>`
+- **Signature**: `listWebhooks(request: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise<WebhookResponse[], ApiError>`
 - **Wire**: `GET /webhooks.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `WebhookResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Webhooks.ListWebhooksRequest` (7):
 
@@ -90,12 +92,13 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 
 ### replayWebhooks
 
-- **Signature**: `replayWebhooks(request: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise<ReplayWebhooksResponse, ResponseError>`
+- **Signature**: `replayWebhooks(request: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise<ReplayWebhooksResponse, ApiError>`
 - **Wire**: `POST /webhooks/replay.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ReplayWebhooksResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Webhooks.ReplayWebhooksRequestParams` (1):
 
@@ -112,10 +115,11 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 
 - **Signature**: `updateEndpoint(request: Webhooks.UpdateEndpointRequest, options?: RequestOptions): ApiPromise<EndpointResponse, Webhooks.UpdateEndpointError>`
 - **Wire**: `PUT /endpoints/{endpoint_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `EndpointResponse`
-- **Error**: `Webhooks.UpdateEndpointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Webhooks.UpdateEndpointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Webhooks.UpdateEndpointRequest` (2):

@@ -4,16 +4,16 @@
 
 Accessor: `client.salesCommissions` · Source: `src/resources/sales-commissions.ts` · 3 operations · Request types: namespace `SalesCommissions`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### listSalesCommissionSettings
 
-- **Signature**: `listSalesCommissionSettings(request: SalesCommissions.ListSalesCommissionSettingsRequest, options?: RequestOptions): ApiPromise<SaleRepSettings[], ResponseError>`
+- **Signature**: `listSalesCommissionSettings(request: SalesCommissions.ListSalesCommissionSettingsRequest, options?: RequestOptions): ApiPromise<SaleRepSettings[], ApiError>`
 - **Wire**: `GET /sellers/{seller_id}/sales_commission_settings.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SaleRepSettings[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SalesCommissions.ListSalesCommissionSettingsRequest` (5):
 
@@ -31,12 +31,12 @@ Accessor: `client.salesCommissions` · Source: `src/resources/sales-commissions.
 
 ### listSalesReps
 
-- **Signature**: `listSalesReps(request: SalesCommissions.ListSalesRepsRequest, options?: RequestOptions): ApiPromise<ListSaleRepItem[], ResponseError>`
+- **Signature**: `listSalesReps(request: SalesCommissions.ListSalesRepsRequest, options?: RequestOptions): ApiPromise<ListSaleRepItem[], ApiError>`
 - **Wire**: `GET /sellers/{seller_id}/sales_reps.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListSaleRepItem[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SalesCommissions.ListSalesRepsRequest` (5):
 
@@ -54,12 +54,12 @@ Accessor: `client.salesCommissions` · Source: `src/resources/sales-commissions.
 
 ### readSalesRep
 
-- **Signature**: `readSalesRep(request: SalesCommissions.ReadSalesRepRequest, options?: RequestOptions): ApiPromise<SaleRep, ResponseError>`
+- **Signature**: `readSalesRep(request: SalesCommissions.ReadSalesRepRequest, options?: RequestOptions): ApiPromise<SaleRep, ApiError>`
 - **Wire**: `GET /sellers/{seller_id}/sales_reps/{sales_rep_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SaleRep`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SalesCommissions.ReadSalesRepRequest` (6):
 

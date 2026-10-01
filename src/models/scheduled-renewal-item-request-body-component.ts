@@ -6,16 +6,21 @@ import {
 } from "./scheduled-renewal-component-custom-price.js";
 
 export type ScheduledRenewalItemRequestBodyComponent = {
-  itemType: "Component";
+  /** Item type to add. Either Product or Component. @default "Component" */
+  itemType?: "Component";
+  /** Product or component identifier. */
   itemId: number;
+  /** Price point identifier. */
   pricePointId?: number;
+  /** (Optional) Quantity for the item. */
   quantity?: number;
+  /** Custom pricing for a component within a scheduled renewal. */
   customPrice?: ScheduledRenewalComponentCustomPrice;
 };
 
 export const scheduledRenewalItemRequestBodyComponentSchema: Schema<ScheduledRenewalItemRequestBodyComponent> =
   s.object<ScheduledRenewalItemRequestBodyComponent>({
-    itemType: s.literal("Component"),
+    itemType: s.defaulted(s.literal("Component"), "Component"),
     itemId: s.number(),
     pricePointId: s.optional(s.number()),
     quantity: s.optional(s.number()),

@@ -4,16 +4,17 @@
 
 Accessor: `client.componentPricePoints` · Source: `src/resources/component-price-points.ts` · 12 operations · Request and error types: namespace `ComponentPricePoints`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### archiveComponentPricePoint
 
 - **Signature**: `archiveComponentPricePoint(request: ComponentPricePoints.ArchiveComponentPricePointRequest, options?: RequestOptions): ApiPromise<ComponentPricePointResponse, ComponentPricePoints.ArchiveComponentPricePointError>`
 - **Wire**: `DELETE /components/{component_id}/price_points/{price_point_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentPricePointResponse`
-- **Error**: `ComponentPricePoints.ArchiveComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.ArchiveComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.ArchiveComponentPricePointRequest` (2):
@@ -34,10 +35,11 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 - **Signature**: `bulkCreateComponentPricePoints(request: ComponentPricePoints.BulkCreateComponentPricePointsRequest, options?: RequestOptions): ApiPromise<ComponentPricePointsResponse, ComponentPricePoints.BulkCreateComponentPricePointsError>`
 - **Wire**: `POST /components/{component_id}/price_points/bulk.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentPricePointsResponse`
-- **Error**: `ComponentPricePoints.BulkCreateComponentPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.BulkCreateComponentPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.BulkCreateComponentPricePointsRequest` (2):
@@ -57,10 +59,11 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 - **Signature**: `cloneComponentPricePoint(request: ComponentPricePoints.CloneComponentPricePointRequestParams, options?: RequestOptions): ApiPromise<ComponentPricePointCurrencyOverageResponse, ComponentPricePoints.CloneComponentPricePointError>`
 - **Wire**: `POST /components/{component_id}/price_points/{price_point_id}/clone.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentPricePointCurrencyOverageResponse`
-- **Error**: `ComponentPricePoints.CloneComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.CloneComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.CloneComponentPricePointRequestParams` (3):
@@ -83,10 +86,11 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 - **Signature**: `createComponentPricePoint(request: ComponentPricePoints.CreateComponentPricePointRequestParams, options?: RequestOptions): ApiPromise<ComponentPricePointResponse, ComponentPricePoints.CreateComponentPricePointError>`
 - **Wire**: `POST /components/{component_id}/price_points.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentPricePointResponse`
-- **Error**: `ComponentPricePoints.CreateComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.CreateComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.CreateComponentPricePointRequestParams` (2):
@@ -106,10 +110,11 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 - **Signature**: `createCurrencyPrices(request: ComponentPricePoints.CreateCurrencyPricesRequestParams, options?: RequestOptions): ApiPromise<ComponentCurrencyPricesResponse, ComponentPricePoints.CreateCurrencyPricesError>`
 - **Wire**: `POST /price_points/{price_point_id}/currency_prices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentCurrencyPricesResponse`
-- **Error**: `ComponentPricePoints.CreateCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.CreateCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.CreateCurrencyPricesRequestParams` (2):
@@ -129,10 +134,10 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 - **Signature**: `listAllComponentPricePoints(request: ComponentPricePoints.ListAllComponentPricePointsRequest, options?: RequestOptions): ApiPromise<ListComponentsPricePointsResponse, ComponentPricePoints.ListAllComponentPricePointsError>`
 - **Wire**: `GET /components_price_points.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListComponentsPricePointsResponse`
-- **Error**: `ComponentPricePoints.ListAllComponentPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.ListAllComponentPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.ListAllComponentPricePointsRequest` (5):
@@ -155,12 +160,12 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 ### listComponentPricePoints
 
-- **Signature**: `listComponentPricePoints(request: ComponentPricePoints.ListComponentPricePointsRequest, options?: RequestOptions): ApiPromise<ComponentPricePointsResponse, ResponseError>`
+- **Signature**: `listComponentPricePoints(request: ComponentPricePoints.ListComponentPricePointsRequest, options?: RequestOptions): ApiPromise<ComponentPricePointsResponse, ApiError>`
 - **Wire**: `GET /components/{component_id}/price_points.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ComponentPricePointsResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ComponentPricePoints.ListComponentPricePointsRequest` (5):
 
@@ -179,12 +184,13 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 ### promoteComponentPricePointToDefault
 
-- **Signature**: `promoteComponentPricePointToDefault(request: ComponentPricePoints.PromoteComponentPricePointToDefaultRequest, options?: RequestOptions): ApiPromise<ComponentResponse, ResponseError>`
+- **Signature**: `promoteComponentPricePointToDefault(request: ComponentPricePoints.PromoteComponentPricePointToDefaultRequest, options?: RequestOptions): ApiPromise<ComponentResponse, ApiError>`
 - **Wire**: `PUT /components/{component_id}/price_points/{price_point_id}/default.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ComponentPricePoints.PromoteComponentPricePointToDefaultRequest` (2):
 
@@ -199,12 +205,12 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 ### readComponentPricePoint
 
-- **Signature**: `readComponentPricePoint(request: ComponentPricePoints.ReadComponentPricePointRequest, options?: RequestOptions): ApiPromise<ComponentPricePointCurrencyOverageResponse, ResponseError>`
+- **Signature**: `readComponentPricePoint(request: ComponentPricePoints.ReadComponentPricePointRequest, options?: RequestOptions): ApiPromise<ComponentPricePointCurrencyOverageResponse, ApiError>`
 - **Wire**: `GET /components/{component_id}/price_points/{price_point_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ComponentPricePointCurrencyOverageResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ComponentPricePoints.ReadComponentPricePointRequest` (3):
 
@@ -222,12 +228,13 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 ### unarchiveComponentPricePoint
 
-- **Signature**: `unarchiveComponentPricePoint(request: ComponentPricePoints.UnarchiveComponentPricePointRequest, options?: RequestOptions): ApiPromise<ComponentPricePointResponse, ResponseError>`
+- **Signature**: `unarchiveComponentPricePoint(request: ComponentPricePoints.UnarchiveComponentPricePointRequest, options?: RequestOptions): ApiPromise<ComponentPricePointResponse, ApiError>`
 - **Wire**: `PUT /components/{component_id}/price_points/{price_point_id}/unarchive.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentPricePointResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `ComponentPricePoints.UnarchiveComponentPricePointRequest` (2):
 
@@ -244,10 +251,11 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 - **Signature**: `updateComponentPricePoint(request: ComponentPricePoints.UpdateComponentPricePointRequestParams, options?: RequestOptions): ApiPromise<ComponentPricePointResponse, ComponentPricePoints.UpdateComponentPricePointError>`
 - **Wire**: `PUT /components/{component_id}/price_points/{price_point_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentPricePointResponse`
-- **Error**: `ComponentPricePoints.UpdateComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.UpdateComponentPricePointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.UpdateComponentPricePointRequestParams` (3):
@@ -270,10 +278,11 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 - **Signature**: `updateCurrencyPrices(request: ComponentPricePoints.UpdateCurrencyPricesRequestParams, options?: RequestOptions): ApiPromise<ComponentCurrencyPricesResponse, ComponentPricePoints.UpdateCurrencyPricesError>`
 - **Wire**: `PUT /price_points/{price_point_id}/currency_prices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ComponentCurrencyPricesResponse`
-- **Error**: `ComponentPricePoints.UpdateCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `ComponentPricePoints.UpdateCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `ComponentPricePoints.UpdateCurrencyPricesRequestParams` (2):

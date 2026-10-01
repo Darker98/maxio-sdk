@@ -2,6 +2,7 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
 export type ListMrrFilter = {
+  /** Submit ids in order to limit results. Use in query: `filter[subscription_ids]=1,2,3`. */
   subscriptionIds?: number[];
 };
 

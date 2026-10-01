@@ -11,10 +11,31 @@ import { segmentProperty3ValueSchema, type SegmentProperty3Value } from "./union
 import { segmentProperty4ValueSchema, type SegmentProperty4Value } from "./unions/segment-property4-value.js";
 
 export type CreateSegment = {
+  /**
+   * A value that will occur in your events that you want to bill upon. The type of the value
+   * depends on the property type in the related event based billing metric.
+   */
   segmentProperty1Value?: SegmentProperty1Value;
+  /**
+   * A value that will occur in your events that you want to bill upon. The type of the value
+   * depends on the property type in the related event based billing metric.
+   */
   segmentProperty2Value?: SegmentProperty2Value;
+  /**
+   * A value that will occur in your events that you want to bill upon. The type of the value
+   * depends on the property type in the related event based billing metric.
+   */
   segmentProperty3Value?: SegmentProperty3Value;
+  /**
+   * A value that will occur in your events that you want to bill upon. The type of the value
+   * depends on the property type in the related event based billing metric.
+   */
   segmentProperty4Value?: SegmentProperty4Value;
+  /**
+   * The identifier for the pricing scheme. See [Product
+   * Components](https://help.chargify.com/products/product-components.html) for an overview of
+   * pricing schemes.
+   */
   pricingScheme: PricingScheme;
   prices?: CreateOrUpdateSegmentPrice[];
 };

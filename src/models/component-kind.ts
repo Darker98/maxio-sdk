@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** A handle for the component type */
 export const ComponentKind = {
   MeteredComponent: "metered_component",
   QuantityBasedComponent: "quantity_based_component",

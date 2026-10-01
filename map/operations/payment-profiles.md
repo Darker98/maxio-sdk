@@ -4,16 +4,17 @@
 
 Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts` · 12 operations · Request and error types: namespace `PaymentProfiles`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### changeSubscriptionDefaultPaymentProfile
 
 - **Signature**: `changeSubscriptionDefaultPaymentProfile(request: PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileRequest, options?: RequestOptions): ApiPromise<PaymentProfileResponse, PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/payment_profiles/{payment_profile_id}/change_payment_profile.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `PaymentProfileResponse`
-- **Error**: `PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileRequest` (2):
@@ -32,10 +33,11 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `changeSubscriptionGroupDefaultPaymentProfile(request: PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileRequest, options?: RequestOptions): ApiPromise<PaymentProfileResponse, PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError>`
 - **Wire**: `POST /subscription_groups/{uid}/payment_profiles/{payment_profile_id}/change_payment_profile.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `PaymentProfileResponse`
-- **Error**: `PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileRequest` (2):
@@ -54,10 +56,11 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `createPaymentProfile(request: PaymentProfiles.CreatePaymentProfileRequestParams, options?: RequestOptions): ApiPromise<PaymentProfileResponse, PaymentProfiles.CreatePaymentProfileError>`
 - **Wire**: `POST /payment_profiles.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `PaymentProfileResponse`
-- **Error**: `PaymentProfiles.CreatePaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.CreatePaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.CreatePaymentProfileRequestParams` (1):
@@ -74,12 +77,13 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 ### deleteSubscriptionGroupPaymentProfile
 
-- **Signature**: `deleteSubscriptionGroupPaymentProfile(request: PaymentProfiles.DeleteSubscriptionGroupPaymentProfileRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `deleteSubscriptionGroupPaymentProfile(request: PaymentProfiles.DeleteSubscriptionGroupPaymentProfileRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `DELETE /subscription_groups/{uid}/payment_profiles/{payment_profile_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `PaymentProfiles.DeleteSubscriptionGroupPaymentProfileRequest` (2):
 
@@ -90,12 +94,13 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 ### deleteSubscriptionsPaymentProfile
 
-- **Signature**: `deleteSubscriptionsPaymentProfile(request: PaymentProfiles.DeleteSubscriptionsPaymentProfileRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `deleteSubscriptionsPaymentProfile(request: PaymentProfiles.DeleteSubscriptionsPaymentProfileRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `DELETE /subscriptions/{subscription_id}/payment_profiles/{payment_profile_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `PaymentProfiles.DeleteSubscriptionsPaymentProfileRequest` (2):
 
@@ -108,10 +113,11 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `deleteUnusedPaymentProfile(request: PaymentProfiles.DeleteUnusedPaymentProfileRequest, options?: RequestOptions): ApiPromise<undefined, PaymentProfiles.DeleteUnusedPaymentProfileError>`
 - **Wire**: `DELETE /payment_profiles/{payment_profile_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `PaymentProfiles.DeleteUnusedPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.DeleteUnusedPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.DeleteUnusedPaymentProfileRequest` (1):
@@ -126,12 +132,12 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 ### listPaymentProfiles
 
-- **Signature**: `listPaymentProfiles(request: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise<PaymentProfileResponse[], ResponseError>`
+- **Signature**: `listPaymentProfiles(request: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise<PaymentProfileResponse[], ApiError>`
 - **Wire**: `GET /payment_profiles.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `PaymentProfileResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `PaymentProfiles.ListPaymentProfilesRequest` (3):
 
@@ -149,10 +155,10 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `readOneTimeToken(request: PaymentProfiles.ReadOneTimeTokenRequest, options?: RequestOptions): ApiPromise<GetOneTimeTokenRequest, PaymentProfiles.ReadOneTimeTokenError>`
 - **Wire**: `GET /one_time_tokens/{chargify_token}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `GetOneTimeTokenRequest`
-- **Error**: `PaymentProfiles.ReadOneTimeTokenError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.ReadOneTimeTokenError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [404] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.ReadOneTimeTokenRequest` (1):
@@ -170,10 +176,10 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `readPaymentProfile(request: PaymentProfiles.ReadPaymentProfileRequest, options?: RequestOptions): ApiPromise<PaymentProfileResponse, PaymentProfiles.ReadPaymentProfileError>`
 - **Wire**: `GET /payment_profiles/{payment_profile_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `PaymentProfileResponse`
-- **Error**: `PaymentProfiles.ReadPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.ReadPaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.ReadPaymentProfileRequest` (1):
@@ -190,10 +196,11 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `sendRequestUpdatePaymentEmail(request: PaymentProfiles.SendRequestUpdatePaymentEmailRequest, options?: RequestOptions): ApiPromise<undefined, PaymentProfiles.SendRequestUpdatePaymentEmailError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/request_payment_profiles_update.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `PaymentProfiles.SendRequestUpdatePaymentEmailError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.SendRequestUpdatePaymentEmailError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.SendRequestUpdatePaymentEmailRequest` (1):
@@ -210,10 +217,11 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `updatePaymentProfile(request: PaymentProfiles.UpdatePaymentProfileRequestParams, options?: RequestOptions): ApiPromise<PaymentProfileResponse, PaymentProfiles.UpdatePaymentProfileError>`
 - **Wire**: `PUT /payment_profiles/{payment_profile_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `PaymentProfileResponse`
-- **Error**: `PaymentProfiles.UpdatePaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.UpdatePaymentProfileError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorStringMapResponse1"` [422] `ErrorStringMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.UpdatePaymentProfileRequestParams` (2):
@@ -233,10 +241,11 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 
 - **Signature**: `verifyBankAccount(request: PaymentProfiles.VerifyBankAccountRequest, options?: RequestOptions): ApiPromise<BankAccountResponse, PaymentProfiles.VerifyBankAccountError>`
 - **Wire**: `PUT /bank_accounts/{bank_account_id}/verification.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `BankAccountResponse`
-- **Error**: `PaymentProfiles.VerifyBankAccountError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `PaymentProfiles.VerifyBankAccountError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `PaymentProfiles.VerifyBankAccountRequest` (2):

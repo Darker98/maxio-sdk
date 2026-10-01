@@ -9,15 +9,32 @@ import type {
 } from "./credentials.js";
 import { PkceMethod } from "./credentials.js";
 import { base64, basicCredential, noneAuth } from "./schemes.js";
-import { AuthError, CoreError } from "../errors.js";
-import { ResponseError } from "../response-error.js";
-import { buildUrl } from "../url.js";
+import { CoreError } from "../errors.js";
+import { ApiError } from "../api-error.js";
+import { applyQuery, resolveUri } from "../url.js";
 import * as s from "../validation/index.js";
 
+/**
+ * An OAuth 2.0 token response (RFC 6749 section 5.1).
+ *
+ * @remarks
+ * Wire names are snake_case; these are the decoded SDK names. Returned by an
+ * {@link OAuth2TokenStrategy}, and cached by the scheme that owns it until it expires.
+ */
 export type OAuthToken = {
+  /** The token to send in `Authorization`. */
   accessToken: string;
+
+  /** How the token is presented, normally `Bearer`. */
   tokenType: string;
+
+  /**
+   * Lifetime in seconds. RECOMMENDED, not required (RFC 6749 section 5.1) — a token with no
+   * `expiresIn` is treated as never expiring.
+   */
   expiresIn?: number;
+
+  /** Scopes the server actually granted, which may be narrower than those requested. */
   scope?: string;
 };
 
@@ -33,7 +50,18 @@ export const oauthTokenSchema: Schema<OAuthToken> = s.object<OAuthToken>({
   },
 });
 
+/**
+ * An OAuth 2.0 token response that may carry a refresh token.
+ *
+ * @remarks
+ * Only the authorization-code grant issues one — RFC 6749 forbids it for the implicit grant and
+ * says client-credentials SHOULD NOT issue one.
+ */
 export type OAuthTokenRefreshable = OAuthToken & {
+  /**
+   * Issued at the server's discretion (RFC 6749 sections 4.1.4 and 4.3.3). When a refresh response
+   * omits it, the previously issued one is carried forward.
+   */
   refreshToken?: string;
 };
 
@@ -51,19 +79,45 @@ export const oauthTokenRefreshableSchema: Schema<OAuthTokenRefreshable> = s.obje
   },
 });
 
+/**
+ * How a token is obtained for a grant. The replaceable half of the OAuth2 design.
+ *
+ * @remarks
+ * The scheme owns caching, single-flight and expiry; a strategy owns only the exchange. Supply one
+ * on {@link ClientOptions} to talk to a server whose token endpoint does not follow the built-in
+ * shape; the SDK then never builds the request itself.
+ *
+ * `signal` is the one the call was given, and is absent when it was given none. Nothing times a
+ * strategy you supply; the built-in ones time their own token request.
+ */
 export type OAuth2TokenStrategy<TCredentials> = {
-  getToken(credentials: TCredentials, signal: AbortSignal): Promise<OAuthToken>;
+  getToken(credentials: TCredentials, signal?: AbortSignal): Promise<OAuthToken>;
 };
 
+/**
+ * A token strategy that can also refresh, used by the authorization-code grant.
+ *
+ * @remarks
+ * `tryRefreshToken` returns `null` rather than throwing when the refresh is rejected, which is what
+ * makes "refresh failed, re-authorize" a normal path instead of an error path. Both methods get
+ * `signal` as {@link OAuth2TokenStrategy} does.
+ */
 export type OAuth2RefreshableTokenStrategy<TCredentials> = {
-  getToken(credentials: TCredentials, signal: AbortSignal): Promise<OAuthTokenRefreshable>;
+  getToken(credentials: TCredentials, signal?: AbortSignal): Promise<OAuthTokenRefreshable>;
   tryRefreshToken(
     credentials: TCredentials,
     refreshToken: string,
-    signal: AbortSignal,
+    signal?: AbortSignal,
   ): Promise<OAuthTokenRefreshable | null>;
 };
 
+/**
+ * Where client credentials travel on a token request.
+ *
+ * @remarks
+ * `"header"` sends them as `Authorization: Basic`; `"body"` sends them as form fields, the
+ * `client_secret_post` style.
+ */
 export type OAuth2CredentialPlacement = "header" | "body";
 
 export function oauth2ClientCredentialsStrategy(config: {
@@ -137,20 +191,15 @@ export function oauth2AuthorizationCodeStrategy(config: {
     async getToken(credentials, signal) {
       const method = credentials.pkce === undefined ? PkceMethod.S256 : credentials.pkce;
       if (method === null && (credentials.clientSecret === undefined || credentials.clientSecret === "")) {
-        throw new AuthError({
-          message:
-            "A client secret is required when PKCE is disabled. Set pkce to PkceMethod.S256 for a public client.",
-        });
+        throw new Error(
+          "A client secret is required when PKCE is disabled. Set pkce to PkceMethod.S256 for a public client.",
+        );
       }
 
       const pkce = method === null ? undefined : await generatePkce(method);
-      const authorizationUrl = buildUrl(
-        config.authorizationUrl,
-        undefined,
-        authorizationFields(credentials, pkce),
-        [],
-      ).href;
-      const code = await credentials.promptForAuthorizationCode(authorizationUrl, signal);
+      const authorizationUri = resolveUri(config.authorizationUrl, undefined);
+      applyQuery(authorizationUri, authorizationFields(credentials, pkce), []);
+      const code = await promptForCode(credentials, authorizationUri.href, signal);
       const placed = placementOf(credentials);
 
       return requestToken(
@@ -173,7 +222,7 @@ export function oauth2AuthorizationCodeStrategy(config: {
     async tryRefreshToken(credentials, refreshToken, signal) {
       const placed = placementOf(credentials);
       const outcome = await config.rawClient
-        .execute<OAuthTokenRefreshable, ResponseError>(
+        .execute<OAuthTokenRefreshable, ApiError>(
           {
             method: "POST",
             url: config.tokenUrl,
@@ -190,7 +239,7 @@ export function oauth2AuthorizationCodeStrategy(config: {
           },
           {
             success: { kind: "json", schema: oauthTokenRefreshableSchema },
-            errorFactory: ResponseError,
+            errorFactory: ApiError,
           },
           { signal },
         )
@@ -236,26 +285,34 @@ async function requestToken<T>(
   schema: Entry<T>,
   headers: readonly Param[],
   fields: readonly StyledParam[],
-  signal: AbortSignal,
+  signal?: AbortSignal,
 ): Promise<T> {
+  return config.rawClient.execute<T, ApiError>(
+    {
+      method: "POST",
+      url: config.tokenUrl,
+      auth: noneAuth,
+      headers: [...headers],
+      body: { kind: "formUrlEncoded", value: [...fields] },
+    },
+    {
+      success: { kind: "json", schema },
+      errorFactory: ApiError,
+    },
+    signal && { signal },
+  );
+}
+
+async function promptForCode(
+  credentials: OAuth2AuthorizationCodeCredentials,
+  authorizationUrl: string,
+  signal?: AbortSignal,
+): Promise<string> {
   try {
-    return await config.rawClient.execute<T, ResponseError>(
-      {
-        method: "POST",
-        url: config.tokenUrl,
-        auth: noneAuth,
-        headers: [...headers],
-        body: { kind: "formUrlEncoded", value: [...fields] },
-      },
-      {
-        success: { kind: "json", schema },
-        errorFactory: ResponseError,
-      },
-      { signal },
-    );
+    return await credentials.promptForAuthorizationCode(authorizationUrl, signal);
   } catch (err) {
-    if (err instanceof CoreError) throw err;
-    throw new AuthError({ message: "The OAuth2 token request failed.", cause: err });
+    if (!(err instanceof CoreError) && signal?.aborted) throw signal.reason;
+    throw err;
   }
 }
 

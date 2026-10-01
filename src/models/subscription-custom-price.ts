@@ -10,20 +10,45 @@ import { priceInCentsSchema, type PriceInCents } from "./unions/price-in-cents.j
 import { trialIntervalSchema, type TrialInterval } from "./unions/trial-interval.js";
 import { trialPriceInCentsSchema, type TrialPriceInCents } from "./unions/trial-price-in-cents.js";
 
+/**
+ * (Optional) Used in place of `product_price_point_id` to define a custom price point unique to the
+ * subscription. A subscription can have up to 30 custom price points. Exceeding this limit will
+ * result in an API error.
+ */
 export type SubscriptionCustomPrice = {
+  /** (Optional) */
   name?: string;
+  /** (Optional) */
   handle?: string;
+  /** Required if using `custom_price` attribute. */
   priceInCents: PriceInCents;
+  /** Required if using `custom_price` attribute. */
   interval: Interval;
+  /** Required if using `custom_price` attribute. */
   intervalUnit: IntervalUnit | null;
+  /** (Optional) */
   trialPriceInCents?: TrialPriceInCents;
+  /** (Optional) */
   trialInterval?: TrialInterval;
+  /** (Optional) */
   trialIntervalUnit?: IntervalUnit;
+  /**
+   * Indicates how a trial is handled when the trial period ends and there is no credit card on
+   * file. For `no_obligation`, the subscription transitions to a Trial Ended state. Maxio will not
+   * send any emails or statements. For `payment_expected`, the subscription transitions to a Past
+   * Due state. Maxio will send normal dunning emails and statements according to your other
+   * settings.
+   */
   trialType?: TrialType | null;
+  /** (Optional) */
   initialChargeInCents?: InitialChargeInCents;
+  /** (Optional) */
   initialChargeAfterTrial?: boolean;
+  /** (Optional) */
   expirationInterval?: ExpirationInterval;
+  /** (Optional) */
   expirationIntervalUnit?: ExpirationIntervalUnit | null;
+  /** (Optional) */
   taxIncluded?: boolean;
 };
 

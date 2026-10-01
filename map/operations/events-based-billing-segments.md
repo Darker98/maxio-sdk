@@ -4,16 +4,17 @@
 
 Accessor: `client.eventsBasedBillingSegments` · Source: `src/resources/events-based-billing-segments.ts` · 6 operations · Request and error types: namespace `EventsBasedBillingSegments`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### bulkCreateSegments
 
 - **Signature**: `bulkCreateSegments(request: EventsBasedBillingSegments.BulkCreateSegmentsRequest, options?: RequestOptions): ApiPromise<ListSegmentsResponse, EventsBasedBillingSegments.BulkCreateSegmentsError>`
 - **Wire**: `POST /components/{component_id}/price_points/{price_point_id}/segments/bulk.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ListSegmentsResponse`
-- **Error**: `EventsBasedBillingSegments.BulkCreateSegmentsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `EventsBasedBillingSegments.BulkCreateSegmentsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"eventBasedBillingSegment1"` [422] `EventBasedBillingSegment1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `EventsBasedBillingSegments.BulkCreateSegmentsRequest` (3):
@@ -34,10 +35,11 @@ Accessor: `client.eventsBasedBillingSegments` · Source: `src/resources/events-b
 
 - **Signature**: `bulkUpdateSegments(request: EventsBasedBillingSegments.BulkUpdateSegmentsRequest, options?: RequestOptions): ApiPromise<ListSegmentsResponse, EventsBasedBillingSegments.BulkUpdateSegmentsError>`
 - **Wire**: `PUT /components/{component_id}/price_points/{price_point_id}/segments/bulk.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `ListSegmentsResponse`
-- **Error**: `EventsBasedBillingSegments.BulkUpdateSegmentsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `EventsBasedBillingSegments.BulkUpdateSegmentsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"eventBasedBillingSegment1"` [422] `EventBasedBillingSegment1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `EventsBasedBillingSegments.BulkUpdateSegmentsRequest` (3):
@@ -58,10 +60,11 @@ Accessor: `client.eventsBasedBillingSegments` · Source: `src/resources/events-b
 
 - **Signature**: `createSegment(request: EventsBasedBillingSegments.CreateSegmentRequestParams, options?: RequestOptions): ApiPromise<SegmentResponse, EventsBasedBillingSegments.CreateSegmentError>`
 - **Wire**: `POST /components/{component_id}/price_points/{price_point_id}/segments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SegmentResponse`
-- **Error**: `EventsBasedBillingSegments.CreateSegmentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `EventsBasedBillingSegments.CreateSegmentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"eventBasedBillingSegmentErrors1"` [422] `EventBasedBillingSegmentErrors1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `EventsBasedBillingSegments.CreateSegmentRequestParams` (3):
@@ -82,10 +85,11 @@ Accessor: `client.eventsBasedBillingSegments` · Source: `src/resources/events-b
 
 - **Signature**: `deleteSegment(request: EventsBasedBillingSegments.DeleteSegmentRequest, options?: RequestOptions): ApiPromise<undefined, EventsBasedBillingSegments.DeleteSegmentError>`
 - **Wire**: `DELETE /components/{component_id}/price_points/{price_point_id}/segments/{id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `EventsBasedBillingSegments.DeleteSegmentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `EventsBasedBillingSegments.DeleteSegmentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"error422"` [422] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `EventsBasedBillingSegments.DeleteSegmentRequest` (3):
@@ -100,10 +104,10 @@ Accessor: `client.eventsBasedBillingSegments` · Source: `src/resources/events-b
 
 - **Signature**: `listSegmentsForPricePoint(request: EventsBasedBillingSegments.ListSegmentsForPricePointRequest, options?: RequestOptions): ApiPromise<ListSegmentsResponse, EventsBasedBillingSegments.ListSegmentsForPricePointError>`
 - **Wire**: `GET /components/{component_id}/price_points/{price_point_id}/segments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListSegmentsResponse`
-- **Error**: `EventsBasedBillingSegments.ListSegmentsForPricePointError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `EventsBasedBillingSegments.ListSegmentsForPricePointError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"eventBasedBillingListSegmentsErrors1"` [422] `EventBasedBillingListSegmentsErrors1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `EventsBasedBillingSegments.ListSegmentsForPricePointRequest` (5):
@@ -126,10 +130,11 @@ Accessor: `client.eventsBasedBillingSegments` · Source: `src/resources/events-b
 
 - **Signature**: `updateSegment(request: EventsBasedBillingSegments.UpdateSegmentRequestParams, options?: RequestOptions): ApiPromise<SegmentResponse, EventsBasedBillingSegments.UpdateSegmentError>`
 - **Wire**: `PUT /components/{component_id}/price_points/{price_point_id}/segments/{id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SegmentResponse`
-- **Error**: `EventsBasedBillingSegments.UpdateSegmentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `EventsBasedBillingSegments.UpdateSegmentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"eventBasedBillingSegmentErrors1"` [422] `EventBasedBillingSegmentErrors1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `EventsBasedBillingSegments.UpdateSegmentRequestParams` (4):

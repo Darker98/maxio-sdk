@@ -4,9 +4,13 @@ import { serviceCreditTypeSchema, type ServiceCreditType } from "./service-credi
 
 export type ServiceCredit = {
   id?: number;
+  /** The amount in cents of the entry */
   amountInCents?: number;
+  /** The new balance for the credit account */
   endingBalanceInCents?: number;
+  /** The type of entry */
   entryType?: ServiceCreditType;
+  /** The memo attached to the entry */
   memo?: string;
 };
 

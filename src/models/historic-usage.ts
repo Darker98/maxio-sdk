@@ -1,9 +1,16 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/**
+ * (Optional) For Event Based Components. If the `include=historic_usages` query param is provided,
+ * the last ten billing periods will be returned.
+ */
 export type HistoricUsage = {
+  /** Total usage of a component for billing period */
   totalUsageQuantity?: number;
+  /** Start date of billing period */
   billingPeriodStartsAt?: Date;
+  /** End date of billing period */
   billingPeriodEndsAt?: Date;
 };
 

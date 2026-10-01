@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** Passed as a parameter to list methods to return only non null values. */
 export const IncludeNotNull = {
   NotNull: "not_null",
 } as const;

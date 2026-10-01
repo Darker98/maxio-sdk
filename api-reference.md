@@ -2,80 +2,6 @@
 
 > Source: [MaxioAdvancedBillingClient](src/client.ts)
 
-## MaxioGateway
-
-> Source: [MaxioGateway](src/resources/maxio-gateway.ts)
-
-<details>
-<summary><code>requestAccessToken(request: MaxioGateway.RequestAccessTokenRequest, options?: RequestOptions): ApiPromise&lt;MaxioGatewayOAuthAccessToken, MaxioGateway.RequestAccessTokenError&gt;</code></summary>
-
-<dl>
-<dd>
-
-### Description
-
-<dl>
-<dd>
-
-Exchanges your connector's OAuth 2.0 client credentials for a bearer access token.
-
-Authenticate with HTTP Basic auth (`client_id` as the username, `client_secret` as the password) or send `client_id` and `client_secret` in the form body. Then send the returned `access_token` as `Authorization: Bearer <access_token>` on every gateway request.
-
-The client-credentials grant does not issue a refresh token — when the token expires, request a new one with the same credentials.
-
-This endpoint is available only for connectors configured for OAuth2. It lives at your connector's root host (`https://{connector}.api.maxio.com/oauth/token`), not under the `/api/v1/billing` base path.
-
-</dd>
-</dl>
-
-### Usage
-
-<dl>
-<dd>
-
-```ts
-try {
-  const response = await client.maxioGateway.requestAccessToken({ body });
-  // TODO: Handle 'response' of type MaxioGatewayOAuthAccessToken
-} catch (err) {
-  if (err instanceof MaxioGateway.RequestAccessTokenError && err.payload.kind === "maxioGatewayOAuthError") {
-    // TODO: Handle 'err.payload.body' of type MaxioGatewayOAuthError
-  }
-}
-```
-
-</dd>
-</dl>
-
-### Parameters
-
-<dl>
-<dd>
-
-| Name | Type | Description |
-| --- | --- | --- |
-| <code>body</code> | <code>[MaxioGatewayOAuthTokenRequest](src/models/maxio-gateway-oauth-token-request.ts)</code> | - |
-
-</dd>
-</dl>
-
-### Response
-
-<dl>
-<dd>
-
-**OnSuccess**: <code>[MaxioGatewayOAuthAccessToken](src/models/maxio-gateway-oauth-access-token.ts)</code>
-
-**OnError**: <code>[MaxioGateway.RequestAccessTokenError](src/resources/maxio-gateway.ts)</code>
-
-</dd>
-</dl>
-
-</dd>
-</dl>
-
-</details>
-
 ## ApiExports
 
 > Source: [ApiExports](src/resources/api-exports.ts)
@@ -96,7 +22,7 @@ Creates an invoices export and returns a batch job object.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -106,9 +32,25 @@ try {
   const response = await client.apiExports.exportInvoices();
   // TODO: Handle 'response' of type BatchJobResponse
 } catch (err) {
-  if (err instanceof ApiExports.ExportInvoicesError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ExportInvoicesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.exportInvoices().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BatchJobResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -120,9 +62,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+**Direct**: `await client.apiExports.exportInvoices()`
 
-**OnError**: <code>[ApiExports.ExportInvoicesError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: throws <code>[ApiExports.ExportInvoicesError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.exportInvoices().asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BatchJobResponse, ApiExports.ExportInvoicesError&gt;</code>, with `result.value` of type <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -143,14 +93,12 @@ try {
 <dl>
 <dd>
 
-Creates a proforma invoices export and returns a batch job object.
-
-It is only available for Relationship Invoicing architecture.
+Creates a proforma invoices export and returns a batch job object. Proforma invoices are only available on Relationship Invoicing sites.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -160,9 +108,25 @@ try {
   const response = await client.apiExports.exportProformaInvoices();
   // TODO: Handle 'response' of type BatchJobResponse
 } catch (err) {
-  if (err instanceof ApiExports.ExportProformaInvoicesError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ExportProformaInvoicesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.exportProformaInvoices().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BatchJobResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -174,9 +138,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+**Direct**: `await client.apiExports.exportProformaInvoices()`
 
-**OnError**: <code>[ApiExports.ExportProformaInvoicesError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: throws <code>[ApiExports.ExportProformaInvoicesError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.exportProformaInvoices().asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BatchJobResponse, ApiExports.ExportProformaInvoicesError&gt;</code>, with `result.value` of type <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -202,7 +174,7 @@ Creates a subscriptions export and returns a batch job object.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -212,9 +184,25 @@ try {
   const response = await client.apiExports.exportSubscriptions();
   // TODO: Handle 'response' of type BatchJobResponse
 } catch (err) {
-  if (err instanceof ApiExports.ExportSubscriptionsError && err.payload.kind === "singleErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type SingleErrorResponse1
-  }
+  // TODO: Handle 'err' of type ApiExports.ExportSubscriptionsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.exportSubscriptions().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BatchJobResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -226,9 +214,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+**Direct**: `await client.apiExports.exportSubscriptions()`
 
-**OnError**: <code>[ApiExports.ExportSubscriptionsError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: throws <code>[ApiExports.ExportSubscriptionsError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.exportSubscriptions().asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BatchJobResponse, ApiExports.ExportSubscriptionsError&gt;</code>, with `result.value` of type <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -256,19 +252,38 @@ Example: `GET https://{subdomain}.chargify.com/api_exports/invoices/123/rows?per
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.apiExports.listExportedInvoices({ batchId });
+  const response = await client.apiExports.listExportedInvoices({ batchId: "some example string", page: 1 });
   // TODO: Handle 'response' of type Invoice[]
 } catch (err) {
-  if (err instanceof ApiExports.ListExportedInvoicesError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ListExportedInvoicesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.listExportedInvoices({
+  batchId: "some example string",
+  page: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -283,8 +298,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>batchId</code> | <code>string</code> | Id of a Batch Job. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. <br>Default value is 100. <br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. <br>Default value is 100. <br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000.<br>**Default**: 100 |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
 
 </dd>
 </dl>
@@ -294,9 +309,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)[]</code>
+**Direct**: `await client.apiExports.listExportedInvoices(request)`
 
-**OnError**: <code>[ApiExports.ListExportedInvoicesError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)[]</code>
+- **OnError**: throws <code>[ApiExports.ListExportedInvoicesError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.listExportedInvoices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice[], ApiExports.ListExportedInvoicesError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -324,19 +347,41 @@ Example: `GET https://{subdomain}.chargify.com/api_exports/proforma_invoices/123
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.apiExports.listExportedProformaInvoices({ batchId });
+  const response = await client.apiExports.listExportedProformaInvoices({
+    batchId: "some example string",
+    page: 1,
+  });
   // TODO: Handle 'response' of type ProformaInvoice[]
 } catch (err) {
-  if (err instanceof ApiExports.ListExportedProformaInvoicesError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ListExportedProformaInvoicesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.listExportedProformaInvoices({
+  batchId: "some example string",
+  page: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProformaInvoice[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -351,8 +396,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>batchId</code> | <code>string</code> | Id of a Batch Job. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. <br>Default value is 100. <br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. <br>Default value is 100. <br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000.<br>**Default**: 100 |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
 
 </dd>
 </dl>
@@ -362,9 +407,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)[]</code>
+**Direct**: `await client.apiExports.listExportedProformaInvoices(request)`
 
-**OnError**: <code>[ApiExports.ListExportedProformaInvoicesError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)[]</code>
+- **OnError**: throws <code>[ApiExports.ListExportedProformaInvoicesError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.listExportedProformaInvoices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProformaInvoice[], ApiExports.ListExportedProformaInvoicesError&gt;</code>, with `result.value` of type <code>[ProformaInvoice](src/models/proforma-invoice.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -392,19 +445,41 @@ Example: `GET https://{subdomain}.chargify.com/api_exports/subscriptions/123/row
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.apiExports.listExportedSubscriptions({ batchId });
+  const response = await client.apiExports.listExportedSubscriptions({
+    batchId: "some example string",
+    page: 1,
+  });
   // TODO: Handle 'response' of type Subscription[]
 } catch (err) {
-  if (err instanceof ApiExports.ListExportedSubscriptionsError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ListExportedSubscriptionsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.listExportedSubscriptions({
+  batchId: "some example string",
+  page: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Subscription[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -419,8 +494,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>batchId</code> | <code>string</code> | Id of a Batch Job. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. <br>Default value is 100. <br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. <br>Default value is 100. <br>The maximum allowed values is 10000; any per_page value over 10000 will be changed to 10000.<br>**Default**: 100 |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
 
 </dd>
 </dl>
@@ -430,9 +505,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Subscription](src/models/subscription.ts)[]</code>
+**Direct**: `await client.apiExports.listExportedSubscriptions(request)`
 
-**OnError**: <code>[ApiExports.ListExportedSubscriptionsError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[Subscription](src/models/subscription.ts)[]</code>
+- **OnError**: throws <code>[ApiExports.ListExportedSubscriptionsError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.listExportedSubscriptions(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Subscription[], ApiExports.ListExportedSubscriptionsError&gt;</code>, with `result.value` of type <code>[Subscription](src/models/subscription.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -458,19 +541,35 @@ Returns a batch job object for an invoices export.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.apiExports.readInvoicesExport({ batchId });
+  const response = await client.apiExports.readInvoicesExport({ batchId: "some example string" });
   // TODO: Handle 'response' of type BatchJobResponse
 } catch (err) {
-  if (err instanceof ApiExports.ReadInvoicesExportError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ReadInvoicesExportError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.readInvoicesExport({ batchId: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BatchJobResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -494,9 +593,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+**Direct**: `await client.apiExports.readInvoicesExport(request)`
 
-**OnError**: <code>[ApiExports.ReadInvoicesExportError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: throws <code>[ApiExports.ReadInvoicesExportError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.readInvoicesExport(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BatchJobResponse, ApiExports.ReadInvoicesExportError&gt;</code>, with `result.value` of type <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -517,24 +624,42 @@ try {
 <dl>
 <dd>
 
-Returns a batch job object for a proforma invoices export.
+Returns a batch job object for a proforma invoices export. Proforma invoices are only available on Relationship Invoicing sites.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.apiExports.readProformaInvoicesExport({ batchId });
+  const response = await client.apiExports.readProformaInvoicesExport({ batchId: "some example string" });
   // TODO: Handle 'response' of type BatchJobResponse
 } catch (err) {
-  if (err instanceof ApiExports.ReadProformaInvoicesExportError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ReadProformaInvoicesExportError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.readProformaInvoicesExport({
+  batchId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BatchJobResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -558,9 +683,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+**Direct**: `await client.apiExports.readProformaInvoicesExport(request)`
 
-**OnError**: <code>[ApiExports.ReadProformaInvoicesExportError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: throws <code>[ApiExports.ReadProformaInvoicesExportError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.readProformaInvoicesExport(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BatchJobResponse, ApiExports.ReadProformaInvoicesExportError&gt;</code>, with `result.value` of type <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -586,19 +719,37 @@ Returns a batch job object for a subscriptions export.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.apiExports.readSubscriptionsExport({ batchId });
+  const response = await client.apiExports.readSubscriptionsExport({ batchId: "some example string" });
   // TODO: Handle 'response' of type BatchJobResponse
 } catch (err) {
-  if (err instanceof ApiExports.ReadSubscriptionsExportError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ApiExports.ReadSubscriptionsExportError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.apiExports.readSubscriptionsExport({
+  batchId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BatchJobResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -622,9 +773,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+**Direct**: `await client.apiExports.readSubscriptionsExport(request)`
 
-**OnError**: <code>[ApiExports.ReadSubscriptionsExportError](src/resources/api-exports.ts)</code>
+- **OnSuccess**: <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: throws <code>[ApiExports.ReadSubscriptionsExportError](src/resources/api-exports.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.apiExports.readSubscriptionsExport(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BatchJobResponse, ApiExports.ReadSubscriptionsExportError&gt;</code>, with `result.value` of type <code>[BatchJobResponse](src/models/batch-job-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -649,28 +808,52 @@ try {
 <dl>
 <dd>
 
-Issues an invoice in advance for a subscription's next renewal date. [See our docs](https://maxio.zendesk.com/hc/en-us/articles/24252026404749-Issue-Invoice-In-Advance) for more information on advance invoices, including eligibility for generating one; for the most part, they function like any other invoice, except they are issued early and have special behavior upon being voided.
-A subscription may only have one advance invoice per billing period. Attempting to issue an advance invoice when one already exists will return an error.
-That said, regeneration of the invoice may be forced with the params `force: true`, which will void an advance invoice if one exists and generate a new one. If no advance invoice exists, a new one will be generated.
-We recommend using either the create or preview endpoints for proforma invoices to preview this advance invoice before using this endpoint to generate it.
+Issues an invoice in advance for a subscription's next renewal date. For the most part, advance invoices function like any other invoice, except they are issued early and have special behavior upon being voided. For more information on advance invoices, including eligibility for generating one, see [Issue Invoice In Advance](https://maxio.zendesk.com/hc/en-us/articles/24252026404749-Issue-Invoice-In-Advance).
 
+A subscription can only have one advance invoice per billing period. Attempting to issue an advance invoice when one already exists returns an error.
+
+Regeneration of the invoice can be forced with the params `force: true`, which voids an advance invoice if one exists and generates a new one. If no advance invoice exists, a new one is generated.
+
+Consider using either the create or preview endpoints for proforma invoices to preview this advance invoice before using this endpoint to generate it.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.advanceInvoice.issueAdvanceInvoice({ subscriptionId });
+  const response = await client.advanceInvoice.issueAdvanceInvoice({
+    subscriptionId: 1,
+    body: { force: true },
+  });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof AdvanceInvoice.IssueAdvanceInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type AdvanceInvoice.IssueAdvanceInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.advanceInvoice.issueAdvanceInvoice({
+  subscriptionId: 1,
+  body: { force: true },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -695,9 +878,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.advanceInvoice.issueAdvanceInvoice(request)`
 
-**OnError**: <code>[AdvanceInvoice.IssueAdvanceInvoiceError](src/resources/advance-invoice.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[AdvanceInvoice.IssueAdvanceInvoiceError](src/resources/advance-invoice.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.advanceInvoice.issueAdvanceInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, AdvanceInvoice.IssueAdvanceInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -723,19 +914,35 @@ Returns the advance invoice generated for a subscription's upcoming renewal. The
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.advanceInvoice.readAdvanceInvoice({ subscriptionId });
+  const response = await client.advanceInvoice.readAdvanceInvoice({ subscriptionId: 1 });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof AdvanceInvoice.ReadAdvanceInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type AdvanceInvoice.ReadAdvanceInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.advanceInvoice.readAdvanceInvoice({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -759,9 +966,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.advanceInvoice.readAdvanceInvoice(request)`
 
-**OnError**: <code>[AdvanceInvoice.ReadAdvanceInvoiceError](src/resources/advance-invoice.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[AdvanceInvoice.ReadAdvanceInvoiceError](src/resources/advance-invoice.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.advanceInvoice.readAdvanceInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, AdvanceInvoice.ReadAdvanceInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -783,24 +998,43 @@ try {
 <dd>
 
 Voids a subscription's existing advance invoice. Once voided, it can later be regenerated if desired.
-A `reason` is required in order to void, and the invoice must have an open status. Voiding will cause any prepayments and credits that were applied to the invoice to be returned to the subscription. For a full overview of the impact of voiding, [see our help docs]($m/Invoice).
+
+A `reason` is required to void, and the invoice must have an open status. Voiding causes any prepayments and credits that were applied to the invoice to be returned to the subscription.
+
+For a full overview of the impact of voiding, see [Invoice]($m/Invoice).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.advanceInvoice.voidAdvanceInvoice({ subscriptionId });
+  const response = await client.advanceInvoice.voidAdvanceInvoice({ subscriptionId: 1 });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof AdvanceInvoice.VoidAdvanceInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type AdvanceInvoice.VoidAdvanceInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.advanceInvoice.voidAdvanceInvoice({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -825,9 +1059,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.advanceInvoice.voidAdvanceInvoice(request)`
 
-**OnError**: <code>[AdvanceInvoice.VoidAdvanceInvoiceError](src/resources/advance-invoice.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[AdvanceInvoice.VoidAdvanceInvoiceError](src/resources/advance-invoice.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.advanceInvoice.voidAdvanceInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, AdvanceInvoice.VoidAdvanceInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -854,41 +1096,48 @@ try {
 
 Enables Billing Portal access for a customer, with an option to send an invitation email at the same time.
 
-## Billing Portal Documentation
-
-Full documentation on how the Billing Portal operates within the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/articles/24252412965133-Billing-Portal-Overview).
-
-This documentation is focused on how to configure the Billing Portal Settings, as well as Subscriber Interaction and Merchant Management of the Billing Portal.
-
-You can use this endpoint to enable Billing Portal access for a Customer, with the option of sending the Customer an Invitation email at the same time.
-
 ## Billing Portal Security
 
-If your customer has been invited to the Billing Portal, then they will receive a link to manage their subscription (the “Management URL”) automatically at the bottom of their statements, invoices, and receipts. **This link changes periodically for security and is only valid for 65 days.**
+If your customer has been invited to the Billing Portal, they receive a link to manage their subscription (the “Management URL”) automatically at the bottom of their statements, invoices, and receipts. **This link changes periodically for security and is only valid for 65 days.**
 
-If you need to provide your customer their Management URL through other means, you can retrieve it via the API. Because the URL is cryptographically signed with a timestamp, it is not possible for merchants to generate the URL without requesting it from Advanced Billing.
+If you need to provide your customer their Management URL through other means, you can retrieve it [via the API]($e/Billing%20Portal/readBillingPortalLink). Because the URL is cryptographically signed with a timestamp, merchants cannot generate the URL without requesting it through the API.
 
-In order to prevent abuse & overuse, we ask that you request a new URL only when absolutely necessary. Management URLs are good for 65 days, so you should re-use a previously generated one as much as possible. If you use the URL frequently (such as to display on your website), **do not** make an API request to Advanced Billing every time.
+To prevent abuse and overuse, request a new URL only when absolutely necessary. Management URLs are good for 65 days, so you should re-use a previously generated one as much as possible. If you use the URL frequently (such as to display on your website), **do not** make an API request every time.
+
+For more information configuring the Billing Portal, see [Billing Portal Overview](https://maxio.zendesk.com/hc/en-us/articles/24252412965133-Billing-Portal-Overview).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.billingPortal.enableBillingPortalForCustomer({ customerId });
+  const response = await client.billingPortal.enableBillingPortalForCustomer({ customerId: 1 });
   // TODO: Handle 'response' of type CustomerResponse
 } catch (err) {
-  if (
-    err instanceof BillingPortal.EnableBillingPortalForCustomerError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type BillingPortal.EnableBillingPortalForCustomerError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.billingPortal.enableBillingPortalForCustomer({ customerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CustomerResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -913,9 +1162,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+**Direct**: `await client.billingPortal.enableBillingPortalForCustomer(request)`
 
-**OnError**: <code>[BillingPortal.EnableBillingPortalForCustomerError](src/resources/billing-portal.ts)</code>
+- **OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: throws <code>[BillingPortal.EnableBillingPortalForCustomerError](src/resources/billing-portal.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.billingPortal.enableBillingPortalForCustomer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CustomerResponse, BillingPortal.EnableBillingPortalForCustomerError&gt;</code>, with `result.value` of type <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -938,30 +1195,46 @@ try {
 
 Returns the exact URL required for a subscriber to access the Billing Portal.
 
-## Rules for Management Link API
+## Management Link Request Rules
 
-+ When retrieving a management URL, multiple requests for the same customer in a short period will return the **same** URL
-+ We will not generate a new URL for 15 days
++ When retrieving a management URL, multiple requests for the same customer in a short period return the **same** URL
++ A new URL is not generated for 15 days
 + You must cache and remember this URL if you are going to need it again within 15 days
 + Only request a new URL after the `new_link_available_at` date
-+ You are limited to 15 requests for the same URL. If you make more than 15 requests before `new_link_available_at`, you will be blocked from further Management URL requests (with a response code `429`).
++ You are limited to 15 requests for the same URL. If you make more than 15 requests before `new_link_available_at`, you are blocked from further Management URL requests (with a response code `429`).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.billingPortal.readBillingPortalLink({ customerId });
+  const response = await client.billingPortal.readBillingPortalLink({ customerId: 1 });
   // TODO: Handle 'response' of type PortalManagementLink
 } catch (err) {
-  if (err instanceof BillingPortal.ReadBillingPortalLinkError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type BillingPortal.ReadBillingPortalLinkError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.billingPortal.readBillingPortalLink({ customerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PortalManagementLink
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -985,9 +1258,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PortalManagementLink](src/models/portal-management-link.ts)</code>
+**Direct**: `await client.billingPortal.readBillingPortalLink(request)`
 
-**OnError**: <code>[BillingPortal.ReadBillingPortalLinkError](src/resources/billing-portal.ts)</code>
+- **OnSuccess**: <code>[PortalManagementLink](src/models/portal-management-link.ts)</code>
+- **OnError**: throws <code>[BillingPortal.ReadBillingPortalLinkError](src/resources/billing-portal.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.billingPortal.readBillingPortalLink(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PortalManagementLink, BillingPortal.ReadBillingPortalLinkError&gt;</code>, with `result.value` of type <code>[PortalManagementLink](src/models/portal-management-link.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1023,19 +1304,35 @@ This endpoint will only return a JSON response.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.billingPortal.resendBillingPortalInvitation({ customerId });
+  const response = await client.billingPortal.resendBillingPortalInvitation({ customerId: 1 });
   // TODO: Handle 'response' of type ResentInvitation
 } catch (err) {
-  if (err instanceof BillingPortal.ResendBillingPortalInvitationError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type BillingPortal.ResendBillingPortalInvitationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.billingPortal.resendBillingPortalInvitation({ customerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ResentInvitation
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -1059,9 +1356,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ResentInvitation](src/models/resent-invitation.ts)</code>
+**Direct**: `await client.billingPortal.resendBillingPortalInvitation(request)`
 
-**OnError**: <code>[BillingPortal.ResendBillingPortalInvitationError](src/resources/billing-portal.ts)</code>
+- **OnSuccess**: <code>[ResentInvitation](src/models/resent-invitation.ts)</code>
+- **OnError**: throws <code>[BillingPortal.ResendBillingPortalInvitationError](src/resources/billing-portal.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.billingPortal.resendBillingPortalInvitation(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ResentInvitation, BillingPortal.ResendBillingPortalInvitationError&gt;</code>, with `result.value` of type <code>[ResentInvitation](src/models/resent-invitation.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1072,7 +1377,7 @@ try {
 </details>
 
 <details>
-<summary><code>revokeBillingPortalAccess(request: BillingPortal.RevokeBillingPortalAccessRequest, options?: RequestOptions): ApiPromise&lt;RevokedInvitation, ResponseError&gt;</code></summary>
+<summary><code>revokeBillingPortalAccess(request: BillingPortal.RevokeBillingPortalAccessRequest, options?: RequestOptions): ApiPromise&lt;RevokedInvitation, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1093,17 +1398,35 @@ This endpoint will only return a JSON response.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.billingPortal.revokeBillingPortalAccess({ customerId });
+  const response = await client.billingPortal.revokeBillingPortalAccess({ customerId: 1 });
   // TODO: Handle 'response' of type RevokedInvitation
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.billingPortal.revokeBillingPortalAccess({ customerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type RevokedInvitation
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1127,9 +1450,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[RevokedInvitation](src/models/revoked-invitation.ts)</code>
+**Direct**: `await client.billingPortal.revokeBillingPortalAccess(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[RevokedInvitation](src/models/revoked-invitation.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.billingPortal.revokeBillingPortalAccess(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;RevokedInvitation, ApiError&gt;</code>, with `result.value` of type <code>[RevokedInvitation](src/models/revoked-invitation.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1144,7 +1475,7 @@ try {
 > Source: [Coupons](src/resources/coupons.ts)
 
 <details>
-<summary><code>archiveCoupon(request: Coupons.ArchiveCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ResponseError&gt;</code></summary>
+<summary><code>archiveCoupon(request: Coupons.ArchiveCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1161,17 +1492,35 @@ The `archived_at` date and time will be assigned.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.archiveCoupon({ productFamilyId, couponId });
+  const response = await client.coupons.archiveCoupon({ productFamilyId: 1, couponId: 1 });
   // TODO: Handle 'response' of type CouponResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.archiveCoupon({ productFamilyId: 1, couponId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1196,9 +1545,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+**Direct**: `await client.coupons.archiveCoupon(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.archiveCoupon(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse, ApiError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1228,19 +1585,75 @@ See [Apply Coupons to Subscriptions](https://maxio.zendesk.com/hc/en-us/articles
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.createCoupon({ productFamilyId });
+  const response = await client.coupons.createCoupon({
+    productFamilyId: 1,
+    body: {
+      coupon: {
+        name: "15% off",
+        code: "15OFF",
+        description: "15% off for life",
+        percentage: 15,
+        allowNegativeBalance: false,
+        recurring: false,
+        endDate: "2012-08-29",
+        productFamilyId: "2",
+        stackable: true,
+        compoundingStrategy: CompoundingStrategy.Compound,
+        excludeMidPeriodAllocations: true,
+        applyOnCancelAtEndOfPeriod: true,
+      },
+      restrictedProducts: { "1": true },
+      restrictedComponents: { "1": true, "2": false },
+    },
+  });
   // TODO: Handle 'response' of type CouponResponse
 } catch (err) {
-  if (err instanceof Coupons.CreateCouponError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Coupons.CreateCouponError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.createCoupon({
+  productFamilyId: 1,
+  body: {
+    coupon: {
+      name: "15% off",
+      code: "15OFF",
+      description: "15% off for life",
+      percentage: 15,
+      allowNegativeBalance: false,
+      recurring: false,
+      endDate: "2012-08-29",
+      productFamilyId: "2",
+      stackable: true,
+      compoundingStrategy: CompoundingStrategy.Compound,
+      excludeMidPeriodAllocations: true,
+      applyOnCancelAtEndOfPeriod: true,
+    },
+    restrictedProducts: { "1": true },
+    restrictedComponents: { "1": true, "2": false },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -1265,9 +1678,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+**Direct**: `await client.coupons.createCoupon(request)`
 
-**OnError**: <code>[Coupons.CreateCouponError](src/resources/coupons.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: throws <code>[Coupons.CreateCouponError](src/resources/coupons.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.coupons.createCoupon(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse, Coupons.CreateCouponError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1278,7 +1699,7 @@ try {
 </details>
 
 <details>
-<summary><code>createCouponSubcodes(request: Coupons.CreateCouponSubcodesRequest, options?: RequestOptions): ApiPromise&lt;CouponSubcodesResponse, ResponseError&gt;</code></summary>
+<summary><code>createCouponSubcodes(request: Coupons.CreateCouponSubcodesRequest, options?: RequestOptions): ApiPromise&lt;CouponSubcodesResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1289,8 +1710,6 @@ try {
 <dd>
 
 Creates subcodes for an existing coupon.
-
-## Coupon Subcodes Intro
 
 Coupon Subcodes allow you to create a set of unique codes that allow you to expand the use of one coupon.
 
@@ -1306,21 +1725,9 @@ Coupon Subcodes:
 + DP80302
 + SPRINGBALTIMORE
 
-Coupon subcodes can be administered in the Admin Interface or via the API.
+When creating a coupon subcode, you must specify a coupon to attach it to using the coupon_id. Valid coupon subcodes are all capital letters, contain only letters and numbers, and do not have any spaces. Lowercase letters are capitalized before the subcode is created.
 
-When creating a coupon subcode, you must specify a coupon to attach it to using the coupon_id. Valid coupon subcodes are all capital letters, contain only letters and numbers, and do not have any spaces. Lowercase letters will be capitalized before the subcode is created.
-
-## Coupon Subcodes Documentation
-
-Full documentation on how to create coupon subcodes in the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/articles/24261208729229-Coupon-Codes).
-
-Additionally, for documentation on how to apply a coupon to a Subscription within the Advanced Billing UI, see our documentation [here](https://maxio.zendesk.com/hc/en-us/articles/24261259337101-Coupons-and-Subscriptions).
-
-## Create Coupon Subcode
-
-This request allows you to create specific subcodes underneath an existing coupon code.
-
-*Note*: If you are using any of the allowed special characters ("%", "@", "+", "-", "_", and "."), you must encode them for use in the URL.
+Note: If you are using any of the allowed special characters ("%", "@", "+", "-", "_", and "."), you must encode them for use in the URL.
 
     % to %25
     @ to %40
@@ -1331,20 +1738,46 @@ This request allows you to create specific subcodes underneath an existing coupo
 
 So, if the coupon subcode is `20%OFF`, the URL to delete this coupon subcode would be: `https://<subdomain>.chargify.com/coupons/567/codes/20%25OFF.<format>`.
 
+For more information on coupon codes and applying coupons to subscriptions, see [Coupon Codes](https://maxio.zendesk.com/hc/en-us/articles/24261208729229-Coupon-Codes) and [Coupons and Subscriptions](https://maxio.zendesk.com/hc/en-us/articles/24261259337101-Coupons-and-Subscriptions).
+
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.createCouponSubcodes({ couponId });
+  const response = await client.coupons.createCouponSubcodes({
+    couponId: 1,
+    body: { codes: ["BALTIMOREFALL", "ORLANDOFALL", "DETROITFALL"] },
+  });
   // TODO: Handle 'response' of type CouponSubcodesResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.createCouponSubcodes({
+  couponId: 1,
+  body: { codes: ["BALTIMOREFALL", "ORLANDOFALL", "DETROITFALL"] },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponSubcodesResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1369,9 +1802,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponSubcodesResponse](src/models/coupon-subcodes-response.ts)</code>
+**Direct**: `await client.coupons.createCouponSubcodes(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponSubcodesResponse](src/models/coupon-subcodes-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.createCouponSubcodes(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponSubcodesResponse, ApiError&gt;</code>, with `result.value` of type <code>[CouponSubcodesResponse](src/models/coupon-subcodes-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1399,22 +1840,41 @@ Currency pricing for coupons must mirror the setup of the primary coupon pricing
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.createOrUpdateCouponCurrencyPrices({ couponId });
+  const response = await client.coupons.createOrUpdateCouponCurrencyPrices({
+    couponId: 1,
+    body: { currencyPrices: [{ currency: "EUR", price: 10 }, { currency: "GBP", price: 9 }] },
+  });
   // TODO: Handle 'response' of type CouponCurrencyResponse
 } catch (err) {
-  if (
-    err instanceof Coupons.CreateOrUpdateCouponCurrencyPricesError &&
-      err.payload.kind === "errorStringMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorStringMapResponse1
-  }
+  // TODO: Handle 'err' of type Coupons.CreateOrUpdateCouponCurrencyPricesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.createOrUpdateCouponCurrencyPrices({
+  couponId: 1,
+  body: { currencyPrices: [{ currency: "EUR", price: 10 }, { currency: "GBP", price: 9 }] },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponCurrencyResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -1439,9 +1899,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponCurrencyResponse](src/models/coupon-currency-response.ts)</code>
+**Direct**: `await client.coupons.createOrUpdateCouponCurrencyPrices(request)`
 
-**OnError**: <code>[Coupons.CreateOrUpdateCouponCurrencyPricesError](src/resources/coupons.ts)</code>
+- **OnSuccess**: <code>[CouponCurrencyResponse](src/models/coupon-currency-response.ts)</code>
+- **OnError**: throws <code>[Coupons.CreateOrUpdateCouponCurrencyPricesError](src/resources/coupons.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.coupons.createOrUpdateCouponCurrencyPrices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponCurrencyResponse, Coupons.CreateOrUpdateCouponCurrencyPricesError&gt;</code>, with `result.value` of type <code>[CouponCurrencyResponse](src/models/coupon-currency-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1490,18 +1958,37 @@ Or if the coupon subcode is 20%OFF, the URL to delete this coupon subcode would 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.coupons.deleteCouponSubcode({ couponId, subcode });
+  await client.coupons.deleteCouponSubcode({ couponId: 1, subcode: "some example string" });
 } catch (err) {
-  if (err instanceof Coupons.DeleteCouponSubcodeError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Coupons.DeleteCouponSubcodeError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.deleteCouponSubcode({
+  couponId: 1,
+  subcode: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -1526,9 +2013,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.coupons.deleteCouponSubcode(request)`
 
-**OnError**: <code>[Coupons.DeleteCouponSubcodeError](src/resources/coupons.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[Coupons.DeleteCouponSubcodeError](src/resources/coupons.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.coupons.deleteCouponSubcode(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, Coupons.DeleteCouponSubcodeError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1539,7 +2034,7 @@ try {
 </details>
 
 <details>
-<summary><code>findCoupon(request: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ResponseError&gt;</code></summary>
+<summary><code>findCoupon(request: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1549,24 +2044,42 @@ try {
 <dl>
 <dd>
 
-Searches for a coupon by code, returning a 404 if no coupon is found. By passing a code parameter, the find will attempt to locate a coupon that matches that code.
+Searches for a coupon by code.
 
-If you have more than one product family and if the coupon you are trying to find does not belong to the default product family in your site, then you will need to specify (either in the url or as a query string param) the product family id.
+If you have more than one product family and if the coupon you are trying to find does not belong to the default product family in your site, you need to specify (either in the URL or as a query string param) the `product_family_id`.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.findCoupon();
+  const response = await client.coupons.findCoupon({ currencyPrices: true });
   // TODO: Handle 'response' of type CouponResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.findCoupon({ currencyPrices: true }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1592,9 +2105,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+**Direct**: `await client.coupons.findCoupon(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.findCoupon(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse, ApiError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1605,7 +2126,7 @@ try {
 </details>
 
 <details>
-<summary><code>listCouponSubcodes(request: Coupons.ListCouponSubcodesRequest, options?: RequestOptions): ApiPromise&lt;CouponSubcodes, ResponseError&gt;</code></summary>
+<summary><code>listCouponSubcodes(request: Coupons.ListCouponSubcodesRequest, options?: RequestOptions): ApiPromise&lt;CouponSubcodes, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1620,17 +2141,35 @@ Lists the subcodes attached to a coupon.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.listCouponSubcodes({ couponId });
+  const response = await client.coupons.listCouponSubcodes({ couponId: 1, page: 1, perPage: 50 });
   // TODO: Handle 'response' of type CouponSubcodes
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.listCouponSubcodes({ couponId: 1, page: 1, perPage: 50 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponSubcodes
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1645,8 +2184,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>couponId</code> | <code>number</code> | The Advanced Billing id of the coupon |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 
 </dd>
 </dl>
@@ -1656,9 +2195,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponSubcodes](src/models/coupon-subcodes.ts)</code>
+**Direct**: `await client.coupons.listCouponSubcodes(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponSubcodes](src/models/coupon-subcodes.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.listCouponSubcodes(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponSubcodes, ApiError&gt;</code>, with `result.value` of type <code>[CouponSubcodes](src/models/coupon-subcodes.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1669,7 +2216,7 @@ try {
 </details>
 
 <details>
-<summary><code>listCoupons(request: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse[], ResponseError&gt;</code></summary>
+<summary><code>listCoupons(request: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1684,17 +2231,35 @@ Lists coupons for a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.listCoupons();
+  const response = await client.coupons.listCoupons({ page: 1, perPage: 50, currencyPrices: true });
   // TODO: Handle 'response' of type CouponResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.listCoupons({ page: 1, perPage: 50, currencyPrices: true }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1708,8 +2273,8 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 30 |
 | <code>filter?</code> | <code>[ListCouponsFilter](src/models/list-coupons-filter.ts)</code> | Filter to use for List Coupons operations |
 | <code>currencyPrices?</code> | <code>boolean</code> | (Optional) If you have defined multiple currencies at the site level, you can pass `?currency_prices=true` to include an array of currency price data in the response. Use in query `currency_prices=true`. |
 
@@ -1721,9 +2286,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)[]</code>
+**Direct**: `await client.coupons.listCoupons(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.listCoupons(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse[], ApiError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1734,7 +2307,7 @@ try {
 </details>
 
 <details>
-<summary><code>listCouponsForProductFamily(request: Coupons.ListCouponsForProductFamilyRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse[], ResponseError&gt;</code></summary>
+<summary><code>listCouponsForProductFamily(request: Coupons.ListCouponsForProductFamilyRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1749,17 +2322,45 @@ Lists coupons for a specific product family in a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.listCouponsForProductFamily({ productFamilyId });
+  const response = await client.coupons.listCouponsForProductFamily({
+    productFamilyId: 1,
+    page: 1,
+    perPage: 50,
+    currencyPrices: true,
+  });
   // TODO: Handle 'response' of type CouponResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.listCouponsForProductFamily({
+  productFamilyId: 1,
+  page: 1,
+  perPage: 50,
+  currencyPrices: true,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1774,8 +2375,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>productFamilyId</code> | <code>number</code> | The Advanced Billing id of the product family to which the coupon belongs |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 30 |
 | <code>filter?</code> | <code>[ListCouponsFilter](src/models/list-coupons-filter.ts)</code> | Filter to use for List Coupons operations |
 | <code>currencyPrices?</code> | <code>boolean</code> | (Optional) If you have defined multiple currencies at the site level, you can pass `?currency_prices=true` to include an array of currency price data in the response. Use in query `currency_prices=true`. |
 
@@ -1787,9 +2388,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)[]</code>
+**Direct**: `await client.coupons.listCouponsForProductFamily(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.listCouponsForProductFamily(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse[], ApiError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1800,7 +2409,7 @@ try {
 </details>
 
 <details>
-<summary><code>readCoupon(request: Coupons.ReadCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ResponseError&gt;</code></summary>
+<summary><code>readCoupon(request: Coupons.ReadCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1810,25 +2419,48 @@ try {
 <dl>
 <dd>
 
-Returns a coupon by its Advanced Billing-assigned ID. You must identify the Coupon in this call by the ID parameter that Advanced Billing assigns.
-If instead you would like to find a Coupon using a Coupon code, see the Coupon Find method.
+Returns a coupon by its system-assigned ID. You must identify the Coupon in this call by the ID parameter assigned to it.
 
-If the coupon is set to `use_site_exchange_rate: true`, it will return pricing based on the current exchange rate. If the flag is set to false, it will return all of the defined prices for each currency.
+If instead you would like to find a Coupon using a Coupon code, use the [Find Coupon]($e/Coupons/findCoupon) endpoint.
+
+If the coupon is set to `use_site_exchange_rate: true`, it returns pricing based on the current exchange rate. If the flag is set to false, it returns all of the defined prices for each currency.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.readCoupon({ productFamilyId, couponId });
+  const response = await client.coupons.readCoupon({ productFamilyId: 1, couponId: 1, currencyPrices: true });
   // TODO: Handle 'response' of type CouponResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.readCoupon({
+  productFamilyId: 1,
+  couponId: 1,
+  currencyPrices: true,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1854,9 +2486,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+**Direct**: `await client.coupons.readCoupon(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.readCoupon(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse, ApiError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1867,7 +2507,7 @@ try {
 </details>
 
 <details>
-<summary><code>readCouponUsage(request: Coupons.ReadCouponUsageRequest, options?: RequestOptions): ApiPromise&lt;CouponUsage[], ResponseError&gt;</code></summary>
+<summary><code>readCouponUsage(request: Coupons.ReadCouponUsageRequest, options?: RequestOptions): ApiPromise&lt;CouponUsage[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -1882,17 +2522,35 @@ Lists coupon usage details, one entry per product.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.readCouponUsage({ productFamilyId, couponId });
+  const response = await client.coupons.readCouponUsage({ productFamilyId: 1, couponId: 1 });
   // TODO: Handle 'response' of type CouponUsage[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.readCouponUsage({ productFamilyId: 1, couponId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponUsage[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -1917,9 +2575,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponUsage](src/models/coupon-usage.ts)[]</code>
+**Direct**: `await client.coupons.readCouponUsage(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponUsage](src/models/coupon-usage.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.readCouponUsage(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponUsage[], ApiError&gt;</code>, with `result.value` of type <code>[CouponUsage](src/models/coupon-usage.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1948,19 +2614,73 @@ You can restrict a coupon to only apply to specific products / components by opt
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.updateCoupon({ productFamilyId, couponId });
+  const response = await client.coupons.updateCoupon({
+    productFamilyId: 1,
+    couponId: 1,
+    body: {
+      coupon: {
+        name: "15% off",
+        code: "15OFF",
+        description: "15% off for life",
+        percentage: 15,
+        allowNegativeBalance: false,
+        recurring: false,
+        endDate: "2012-08-29",
+        productFamilyId: "2",
+        stackable: true,
+        compoundingStrategy: CompoundingStrategy.Compound,
+      },
+      restrictedProducts: { "1": true },
+      restrictedComponents: { "1": true, "2": false },
+    },
+  });
   // TODO: Handle 'response' of type CouponResponse
 } catch (err) {
-  if (err instanceof Coupons.UpdateCouponError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Coupons.UpdateCouponError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.updateCoupon({
+  productFamilyId: 1,
+  couponId: 1,
+  body: {
+    coupon: {
+      name: "15% off",
+      code: "15OFF",
+      description: "15% off for life",
+      percentage: 15,
+      allowNegativeBalance: false,
+      recurring: false,
+      endDate: "2012-08-29",
+      productFamilyId: "2",
+      stackable: true,
+      compoundingStrategy: CompoundingStrategy.Compound,
+    },
+    restrictedProducts: { "1": true },
+    restrictedComponents: { "1": true, "2": false },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -1986,9 +2706,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+**Direct**: `await client.coupons.updateCoupon(request)`
 
-**OnError**: <code>[Coupons.UpdateCouponError](src/resources/coupons.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: throws <code>[Coupons.UpdateCouponError](src/resources/coupons.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.coupons.updateCoupon(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse, Coupons.UpdateCouponError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -1999,7 +2727,7 @@ try {
 </details>
 
 <details>
-<summary><code>updateCouponSubcodes(request: Coupons.UpdateCouponSubcodesRequest, options?: RequestOptions): ApiPromise&lt;CouponSubcodesResponse, ResponseError&gt;</code></summary>
+<summary><code>updateCouponSubcodes(request: Coupons.UpdateCouponSubcodesRequest, options?: RequestOptions): ApiPromise&lt;CouponSubcodesResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -2024,17 +2752,41 @@ The response will contain:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.updateCouponSubcodes({ couponId });
+  const response = await client.coupons.updateCouponSubcodes({
+    couponId: 1,
+    body: { codes: ["AAAA", "BBBB", "CCCC"] },
+  });
   // TODO: Handle 'response' of type CouponSubcodesResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.updateCouponSubcodes({
+  couponId: 1,
+  body: { codes: ["AAAA", "BBBB", "CCCC"] },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponSubcodesResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -2059,9 +2811,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponSubcodesResponse](src/models/coupon-subcodes-response.ts)</code>
+**Direct**: `await client.coupons.updateCouponSubcodes(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CouponSubcodesResponse](src/models/coupon-subcodes-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.coupons.updateCouponSubcodes(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponSubcodesResponse, ApiError&gt;</code>, with `result.value` of type <code>[CouponSubcodesResponse](src/models/coupon-subcodes-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2082,23 +2842,17 @@ try {
 <dl>
 <dd>
 
-Verifies whether a specific coupon code is valid. This method is useful for validating coupon codes that are entered by a customer. If the coupon is found and is valid, the coupon will be returned with a 200 status code.
+Verifies whether a specific coupon code is valid. This method is useful for validating coupon codes that are entered by a customer.
 
-If the coupon is invalid, the status code will be 404 and the response will say why it is invalid. If the coupon is valid, the status code will be 200 and the coupon will be returned. The following reasons for invalidity are supported:
+If you have more than one product family and if the coupon you are validating does not belong to the first product family in your site, you need to specify the product family, either in the URL or as a query string param. This can be done by supplying the id or the handle in the `handle:my-family` format.
 
-+ Coupon not found
-+ Coupon is invalid
-+ Coupon expired
-
-If you have more than one product family and if the coupon you are validating does not belong to the first product family in your site, then you will need to specify the product family, either in the url or as a query string param. This can be done by supplying the id or the handle in the `handle:my-family` format.
-
-Eg.
+Supplying the `product_family_handle` in the URL:
 
 ```
 https://<subdomain>.chargify.com/product_families/handle:<product_family_handle>/coupons/validate.<format>?code=<coupon_code>
 ```
 
-Or:
+Supplying the `product_family_id` as a query parameter:
 
 ```
 https://<subdomain>.chargify.com/coupons/validate.<format>?code=<coupon_code>&product_family_id=<id>
@@ -2107,19 +2861,35 @@ https://<subdomain>.chargify.com/coupons/validate.<format>?code=<coupon_code>&pr
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.coupons.validateCoupon({ code });
+  const response = await client.coupons.validateCoupon({ code: "some example string" });
   // TODO: Handle 'response' of type CouponResponse
 } catch (err) {
-  if (err instanceof Coupons.ValidateCouponError && err.payload.kind === "singleStringErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type SingleStringErrorResponse1
-  }
+  // TODO: Handle 'err' of type Coupons.ValidateCouponError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.coupons.validateCoupon({ code: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CouponResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2144,9 +2914,558 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+**Direct**: `await client.coupons.validateCoupon(request)`
 
-**OnError**: <code>[Coupons.ValidateCouponError](src/resources/coupons.ts)</code>
+- **OnSuccess**: <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: throws <code>[Coupons.ValidateCouponError](src/resources/coupons.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.coupons.validateCoupon(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CouponResponse, Coupons.ValidateCouponError&gt;</code>, with `result.value` of type <code>[CouponResponse](src/models/coupon-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+## ComponentFeatures
+
+> Source: [ComponentFeatures](src/resources/component-features.ts)
+
+<details>
+<summary><code>createComponentFeature(request: ComponentFeatures.CreateComponentFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ComponentFeatures.CreateComponentFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Attaches a feature template to this component with a concrete value. Pass `price_point_type: "PricePoint"` and `price_point_id` to create an override scoped to a single component price point instead of the whole component.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.componentFeatures.createComponentFeature({ componentId: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ComponentFeatures.CreateComponentFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentFeatures.createComponentFeature({ componentId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component. |
+| <code>body?</code> | <code>[CreateFeatureCatalogItemRequest](src/models/create-feature-catalog-item-request.ts)</code> | - |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.componentFeatures.createComponentFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ComponentFeatures.CreateComponentFeatureError](src/resources/component-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentFeatures.createComponentFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ComponentFeatures.CreateComponentFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>listComponentFeatures(request: ComponentFeatures.ListComponentFeaturesRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemsListResponse, ComponentFeatures.ListComponentFeaturesError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Lists the feature catalog items attached to this component, including price-point-specific overrides.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.componentFeatures.listComponentFeatures({ componentId: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemsListResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ComponentFeatures.ListComponentFeaturesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentFeatures.listComponentFeatures({ componentId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemsListResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.componentFeatures.listComponentFeatures(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemsListResponse](src/models/feature-catalog-items-list-response.ts)</code>
+- **OnError**: throws <code>[ComponentFeatures.ListComponentFeaturesError](src/resources/component-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentFeatures.listComponentFeatures(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemsListResponse, ComponentFeatures.ListComponentFeaturesError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemsListResponse](src/models/feature-catalog-items-list-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>readComponentFeature(request: ComponentFeatures.ReadComponentFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ComponentFeatures.ReadComponentFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Returns a single feature catalog item attached to this component.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.componentFeatures.readComponentFeature({ componentId: 1, id: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ComponentFeatures.ReadComponentFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentFeatures.readComponentFeature({ componentId: 1, id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.componentFeatures.readComponentFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ComponentFeatures.ReadComponentFeatureError](src/resources/component-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentFeatures.readComponentFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ComponentFeatures.ReadComponentFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>removeComponentFeature(request: ComponentFeatures.RemoveComponentFeatureRequest, options?: RequestOptions): ApiPromise&lt;undefined, ComponentFeatures.RemoveComponentFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Removes a feature catalog item from this component.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  await client.componentFeatures.removeComponentFeature({ componentId: 1, id: 1 });
+} catch (err) {
+  // TODO: Handle 'err' of type ComponentFeatures.RemoveComponentFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentFeatures.removeComponentFeature({ componentId: 1, id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+| <code>destroyEntitlements?</code> | <code>boolean</code> | When `true`, permanently deletes this feature catalog item and every entitlement it created, revoking subscriber access immediately. When `false` (default), the feature catalog item is archived and existing entitlements are preserved.<br>**Default**: false |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.componentFeatures.removeComponentFeature(request)`
+
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ComponentFeatures.RemoveComponentFeatureError](src/resources/component-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentFeatures.removeComponentFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ComponentFeatures.RemoveComponentFeatureError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>restoreComponentFeature(request: ComponentFeatures.RestoreComponentFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ComponentFeatures.RestoreComponentFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Clears the archived state of a feature catalog item attached to this component. Returns `422` if the parent feature template is still archived. Restore the feature template first.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.componentFeatures.restoreComponentFeature({ componentId: 1, id: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ComponentFeatures.RestoreComponentFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentFeatures.restoreComponentFeature({
+  componentId: 1,
+  id: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.componentFeatures.restoreComponentFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ComponentFeatures.RestoreComponentFeatureError](src/resources/component-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentFeatures.restoreComponentFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ComponentFeatures.RestoreComponentFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>updateComponentFeature(request: ComponentFeatures.UpdateComponentFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ComponentFeatures.UpdateComponentFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Updates the value or periodicity of a feature catalog item attached to this component.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.componentFeatures.updateComponentFeature({ componentId: 1, id: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ComponentFeatures.UpdateComponentFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentFeatures.updateComponentFeature({ componentId: 1, id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+| <code>body?</code> | <code>[UpdateFeatureCatalogItemRequest](src/models/update-feature-catalog-item-request.ts)</code> | - |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.componentFeatures.updateComponentFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ComponentFeatures.UpdateComponentFeatureError](src/resources/component-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentFeatures.updateComponentFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ComponentFeatures.UpdateComponentFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2176,19 +3495,41 @@ Archives the component; all current subscribers will continue to be charged as u
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.archiveComponent({ productFamilyId, componentId });
+  const response = await client.components.archiveComponent({
+    productFamilyId: 1,
+    componentId: "some example string",
+  });
   // TODO: Handle 'response' of type Component
 } catch (err) {
-  if (err instanceof Components.ArchiveComponentError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Components.ArchiveComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.archiveComponent({
+  productFamilyId: 1,
+  componentId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Component
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2213,9 +3554,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Component](src/models/component.ts)</code>
+**Direct**: `await client.components.archiveComponent(request)`
 
-**OnError**: <code>[Components.ArchiveComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[Component](src/models/component.ts)</code>
+- **OnError**: throws <code>[Components.ArchiveComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.archiveComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Component, Components.ArchiveComponentError&gt;</code>, with `result.value` of type <code>[Component](src/models/component.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2242,26 +3591,70 @@ Event-based components are similar to other component types, in that you define 
 
 So, instead of reporting usage directly for each component (as you would with metered components), the usage is derived from analysis of your events.
 
-For more information on components, see our documentation [here](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview).
+For more information, see [Components Overview](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview).
 
-If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, taxable components must include a non-blank `tax_code`. Sending `"tax_code": ""` returns `422`.
+If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, taxable components must include a non-blank `tax_code`; sending a blank value results in a validation error.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.createEventBasedComponent({ productFamilyId });
+  const response = await client.components.createEventBasedComponent({
+    productFamilyId: "some example string",
+    body: {
+      eventBasedComponent: {
+        name: "Component Name",
+        unitName: "string",
+        description: "string",
+        handle: "some_handle",
+        taxable: true,
+        pricingScheme: PricingScheme.PerUnit,
+        prices: [{ startingQuantity: 1, unitPrice: "0.49" }],
+        eventBasedBillingMetricId: 123,
+      },
+    },
+  });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  if (err instanceof Components.CreateEventBasedComponentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Components.CreateEventBasedComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.createEventBasedComponent({
+  productFamilyId: "some example string",
+  body: {
+    eventBasedComponent: {
+      name: "Component Name",
+      unitName: "string",
+      description: "string",
+      handle: "some_handle",
+      taxable: true,
+      pricingScheme: PricingScheme.PerUnit,
+      prices: [{ startingQuantity: 1, unitPrice: "0.49" }],
+      eventBasedBillingMetricId: 123,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2286,9 +3679,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.createEventBasedComponent(request)`
 
-**OnError**: <code>[Components.CreateEventBasedComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[Components.CreateEventBasedComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.createEventBasedComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, Components.CreateEventBasedComponentError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2315,6 +3716,9 @@ Metered components are used to bill for any type of unit that resets to 0 at the
 
 Note that this is different from recurring quantity-based components, which DO NOT reset to zero at the start of every billing period. If you want to bill for a quantity of something that does not change unless you change it, then you want quantity components, instead.
 
+#### Hybrid Pricing
+A `volume`, `tiered`, or `stairstep` metered component can combine its primary pricing with a secondary pricing model (the `overage_pricing` parameter) so both bill as a single invoice line item instead of two. This does not apply to metered components configured for event-based billing (metric, meter, or formula). See [Hybrid Pricing](page:introduction/basic-concepts/hybrid-pricing) for requirements and configuration details.
+
 For more information on components, see our documentation [here](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview).
 
 If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, taxable components must include a non-blank `tax_code`. Sending `"tax_code": ""` returns `422`.
@@ -2322,19 +3726,57 @@ If you have the new [Catalog experience](page:help/announcements/2026-announceme
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.createMeteredComponent({ productFamilyId });
+  const response = await client.components.createMeteredComponent({
+    productFamilyId: "some example string",
+    body: {
+      meteredComponent: {
+        name: "Text messages",
+        unitName: "text message",
+        taxable: false,
+        pricingScheme: PricingScheme.PerUnit,
+        prices: [{ startingQuantity: 1, unitPrice: 1.0 }],
+      },
+    },
+  });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  if (err instanceof Components.CreateMeteredComponentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Components.CreateMeteredComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.createMeteredComponent({
+  productFamilyId: "some example string",
+  body: {
+    meteredComponent: {
+      name: "Text messages",
+      unitName: "text message",
+      taxable: false,
+      pricingScheme: PricingScheme.PerUnit,
+      prices: [{ startingQuantity: 1, unitPrice: 1.0 }],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2359,9 +3801,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.createMeteredComponent(request)`
 
-**OnError**: <code>[Components.CreateMeteredComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[Components.CreateMeteredComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.createMeteredComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, Components.CreateMeteredComponentError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2393,19 +3843,59 @@ If you have the new [Catalog experience](page:help/announcements/2026-announceme
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.createOnOffComponent({ productFamilyId });
+  const response = await client.components.createOnOffComponent({
+    productFamilyId: "some example string",
+    body: {
+      onOffComponent: {
+        name: "Annual Support Services",
+        description: "Prepay for support services",
+        taxable: true,
+        unitPrice: "100.00",
+        displayOnHostedPage: true,
+        publicSignupPageIds: [320495],
+      },
+    },
+  });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  if (err instanceof Components.CreateOnOffComponentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Components.CreateOnOffComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.createOnOffComponent({
+  productFamilyId: "some example string",
+  body: {
+    onOffComponent: {
+      name: "Annual Support Services",
+      description: "Prepay for support services",
+      taxable: true,
+      unitPrice: "100.00",
+      displayOnHostedPage: true,
+      publicSignupPageIds: [320495],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2430,9 +3920,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.createOnOffComponent(request)`
 
-**OnError**: <code>[Components.CreateOnOffComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[Components.CreateOnOffComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.createOnOffComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, Components.CreateOnOffComponentError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2455,28 +3953,74 @@ try {
 
 Creates a prepaid usage component definition under the specified product family. A prepaid component can then be added and “allocated” for a subscription.
 
-Prepaid components allow customers to pre-purchase units that can be used up over time on their subscription. In a sense, they are the mirror image of metered components; while metered components charge at the end of the period for the amount of units used, prepaid components are charged for at the time of purchase, and we subsequently keep track of the usage against the amount purchased.
+Prepaid components allow customers to pre-purchase units that can be used up over time on their subscription. In a sense, they are the mirror image of metered components; while metered components charge at the end of the period for the amount of units used, prepaid components are charged for at the time of purchase, and usage is subsequently tracked against the amount purchased.
 
-For more information on components, see our documentation [here](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview).
+For more information, see [Components Overview](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview).
 
-If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, taxable components must include a non-blank `tax_code`. Sending `"tax_code": ""` returns `422`.
+If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, taxable components must include a non-blank `tax_code`; sending a blank value results in a validation error.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.createPrepaidUsageComponent({ productFamilyId });
+  const response = await client.components.createPrepaidUsageComponent({
+    productFamilyId: "some example string",
+    body: {
+      prepaidUsageComponent: {
+        name: "Minutes",
+        unitName: "minutes",
+        pricingScheme: PricingScheme.PerUnit,
+        unitPrice: 2,
+        overagePricing: { pricingScheme: PricingScheme.Stairstep, prices: [{}, {}] },
+        rolloverPrepaidRemainder: true,
+        renewPrepaidAllocation: true,
+        expirationInterval: 15,
+        expirationIntervalUnit: ExpirationIntervalUnit.Day,
+      },
+    },
+  });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  if (err instanceof Components.CreatePrepaidUsageComponentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Components.CreatePrepaidUsageComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.createPrepaidUsageComponent({
+  productFamilyId: "some example string",
+  body: {
+    prepaidUsageComponent: {
+      name: "Minutes",
+      unitName: "minutes",
+      pricingScheme: PricingScheme.PerUnit,
+      unitPrice: 2,
+      overagePricing: { pricingScheme: PricingScheme.Stairstep, prices: [{}, {}] },
+      rolloverPrepaidRemainder: true,
+      renewPrepaidAllocation: true,
+      expirationInterval: 15,
+      expirationIntervalUnit: ExpirationIntervalUnit.Day,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2501,9 +4045,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.createPrepaidUsageComponent(request)`
 
-**OnError**: <code>[Components.CreatePrepaidUsageComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[Components.CreatePrepaidUsageComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.createPrepaidUsageComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, Components.CreatePrepaidUsageComponentError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2526,7 +4078,7 @@ try {
 
 Creates a Quantity Based component definition under the specified product family. A Quantity Based component can then be added and “allocated” for a subscription.
 
-When defining a Quantity Based component, you can choose one of 2 types:
+When defining a Quantity Based component, you can choose one of two types:
 #### Recurring
 Recurring quantity-based components are used to bill for the number of some unit (think monthly software user licenses or the number of pairs of socks in a box-a-month club). This is most commonly associated with billing for user licenses, number of users, number of employees, etc.
 
@@ -2535,6 +4087,10 @@ One-time quantity-based components are used to create ad hoc usage charges that 
 
 The allocated quantity for one-time quantity-based components immediately gets reset back to zero after the allocation is made.
 
+For more information, see [Components Overview](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview).
+#### Hybrid Pricing
+A `volume`, `tiered`, or `stairstep` component can combine its primary pricing with a secondary pricing model (the `overage_pricing` parameter) so both bill as a single invoice line item instead of two. See [Hybrid Pricing](page:introduction/basic-concepts/hybrid-pricing) for requirements and configuration details.
+
 For more information on components, see our documentation [here](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview).
 
 If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, taxable components must include a non-blank `tax_code`. Sending `"tax_code": ""` returns `422`.
@@ -2542,19 +4098,65 @@ If you have the new [Catalog experience](page:help/announcements/2026-announceme
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.createQuantityBasedComponent({ productFamilyId });
+  const response = await client.components.createQuantityBasedComponent({
+    productFamilyId: "some example string",
+    body: {
+      quantityBasedComponent: {
+        name: "Quantity Based Component",
+        unitName: "Component",
+        description: "Example of JSON per-unit component example",
+        taxable: true,
+        pricingScheme: PricingScheme.PerUnit,
+        unitPrice: "10",
+        displayOnHostedPage: true,
+        allowFractionalQuantities: true,
+        publicSignupPageIds: [323397],
+      },
+    },
+  });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  if (err instanceof Components.CreateQuantityBasedComponentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Components.CreateQuantityBasedComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.createQuantityBasedComponent({
+  productFamilyId: "some example string",
+  body: {
+    quantityBasedComponent: {
+      name: "Quantity Based Component",
+      unitName: "Component",
+      description: "Example of JSON per-unit component example",
+      taxable: true,
+      pricingScheme: PricingScheme.PerUnit,
+      unitPrice: "10",
+      displayOnHostedPage: true,
+      allowFractionalQuantities: true,
+      publicSignupPageIds: [323397],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2579,9 +4181,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.createQuantityBasedComponent(request)`
 
-**OnError**: <code>[Components.CreateQuantityBasedComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[Components.CreateQuantityBasedComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.createQuantityBasedComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, Components.CreateQuantityBasedComponentError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2592,7 +4202,7 @@ try {
 </details>
 
 <details>
-<summary><code>findComponent(request: Components.FindComponentRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse, ResponseError&gt;</code></summary>
+<summary><code>findComponent(request: Components.FindComponentRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -2607,17 +4217,35 @@ Returns information for a component matching the provided handle. You can identi
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.findComponent({ handle });
+  const response = await client.components.findComponent({ handle: "some example string" });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.findComponent({ handle: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -2641,9 +4269,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.findComponent(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.components.findComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, ApiError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2654,7 +4290,7 @@ try {
 </details>
 
 <details>
-<summary><code>listComponents(request: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse[], ResponseError&gt;</code></summary>
+<summary><code>listComponents(request: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -2669,17 +4305,43 @@ Lists components for a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.listComponents();
+  const response = await client.components.listComponents({
+    dateField: BasicDateField.UpdatedAt,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ComponentResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.listComponents({
+  dateField: BasicDateField.UpdatedAt,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -2699,8 +4361,8 @@ try {
 | <code>startDatetime?</code> | <code>string</code> | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns components with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. |
 | <code>endDatetime?</code> | <code>string</code> | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns components with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. |
 | <code>includeArchived?</code> | <code>boolean</code> | Include archived items. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>filter?</code> | <code>[ListComponentsFilter](src/models/list-components-filter.ts)</code> | Filter to use for List Components operations |
 
 </dd>
@@ -2711,9 +4373,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)[]</code>
+**Direct**: `await client.components.listComponents(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.components.listComponents(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse[], ApiError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2724,7 +4394,7 @@ try {
 </details>
 
 <details>
-<summary><code>listComponentsForProductFamily(request: Components.ListComponentsForProductFamilyRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse[], ResponseError&gt;</code></summary>
+<summary><code>listComponentsForProductFamily(request: Components.ListComponentsForProductFamilyRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -2739,17 +4409,45 @@ Lists components for a particular product family.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.listComponentsForProductFamily({ productFamilyId });
+  const response = await client.components.listComponentsForProductFamily({
+    productFamilyId: 1,
+    page: 1,
+    perPage: 50,
+    dateField: BasicDateField.UpdatedAt,
+  });
   // TODO: Handle 'response' of type ComponentResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.listComponentsForProductFamily({
+  productFamilyId: 1,
+  page: 1,
+  perPage: 50,
+  dateField: BasicDateField.UpdatedAt,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -2765,8 +4463,8 @@ try {
 | --- | --- | --- |
 | <code>productFamilyId</code> | <code>number</code> | The Advanced Billing id of the product family |
 | <code>includeArchived?</code> | <code>boolean</code> | Include archived items. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>filter?</code> | <code>[ListComponentsFilter](src/models/list-components-filter.ts)</code> | Filter to use for List Components operations |
 | <code>dateField?</code> | <code>[BasicDateField](src/models/basic-date-field.ts)</code> | The type of filter you would like to apply to your search. Use in query `date_field=created_at`. |
 | <code>endDate?</code> | <code>string</code> | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns components with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
@@ -2782,9 +4480,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)[]</code>
+**Direct**: `await client.components.listComponentsForProductFamily(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.components.listComponentsForProductFamily(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse[], ApiError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2795,7 +4501,7 @@ try {
 </details>
 
 <details>
-<summary><code>readComponent(request: Components.ReadComponentRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse, ResponseError&gt;</code></summary>
+<summary><code>readComponent(request: Components.ReadComponentRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -2812,17 +4518,41 @@ You can read the component by either the component's id or handle. When using th
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.readComponent({ productFamilyId, componentId });
+  const response = await client.components.readComponent({
+    productFamilyId: 1,
+    componentId: "some example string",
+  });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.readComponent({
+  productFamilyId: 1,
+  componentId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -2838,6 +4568,7 @@ try {
 | --- | --- | --- |
 | <code>productFamilyId</code> | <code>number</code> | The Advanced Billing id of the product family to which the component belongs |
 | <code>componentId</code> | <code>string</code> | Either the Advanced Billing id of the component or the handle for the component prefixed with `handle:` |
+| <code>includeFeatures?</code> | <code>boolean</code> | When `true`, embeds the active feature catalog items for each result in a `features` array. Default value is `false`.<br>**Default**: false |
 
 </dd>
 </dl>
@@ -2847,9 +4578,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.readComponent(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.components.readComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, ApiError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2879,19 +4618,35 @@ If you have the new [Catalog experience](page:help/announcements/2026-announceme
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.updateComponent({ componentId });
+  const response = await client.components.updateComponent({ componentId: "some example string" });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  if (err instanceof Components.UpdateComponentError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Components.UpdateComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.updateComponent({ componentId: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2916,9 +4671,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.updateComponent(request)`
 
-**OnError**: <code>[Components.UpdateComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[Components.UpdateComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.updateComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, Components.UpdateComponentError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -2948,21 +4711,41 @@ If you have the new [Catalog experience](page:help/announcements/2026-announceme
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.components.updateProductFamilyComponent({ productFamilyId, componentId });
+  const response = await client.components.updateProductFamilyComponent({
+    productFamilyId: 1,
+    componentId: "some example string",
+  });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  if (
-    err instanceof Components.UpdateProductFamilyComponentError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Components.UpdateProductFamilyComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.components.updateProductFamilyComponent({
+  productFamilyId: 1,
+  componentId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -2988,9 +4771,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.components.updateProductFamilyComponent(request)`
 
-**OnError**: <code>[Components.UpdateProductFamilyComponentError](src/resources/components.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[Components.UpdateProductFamilyComponentError](src/resources/components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.components.updateProductFamilyComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, Components.UpdateProductFamilyComponentError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3020,7 +4811,7 @@ Archives a component price point. Subscriptions using a price point that has bee
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -3028,17 +4819,33 @@ Archives a component price point. Subscriptions using a price point that has bee
 ```ts
 try {
   const response = await client.componentPricePoints.archiveComponentPricePoint({
-    componentId,
-    pricePointId,
+    componentId: 1,
+    pricePointId: 1,
   });
   // TODO: Handle 'response' of type ComponentPricePointResponse
 } catch (err) {
-  if (
-    err instanceof ComponentPricePoints.ArchiveComponentPricePointError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.ArchiveComponentPricePointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.archiveComponentPricePoint({
+  componentId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3063,9 +4870,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+**Direct**: `await client.componentPricePoints.archiveComponentPricePoint(request)`
 
-**OnError**: <code>[ComponentPricePoints.ArchiveComponentPricePointError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.ArchiveComponentPricePointError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.archiveComponentPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointResponse, ComponentPricePoints.ArchiveComponentPricePointError&gt;</code>, with `result.value` of type <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3091,22 +4906,83 @@ Creates multiple component price points in one request.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.bulkCreateComponentPricePoints({ componentId });
+  const response = await client.componentPricePoints.bulkCreateComponentPricePoints({
+    componentId: "some example string",
+    body: {
+      pricePoints: [
+        {
+          name: "Wholesale",
+          handle: "wholesale",
+          pricingScheme: PricingScheme.PerUnit,
+          prices: [{ startingQuantity: 1, unitPrice: 5 }],
+        },
+        {
+          name: "MSRP",
+          handle: "msrp",
+          pricingScheme: PricingScheme.PerUnit,
+          prices: [{ startingQuantity: 1, unitPrice: 4 }],
+        },
+        {
+          name: "Special Pricing",
+          handle: "special",
+          pricingScheme: PricingScheme.PerUnit,
+          prices: [{ startingQuantity: 1, unitPrice: 5 }],
+        },
+      ],
+    },
+  });
   // TODO: Handle 'response' of type ComponentPricePointsResponse
 } catch (err) {
-  if (
-    err instanceof ComponentPricePoints.BulkCreateComponentPricePointsError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.BulkCreateComponentPricePointsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.bulkCreateComponentPricePoints({
+  componentId: "some example string",
+  body: {
+    pricePoints: [
+      {
+        name: "Wholesale",
+        handle: "wholesale",
+        pricingScheme: PricingScheme.PerUnit,
+        prices: [{ startingQuantity: 1, unitPrice: 5 }],
+      },
+      {
+        name: "MSRP",
+        handle: "msrp",
+        pricingScheme: PricingScheme.PerUnit,
+        prices: [{ startingQuantity: 1, unitPrice: 4 }],
+      },
+      {
+        name: "Special Pricing",
+        handle: "special",
+        pricingScheme: PricingScheme.PerUnit,
+        prices: [{ startingQuantity: 1, unitPrice: 5 }],
+      },
+    ],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3131,9 +5007,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointsResponse](src/models/component-price-points-response.ts)</code>
+**Direct**: `await client.componentPricePoints.bulkCreateComponentPricePoints(request)`
 
-**OnError**: <code>[ComponentPricePoints.BulkCreateComponentPricePointsError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointsResponse](src/models/component-price-points-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.BulkCreateComponentPricePointsError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.bulkCreateComponentPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointsResponse, ComponentPricePoints.BulkCreateComponentPricePointsError&gt;</code>, with `result.value` of type <code>[ComponentPricePointsResponse](src/models/component-price-points-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3166,19 +5050,43 @@ Clones a component price point. Custom price points (tied to a specific subscrip
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.cloneComponentPricePoint({ componentId, pricePointId });
+  const response = await client.componentPricePoints.cloneComponentPricePoint({
+    componentId: 1,
+    pricePointId: 1,
+    body: { pricePoint: { name: "Pro Usage Tiered Clone" } },
+  });
   // TODO: Handle 'response' of type ComponentPricePointCurrencyOverageResponse
 } catch (err) {
-  if (err instanceof ComponentPricePoints.CloneComponentPricePointError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.CloneComponentPricePointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.cloneComponentPricePoint({
+  componentId: 1,
+  pricePointId: 1,
+  body: { pricePoint: { name: "Pro Usage Tiered Clone" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointCurrencyOverageResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3204,9 +5112,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointCurrencyOverageResponse](src/models/component-price-point-currency-overage-response.ts)</code>
+**Direct**: `await client.componentPricePoints.cloneComponentPricePoint(request)`
 
-**OnError**: <code>[ComponentPricePoints.CloneComponentPricePointError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointCurrencyOverageResponse](src/models/component-price-point-currency-overage-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.CloneComponentPricePointError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.cloneComponentPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointCurrencyOverageResponse, ComponentPricePoints.CloneComponentPricePointError&gt;</code>, with `result.value` of type <code>[ComponentPricePointCurrencyOverageResponse](src/models/component-price-point-currency-overage-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3232,22 +5148,63 @@ Creates a price point for an existing component.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.createComponentPricePoint({ componentId });
+  const response = await client.componentPricePoints.createComponentPricePoint({
+    componentId: 1,
+    body: {
+      pricePoint: {
+        name: "Wholesale",
+        handle: "wholesale-handle",
+        pricingScheme: PricingScheme.Stairstep,
+        prices: [
+          { startingQuantity: "1", endingQuantity: "100", unitPrice: "5.00" },
+          { startingQuantity: "101", endingQuantity: "200", unitPrice: "4.00" },
+        ],
+        useSiteExchangeRate: false,
+      },
+    },
+  });
   // TODO: Handle 'response' of type ComponentPricePointResponse
 } catch (err) {
-  if (
-    err instanceof ComponentPricePoints.CreateComponentPricePointError &&
-      err.payload.kind === "errorArrayMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.CreateComponentPricePointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.createComponentPricePoint({
+  componentId: 1,
+  body: {
+    pricePoint: {
+      name: "Wholesale",
+      handle: "wholesale-handle",
+      pricingScheme: PricingScheme.Stairstep,
+      prices: [
+        { startingQuantity: "1", endingQuantity: "100", unitPrice: "5.00" },
+        { startingQuantity: "101", endingQuantity: "200", unitPrice: "4.00" },
+      ],
+      useSiteExchangeRate: false,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3272,9 +5229,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+**Direct**: `await client.componentPricePoints.createComponentPricePoint(request)`
 
-**OnError**: <code>[ComponentPricePoints.CreateComponentPricePointError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.CreateComponentPricePointError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.createComponentPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointResponse, ComponentPricePoints.CreateComponentPricePointError&gt;</code>, with `result.value` of type <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3304,22 +5269,51 @@ Note: Currency Prices are not able to be created for custom price points.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.createCurrencyPrices({ pricePointId });
+  const response = await client.componentPricePoints.createCurrencyPrices({
+    pricePointId: 1,
+    body: {
+      currencyPrices: [
+        { currency: "EUR", price: 50, priceId: 20 },
+        { currency: "EUR", price: 40, priceId: 21 },
+      ],
+    },
+  });
   // TODO: Handle 'response' of type ComponentCurrencyPricesResponse
 } catch (err) {
-  if (
-    err instanceof ComponentPricePoints.CreateCurrencyPricesError &&
-      err.payload.kind === "errorArrayMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.CreateCurrencyPricesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.createCurrencyPrices({
+  pricePointId: 1,
+  body: {
+    currencyPrices: [
+      { currency: "EUR", price: 50, priceId: 20 },
+      { currency: "EUR", price: 40, priceId: 21 },
+    ],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentCurrencyPricesResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3344,9 +5338,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentCurrencyPricesResponse](src/models/component-currency-prices-response.ts)</code>
+**Direct**: `await client.componentPricePoints.createCurrencyPrices(request)`
 
-**OnError**: <code>[ComponentPricePoints.CreateCurrencyPricesError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ComponentCurrencyPricesResponse](src/models/component-currency-prices-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.CreateCurrencyPricesError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.createCurrencyPrices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentCurrencyPricesResponse, ComponentPricePoints.CreateCurrencyPricesError&gt;</code>, with `result.value` of type <code>[ComponentCurrencyPricesResponse](src/models/component-currency-prices-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3372,22 +5374,43 @@ Lists all component price points belonging to a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.listAllComponentPricePoints();
+  const response = await client.componentPricePoints.listAllComponentPricePoints({
+    include: ListComponentsPricePointsInclude.CurrencyPrices,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ListComponentsPricePointsResponse
 } catch (err) {
-  if (
-    err instanceof ComponentPricePoints.ListAllComponentPricePointsError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.ListAllComponentPricePointsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.listAllComponentPricePoints({
+  include: ListComponentsPricePointsInclude.CurrencyPrices,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListComponentsPricePointsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3402,8 +5425,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>include?</code> | <code>[ListComponentsPricePointsInclude](src/models/list-components-price-points-include.ts)</code> | Allows including additional data in the response. Use in query: `include=currency_prices`. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
 | <code>filter?</code> | <code>[ListPricePointsFilter](src/models/list-price-points-filter.ts)</code> | Filter to use for List PricePoints operations |
 
@@ -3415,9 +5438,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListComponentsPricePointsResponse](src/models/list-components-price-points-response.ts)</code>
+**Direct**: `await client.componentPricePoints.listAllComponentPricePoints(request)`
 
-**OnError**: <code>[ComponentPricePoints.ListAllComponentPricePointsError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ListComponentsPricePointsResponse](src/models/list-components-price-points-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.ListAllComponentPricePointsError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.listAllComponentPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListComponentsPricePointsResponse, ComponentPricePoints.ListAllComponentPricePointsError&gt;</code>, with `result.value` of type <code>[ListComponentsPricePointsResponse](src/models/list-components-price-points-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3428,7 +5459,7 @@ try {
 </details>
 
 <details>
-<summary><code>listComponentPricePoints(request: ComponentPricePoints.ListComponentPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ComponentPricePointsResponse, ResponseError&gt;</code></summary>
+<summary><code>listComponentPricePoints(request: ComponentPricePoints.ListComponentPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ComponentPricePointsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -3447,17 +5478,45 @@ If the price point is set to `use_site_exchange_rate: true`, it will return pric
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.listComponentPricePoints({ componentId });
+  const response = await client.componentPricePoints.listComponentPricePoints({
+    componentId: 1,
+    page: 1,
+    perPage: 50,
+    filterType: [PricePointType.Catalog, PricePointType.Default],
+  });
   // TODO: Handle 'response' of type ComponentPricePointsResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.listComponentPricePoints({
+  componentId: 1,
+  page: 1,
+  perPage: 50,
+  filterType: [PricePointType.Catalog, PricePointType.Default],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointsResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -3473,8 +5532,8 @@ try {
 | --- | --- | --- |
 | <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component |
 | <code>currencyPrices?</code> | <code>boolean</code> | Include an array of currency price data. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>filterType?</code> | <code>[PricePointType](src/models/price-point-type.ts)[]</code> | Use in query: `filter[type]=catalog,default`. |
 
 </dd>
@@ -3485,9 +5544,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointsResponse](src/models/component-price-points-response.ts)</code>
+**Direct**: `await client.componentPricePoints.listComponentPricePoints(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointsResponse](src/models/component-price-points-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.componentPricePoints.listComponentPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointsResponse, ApiError&gt;</code>, with `result.value` of type <code>[ComponentPricePointsResponse](src/models/component-price-points-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3498,7 +5565,7 @@ try {
 </details>
 
 <details>
-<summary><code>promoteComponentPricePointToDefault(request: ComponentPricePoints.PromoteComponentPricePointToDefaultRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse, ResponseError&gt;</code></summary>
+<summary><code>promoteComponentPricePointToDefault(request: ComponentPricePoints.PromoteComponentPricePointToDefaultRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -3517,7 +5584,7 @@ Note: Custom price points are not able to be set as the default for a component.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -3525,12 +5592,33 @@ Note: Custom price points are not able to be set as the default for a component.
 ```ts
 try {
   const response = await client.componentPricePoints.promoteComponentPricePointToDefault({
-    componentId,
-    pricePointId,
+    componentId: 1,
+    pricePointId: 1,
   });
   // TODO: Handle 'response' of type ComponentResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.promoteComponentPricePointToDefault({
+  componentId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -3555,9 +5643,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+**Direct**: `await client.componentPricePoints.promoteComponentPricePointToDefault(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.componentPricePoints.promoteComponentPricePointToDefault(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentResponse, ApiError&gt;</code>, with `result.value` of type <code>[ComponentResponse](src/models/component-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3568,7 +5664,7 @@ try {
 </details>
 
 <details>
-<summary><code>readComponentPricePoint(request: ComponentPricePoints.ReadComponentPricePointRequest, options?: RequestOptions): ApiPromise&lt;ComponentPricePointCurrencyOverageResponse, ResponseError&gt;</code></summary>
+<summary><code>readComponentPricePoint(request: ComponentPricePoints.ReadComponentPricePointRequest, options?: RequestOptions): ApiPromise&lt;ComponentPricePointCurrencyOverageResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -3583,17 +5679,41 @@ Returns details for a specific component price point. You can achieve this by us
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.readComponentPricePoint({ componentId, pricePointId });
+  const response = await client.componentPricePoints.readComponentPricePoint({
+    componentId: 1,
+    pricePointId: 1,
+  });
   // TODO: Handle 'response' of type ComponentPricePointCurrencyOverageResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.readComponentPricePoint({
+  componentId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointCurrencyOverageResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -3619,9 +5739,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointCurrencyOverageResponse](src/models/component-price-point-currency-overage-response.ts)</code>
+**Direct**: `await client.componentPricePoints.readComponentPricePoint(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointCurrencyOverageResponse](src/models/component-price-point-currency-overage-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.componentPricePoints.readComponentPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointCurrencyOverageResponse, ApiError&gt;</code>, with `result.value` of type <code>[ComponentPricePointCurrencyOverageResponse](src/models/component-price-point-currency-overage-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3632,7 +5760,7 @@ try {
 </details>
 
 <details>
-<summary><code>unarchiveComponentPricePoint(request: ComponentPricePoints.UnarchiveComponentPricePointRequest, options?: RequestOptions): ApiPromise&lt;ComponentPricePointResponse, ResponseError&gt;</code></summary>
+<summary><code>unarchiveComponentPricePoint(request: ComponentPricePoints.UnarchiveComponentPricePointRequest, options?: RequestOptions): ApiPromise&lt;ComponentPricePointResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -3647,7 +5775,7 @@ Unarchives a component price point.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -3655,12 +5783,33 @@ Unarchives a component price point.
 ```ts
 try {
   const response = await client.componentPricePoints.unarchiveComponentPricePoint({
-    componentId,
-    pricePointId,
+    componentId: 1,
+    pricePointId: 1,
   });
   // TODO: Handle 'response' of type ComponentPricePointResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.unarchiveComponentPricePoint({
+  componentId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -3685,9 +5834,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+**Direct**: `await client.componentPricePoints.unarchiveComponentPricePoint(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.componentPricePoints.unarchiveComponentPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointResponse, ApiError&gt;</code>, with `result.value` of type <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3719,22 +5876,61 @@ Note: Custom price points cannot be updated directly. They must be edited throug
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.updateComponentPricePoint({ componentId, pricePointId });
+  const response = await client.componentPricePoints.updateComponentPricePoint({
+    componentId: 1,
+    pricePointId: 1,
+    body: {
+      pricePoint: {
+        name: "Default",
+        prices: [
+          { id: 1, endingQuantity: 100, unitPrice: 5 },
+          { id: 2, destroy: true },
+          { unitPrice: 4, startingQuantity: 101 },
+        ],
+      },
+    },
+  });
   // TODO: Handle 'response' of type ComponentPricePointResponse
 } catch (err) {
-  if (
-    err instanceof ComponentPricePoints.UpdateComponentPricePointError &&
-      err.payload.kind === "errorArrayMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.UpdateComponentPricePointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.updateComponentPricePoint({
+  componentId: 1,
+  pricePointId: 1,
+  body: {
+    pricePoint: {
+      name: "Default",
+      prices: [
+        { id: 1, endingQuantity: 100, unitPrice: 5 },
+        { id: 2, destroy: true },
+        { unitPrice: 4, startingQuantity: 101 },
+      ],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentPricePointResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3760,9 +5956,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+**Direct**: `await client.componentPricePoints.updateComponentPricePoint(request)`
 
-**OnError**: <code>[ComponentPricePoints.UpdateComponentPricePointError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.UpdateComponentPricePointError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.updateComponentPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentPricePointResponse, ComponentPricePoints.UpdateComponentPricePointError&gt;</code>, with `result.value` of type <code>[ComponentPricePointResponse](src/models/component-price-point-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3790,22 +5994,41 @@ Note: Currency Prices are not able to be updated for custom price points.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.componentPricePoints.updateCurrencyPrices({ pricePointId });
+  const response = await client.componentPricePoints.updateCurrencyPrices({
+    pricePointId: 1,
+    body: { currencyPrices: [{ id: 100, price: 51 }, { id: 101, price: 41 }] },
+  });
   // TODO: Handle 'response' of type ComponentCurrencyPricesResponse
 } catch (err) {
-  if (
-    err instanceof ComponentPricePoints.UpdateCurrencyPricesError &&
-      err.payload.kind === "errorArrayMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type ComponentPricePoints.UpdateCurrencyPricesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.componentPricePoints.updateCurrencyPrices({
+  pricePointId: 1,
+  body: { currencyPrices: [{ id: 100, price: 51 }, { id: 101, price: 41 }] },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ComponentCurrencyPricesResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3830,9 +6053,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ComponentCurrencyPricesResponse](src/models/component-currency-prices-response.ts)</code>
+**Direct**: `await client.componentPricePoints.updateCurrencyPrices(request)`
 
-**OnError**: <code>[ComponentPricePoints.UpdateCurrencyPricesError](src/resources/component-price-points.ts)</code>
+- **OnSuccess**: <code>[ComponentCurrencyPricesResponse](src/models/component-currency-prices-response.ts)</code>
+- **OnError**: throws <code>[ComponentPricePoints.UpdateCurrencyPricesError](src/resources/component-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.componentPricePoints.updateCurrencyPrices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ComponentCurrencyPricesResponse, ComponentPricePoints.UpdateCurrencyPricesError&gt;</code>, with `result.value` of type <code>[ComponentCurrencyPricesResponse](src/models/component-currency-prices-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3857,47 +6088,100 @@ try {
 <dl>
 <dd>
 
-Creates a new customer; can also be created alongside a new subscription. The only validation restriction is that you may only create one customer for a given reference value.
+Creates a new customer; can also be created alongside a new subscription. The only validation restriction is that you can only create one customer for a given reference value.
 
-If provided, the `reference` value must be unique. It represents a unique identifier for the customer from your own app, i.e. the customer’s ID. This allows you to retrieve a given customer via a piece of shared information. Alternatively, you may choose to leave `reference` blank, and store Advanced Billing’s unique ID for the customer, which is in the `id` attribute.
+If provided, the `reference` value must be unique. It represents a unique identifier for the customer from your own app, i.e. the customer’s ID. This allows you to retrieve a given customer via a piece of shared information. Alternatively, you can choose to leave `reference` blank, and store the system-assigned unique ID for the customer, which is in the `id` attribute.
 
-Full documentation on how to locate, create and edit Customers in the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/articles/24252190590093-Customer-Details).
+For more information, see [Customer Details](https://maxio.zendesk.com/hc/en-us/articles/24252190590093-Customer-Details).
 
 ## Required Country Format
 
-Advanced Billing requires that you use the ISO Standard Country codes when formatting country attribute of the customer.
+Format the country attribute of the customer using the ISO Standard Country codes.
 
-Countries should be formatted as 2 characters. For more information, see the following wikipedia article on [ISO_3166-1.](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes)
+Countries should be formatted as two characters. For more information, see [ISO 3166-1](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
 
 ## Required State Format
 
-Advanced Billing requires that you use the ISO Standard State codes when formatting state attribute of the customer.
+Format the state attribute of the customer using the ISO Standard State codes.
 
-+ US States (2 characters): [ISO_3166-2](https://en.wikipedia.org/wiki/ISO_3166-2:US)
++ US States (two characters): see [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2:US).
 
-+ States Outside the US (2-3 characters): To find the correct state codes outside of the US, go to [ISO_3166-1](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) and click on the link in the “ISO 3166-2 codes” column next to country you wish to populate.
++ States Outside the US (two to three characters): To find the correct state codes outside the US, go to [ISO 3166-1](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) and click on the link in the “ISO 3166-2 codes” column next to the country you wish to populate.
 
 ## Locale
 
-Advanced Billing allows you to attribute a language/region to your customer to deliver invoices in any required language.
-For more: [Customer Locale](https://maxio.zendesk.com/hc/en-us/articles/24286672013709-Customer-Locale)
+You can attribute a language/region to the customer to deliver invoices in any required language. For more information, see [Customer Locale](https://maxio.zendesk.com/hc/en-us/articles/24286672013709-Customer-Locale).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customers.createCustomer();
+  const response = await client.customers.createCustomer({
+    body: {
+      customer: {
+        firstName: "Martha",
+        lastName: "Washington",
+        email: "martha@example.com",
+        ccEmails: "george@example.com",
+        organization: "ABC, Inc.",
+        reference: "1234567890",
+        address: "123 Main Street",
+        address2: "Unit 10",
+        city: "Anytown",
+        state: "MA",
+        zip: "02120",
+        country: "US",
+        phone: "555-555-1212",
+        locale: "es-MX",
+      },
+    },
+  });
   // TODO: Handle 'response' of type CustomerResponse
 } catch (err) {
-  if (err instanceof Customers.CreateCustomerError && err.payload.kind === "customerErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type CustomerErrorResponse1
-  }
+  // TODO: Handle 'err' of type Customers.CreateCustomerError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customers.createCustomer({
+  body: {
+    customer: {
+      firstName: "Martha",
+      lastName: "Washington",
+      email: "martha@example.com",
+      ccEmails: "george@example.com",
+      organization: "ABC, Inc.",
+      reference: "1234567890",
+      address: "123 Main Street",
+      address2: "Unit 10",
+      city: "Anytown",
+      state: "MA",
+      zip: "02120",
+      country: "US",
+      phone: "555-555-1212",
+      locale: "es-MX",
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CustomerResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -3921,9 +6205,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+**Direct**: `await client.customers.createCustomer(request)`
 
-**OnError**: <code>[Customers.CreateCustomerError](src/resources/customers.ts)</code>
+- **OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: throws <code>[Customers.CreateCustomerError](src/resources/customers.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customers.createCustomer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CustomerResponse, Customers.CreateCustomerError&gt;</code>, with `result.value` of type <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3934,7 +6226,7 @@ try {
 </details>
 
 <details>
-<summary><code>deleteCustomer(request: Customers.DeleteCustomerRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>deleteCustomer(request: Customers.DeleteCustomerRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -3949,16 +6241,34 @@ Deletes the customer.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.customers.deleteCustomer({ id });
+  await client.customers.deleteCustomer({ id: 1 });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customers.deleteCustomer({ id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -3982,9 +6292,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.customers.deleteCustomer(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customers.deleteCustomer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -3995,7 +6313,7 @@ try {
 </details>
 
 <details>
-<summary><code>listCustomerSubscriptions(request: Customers.ListCustomerSubscriptionsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse[], ResponseError&gt;</code></summary>
+<summary><code>listCustomerSubscriptions(request: Customers.ListCustomerSubscriptionsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4012,17 +6330,35 @@ Lists all subscriptions that belong to a customer.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customers.listCustomerSubscriptions({ customerId });
+  const response = await client.customers.listCustomerSubscriptions({ customerId: 1 });
   // TODO: Handle 'response' of type SubscriptionResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customers.listCustomerSubscriptions({ customerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -4046,9 +6382,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)[]</code>
+**Direct**: `await client.customers.listCustomerSubscriptions(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customers.listCustomerSubscriptions(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse[], ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4059,7 +6403,7 @@ try {
 </details>
 
 <details>
-<summary><code>listCustomers(request: Customers.ListCustomersRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse[], ResponseError&gt;</code></summary>
+<summary><code>listCustomers(request: Customers.ListCustomersRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4088,17 +6432,43 @@ To retrieve a single, exact match by reference, use the [lookup endpoint](https:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customers.listCustomers();
+  const response = await client.customers.listCustomers({
+    page: 1,
+    perPage: 30,
+    dateField: BasicDateField.UpdatedAt,
+  });
   // TODO: Handle 'response' of type CustomerResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customers.listCustomers({
+  page: 1,
+  perPage: 30,
+  dateField: BasicDateField.UpdatedAt,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CustomerResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -4113,8 +6483,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Direction to sort customers by time of creation |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 50. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 50. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 50 |
 | <code>dateField?</code> | <code>[BasicDateField](src/models/basic-date-field.ts)</code> | The type of filter you would like to apply to your search.<br>Use in query: `date_field=created_at`. |
 | <code>startDate?</code> | <code>string</code> | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns subscriptions with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | <code>endDate?</code> | <code>string</code> | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns subscriptions with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
@@ -4130,9 +6500,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)[]</code>
+**Direct**: `await client.customers.listCustomers(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customers.listCustomers(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CustomerResponse[], ApiError&gt;</code>, with `result.value` of type <code>[CustomerResponse](src/models/customer-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4143,7 +6521,7 @@ try {
 </details>
 
 <details>
-<summary><code>readCustomer(request: Customers.ReadCustomerRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse, ResponseError&gt;</code></summary>
+<summary><code>readCustomer(request: Customers.ReadCustomerRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4158,17 +6536,35 @@ Retrieves the Customer properties by Advanced Billing-generated Customer ID.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customers.readCustomer({ id });
+  const response = await client.customers.readCustomer({ id: 1 });
   // TODO: Handle 'response' of type CustomerResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customers.readCustomer({ id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CustomerResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -4192,9 +6588,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+**Direct**: `await client.customers.readCustomer(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customers.readCustomer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CustomerResponse, ApiError&gt;</code>, with `result.value` of type <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4205,7 +6609,7 @@ try {
 </details>
 
 <details>
-<summary><code>readCustomerByReference(request: Customers.ReadCustomerByReferenceRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse, ResponseError&gt;</code></summary>
+<summary><code>readCustomerByReference(request: Customers.ReadCustomerByReferenceRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4220,17 +6624,37 @@ Returns a customer by their unique reference ID. It will return a single match.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customers.readCustomerByReference({ reference });
+  const response = await client.customers.readCustomerByReference({ reference: "some example string" });
   // TODO: Handle 'response' of type CustomerResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customers.readCustomerByReference({
+  reference: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CustomerResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -4254,9 +6678,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+**Direct**: `await client.customers.readCustomerByReference(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customers.readCustomerByReference(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CustomerResponse, ApiError&gt;</code>, with `result.value` of type <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4282,19 +6714,43 @@ Updates the customer.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customers.updateCustomer({ id });
+  const response = await client.customers.updateCustomer({
+    id: 1,
+    body: {
+      customer: { firstName: "Martha", lastName: "Washington", email: "martha.washington@example.com" },
+    },
+  });
   // TODO: Handle 'response' of type CustomerResponse
 } catch (err) {
-  if (err instanceof Customers.UpdateCustomerError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Customers.UpdateCustomerError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customers.updateCustomer({
+  id: 1,
+  body: { customer: { firstName: "Martha", lastName: "Washington", email: "martha.washington@example.com" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CustomerResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -4319,9 +6775,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+**Direct**: `await client.customers.updateCustomer(request)`
 
-**OnError**: <code>[Customers.UpdateCustomerError](src/resources/customers.ts)</code>
+- **OnSuccess**: <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: throws <code>[Customers.UpdateCustomerError](src/resources/customers.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customers.updateCustomer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CustomerResponse, Customers.UpdateCustomerError&gt;</code>, with `result.value` of type <code>[CustomerResponse](src/models/customer-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4355,19 +6819,43 @@ If you create metadata on a subscription or customer with a metafield that does 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customFields.createMetadata({ resourceType, resourceId });
+  const response = await client.customFields.createMetadata({
+    resourceType: ResourceType.Subscriptions,
+    resourceId: 1,
+    body: { metadata: [{ name: "Color", value: "Blue" }, { name: "Something", value: "Useful" }] },
+  });
   // TODO: Handle 'response' of type Metadata[]
 } catch (err) {
-  if (err instanceof CustomFields.CreateMetadataError && err.payload.kind === "singleErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type SingleErrorResponse1
-  }
+  // TODO: Handle 'err' of type CustomFields.CreateMetadataError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.createMetadata({
+  resourceType: ResourceType.Subscriptions,
+  resourceId: 1,
+  body: { metadata: [{ name: "Color", value: "Blue" }, { name: "Something", value: "Useful" }] },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Metadata[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -4393,9 +6881,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Metadata](src/models/metadata.ts)[]</code>
+**Direct**: `await client.customFields.createMetadata(request)`
 
-**OnError**: <code>[CustomFields.CreateMetadataError](src/resources/custom-fields.ts)</code>
+- **OnSuccess**: <code>[Metadata](src/models/metadata.ts)[]</code>
+- **OnError**: throws <code>[CustomFields.CreateMetadataError](src/resources/custom-fields.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customFields.createMetadata(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Metadata[], CustomFields.CreateMetadataError&gt;</code>, with `result.value` of type <code>[Metadata](src/models/metadata.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4434,19 +6930,65 @@ See [Custom Fields Reference](https://docs.maxio.com/hc/en-us/articles/242661408
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customFields.createMetafields({ resourceType });
+  const response = await client.customFields.createMetafields({
+    resourceType: ResourceType.Subscriptions,
+    body: {
+      metafields: {
+        name: "Dropdown field",
+        scope: {
+          csv: IncludeOption._0,
+          invoices: IncludeOption._0,
+          statements: IncludeOption._0,
+          portal: IncludeOption._1,
+        },
+        inputType: MetafieldInput.Dropdown,
+        enum: ["option 1", "option 2"],
+      },
+    },
+  });
   // TODO: Handle 'response' of type Metafield[]
 } catch (err) {
-  if (err instanceof CustomFields.CreateMetafieldsError && err.payload.kind === "singleErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type SingleErrorResponse1
-  }
+  // TODO: Handle 'err' of type CustomFields.CreateMetafieldsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.createMetafields({
+  resourceType: ResourceType.Subscriptions,
+  body: {
+    metafields: {
+      name: "Dropdown field",
+      scope: {
+        csv: IncludeOption._0,
+        invoices: IncludeOption._0,
+        statements: IncludeOption._0,
+        portal: IncludeOption._1,
+      },
+      inputType: MetafieldInput.Dropdown,
+      enum: ["option 1", "option 2"],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Metafield[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -4471,9 +7013,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Metafield](src/models/metafield.ts)[]</code>
+**Direct**: `await client.customFields.createMetafields(request)`
 
-**OnError**: <code>[CustomFields.CreateMetafieldsError](src/resources/custom-fields.ts)</code>
+- **OnSuccess**: <code>[Metafield](src/models/metafield.ts)[]</code>
+- **OnError**: throws <code>[CustomFields.CreateMetafieldsError](src/resources/custom-fields.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customFields.createMetafields(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Metafield[], CustomFields.CreateMetafieldsError&gt;</code>, with `result.value` of type <code>[Metafield](src/models/metafield.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4499,18 +7049,37 @@ Deletes one or more metafields (and associated metadata) from the specified subs
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.customFields.deleteMetadata({ resourceType, resourceId });
+  await client.customFields.deleteMetadata({ resourceType: ResourceType.Subscriptions, resourceId: 1 });
 } catch (err) {
-  if (err instanceof CustomFields.DeleteMetadataError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type CustomFields.DeleteMetadataError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.deleteMetadata({
+  resourceType: ResourceType.Subscriptions,
+  resourceId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -4537,9 +7106,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.customFields.deleteMetadata(request)`
 
-**OnError**: <code>[CustomFields.DeleteMetadataError](src/resources/custom-fields.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[CustomFields.DeleteMetadataError](src/resources/custom-fields.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customFields.deleteMetadata(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, CustomFields.DeleteMetadataError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4565,18 +7142,36 @@ Deletes a metafield from your Site. Removes the metafield and associated metadat
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.customFields.deleteMetafield({ resourceType });
+  await client.customFields.deleteMetafield({ resourceType: ResourceType.Subscriptions });
 } catch (err) {
-  if (err instanceof CustomFields.DeleteMetafieldError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type CustomFields.DeleteMetafieldError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.deleteMetafield({
+  resourceType: ResourceType.Subscriptions,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -4601,9 +7196,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.customFields.deleteMetafield(request)`
 
-**OnError**: <code>[CustomFields.DeleteMetafieldError](src/resources/custom-fields.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[CustomFields.DeleteMetafieldError](src/resources/custom-fields.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customFields.deleteMetafield(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, CustomFields.DeleteMetafieldError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4614,7 +7217,7 @@ try {
 </details>
 
 <details>
-<summary><code>listMetadata(request: CustomFields.ListMetadataRequest, options?: RequestOptions): ApiPromise&lt;PaginatedMetadata, ResponseError&gt;</code></summary>
+<summary><code>listMetadata(request: CustomFields.ListMetadataRequest, options?: RequestOptions): ApiPromise&lt;PaginatedMetadata, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4629,17 +7232,45 @@ Lists metadata and metafields for a specific customer or subscription.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customFields.listMetadata({ resourceType, resourceId });
+  const response = await client.customFields.listMetadata({
+    resourceType: ResourceType.Subscriptions,
+    resourceId: 1,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type PaginatedMetadata
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.listMetadata({
+  resourceType: ResourceType.Subscriptions,
+  resourceId: 1,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaginatedMetadata
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -4655,8 +7286,8 @@ try {
 | --- | --- | --- |
 | <code>resourceType</code> | <code>[ResourceType](src/models/resource-type.ts)</code> | The resource type to which the metafields belong. |
 | <code>resourceId</code> | <code>number</code> | The Advanced Billing id of the customer or the subscription for which the metadata applies |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 
 </dd>
 </dl>
@@ -4666,9 +7297,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaginatedMetadata](src/models/paginated-metadata.ts)</code>
+**Direct**: `await client.customFields.listMetadata(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[PaginatedMetadata](src/models/paginated-metadata.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customFields.listMetadata(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaginatedMetadata, ApiError&gt;</code>, with `result.value` of type <code>[PaginatedMetadata](src/models/paginated-metadata.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4679,7 +7318,7 @@ try {
 </details>
 
 <details>
-<summary><code>listMetadataForResourceType(request: CustomFields.ListMetadataForResourceTypeRequest, options?: RequestOptions): ApiPromise&lt;PaginatedMetadata, ResponseError&gt;</code></summary>
+<summary><code>listMetadataForResourceType(request: CustomFields.ListMetadataForResourceTypeRequest, options?: RequestOptions): ApiPromise&lt;PaginatedMetadata, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4694,17 +7333,45 @@ Lists metadata for a specified array of subscriptions or customers.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customFields.listMetadataForResourceType({ resourceType });
+  const response = await client.customFields.listMetadataForResourceType({
+    resourceType: ResourceType.Subscriptions,
+    page: 1,
+    perPage: 50,
+    dateField: BasicDateField.UpdatedAt,
+  });
   // TODO: Handle 'response' of type PaginatedMetadata
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.listMetadataForResourceType({
+  resourceType: ResourceType.Subscriptions,
+  page: 1,
+  perPage: 50,
+  dateField: BasicDateField.UpdatedAt,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaginatedMetadata
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -4719,8 +7386,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>resourceType</code> | <code>[ResourceType](src/models/resource-type.ts)</code> | The resource type to which the metafields belong. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>dateField?</code> | <code>[BasicDateField](src/models/basic-date-field.ts)</code> | The type of filter you would like to apply to your search. |
 | <code>startDate?</code> | <code>string</code> (date) | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns metadata with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | <code>endDate?</code> | <code>string</code> (date) | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns metadata with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
@@ -4738,9 +7405,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaginatedMetadata](src/models/paginated-metadata.ts)</code>
+**Direct**: `await client.customFields.listMetadataForResourceType(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[PaginatedMetadata](src/models/paginated-metadata.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customFields.listMetadataForResourceType(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaginatedMetadata, ApiError&gt;</code>, with `result.value` of type <code>[PaginatedMetadata](src/models/paginated-metadata.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4751,7 +7426,7 @@ try {
 </details>
 
 <details>
-<summary><code>listMetafields(request: CustomFields.ListMetafieldsRequest, options?: RequestOptions): ApiPromise&lt;ListMetafieldsResponse, ResponseError&gt;</code></summary>
+<summary><code>listMetafields(request: CustomFields.ListMetafieldsRequest, options?: RequestOptions): ApiPromise&lt;ListMetafieldsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4766,17 +7441,43 @@ Lists the metafields and their associated details for a Site and resource type. 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customFields.listMetafields({ resourceType });
+  const response = await client.customFields.listMetafields({
+    resourceType: ResourceType.Subscriptions,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ListMetafieldsResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.listMetafields({
+  resourceType: ResourceType.Subscriptions,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListMetafieldsResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -4792,8 +7493,8 @@ try {
 | --- | --- | --- |
 | <code>resourceType</code> | <code>[ResourceType](src/models/resource-type.ts)</code> | The resource type to which the metafields belong. |
 | <code>name?</code> | <code>string</code> | Filter by the name of the metafield. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
 
 </dd>
@@ -4804,9 +7505,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListMetafieldsResponse](src/models/list-metafields-response.ts)</code>
+**Direct**: `await client.customFields.listMetafields(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListMetafieldsResponse](src/models/list-metafields-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.customFields.listMetafields(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListMetafieldsResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListMetafieldsResponse](src/models/list-metafields-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4836,19 +7545,41 @@ Each site is limited to 100 unique metafields per resource. This means you can h
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customFields.updateMetadata({ resourceType, resourceId });
+  const response = await client.customFields.updateMetadata({
+    resourceType: ResourceType.Subscriptions,
+    resourceId: 1,
+  });
   // TODO: Handle 'response' of type Metadata[]
 } catch (err) {
-  if (err instanceof CustomFields.UpdateMetadataError && err.payload.kind === "singleErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type SingleErrorResponse1
-  }
+  // TODO: Handle 'err' of type CustomFields.UpdateMetadataError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.updateMetadata({
+  resourceType: ResourceType.Subscriptions,
+  resourceId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Metadata[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -4874,9 +7605,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Metadata](src/models/metadata.ts)[]</code>
+**Direct**: `await client.customFields.updateMetadata(request)`
 
-**OnError**: <code>[CustomFields.UpdateMetadataError](src/resources/custom-fields.ts)</code>
+- **OnSuccess**: <code>[Metadata](src/models/metadata.ts)[]</code>
+- **OnError**: throws <code>[CustomFields.UpdateMetadataError](src/resources/custom-fields.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customFields.updateMetadata(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Metadata[], CustomFields.UpdateMetadataError&gt;</code>, with `result.value` of type <code>[Metadata](src/models/metadata.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4923,19 +7662,37 @@ With this endpoint, you can:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.customFields.updateMetafield({ resourceType });
+  const response = await client.customFields.updateMetafield({ resourceType: ResourceType.Subscriptions });
   // TODO: Handle 'response' of type Metafield[]
 } catch (err) {
-  if (err instanceof CustomFields.UpdateMetafieldError && err.payload.kind === "singleErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type SingleErrorResponse1
-  }
+  // TODO: Handle 'err' of type CustomFields.UpdateMetafieldError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.customFields.updateMetafield({
+  resourceType: ResourceType.Subscriptions,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Metafield[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -4960,9 +7717,116 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Metafield](src/models/metafield.ts)[]</code>
+**Direct**: `await client.customFields.updateMetafield(request)`
 
-**OnError**: <code>[CustomFields.UpdateMetafieldError](src/resources/custom-fields.ts)</code>
+- **OnSuccess**: <code>[Metafield](src/models/metafield.ts)[]</code>
+- **OnError**: throws <code>[CustomFields.UpdateMetafieldError](src/resources/custom-fields.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.customFields.updateMetafield(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Metafield[], CustomFields.UpdateMetafieldError&gt;</code>, with `result.value` of type <code>[Metafield](src/models/metafield.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+## Entitlements
+
+> Source: [Entitlements](src/resources/entitlements.ts)
+
+<details>
+<summary><code>readSubscriptionEntitlements(request: Entitlements.ReadSubscriptionEntitlementsRequest, options?: RequestOptions): ApiPromise&lt;AggregatedEntitlementsResponse, Entitlements.ReadSubscriptionEntitlementsError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Returns every feature a subscription is entitled to, collapsed into one entry per feature key and periodicity window across all products and components on the subscription. A `usage_limit` feature granted with two different periodicities comes back as two entries sharing one `feature_key`, each identified by its own `periodicity_key`.
+
+When more than one product or component grants the same feature key and periodicity, the values are combined:
+- **`access_right`** features are combined with a boolean OR. If any contributor grants access, the aggregate is `true`. `source_products` only lists the contributors that granted `true`.
+- **`usage_limit`** features are summed across every contributor sharing the same periodicity window. `source_products` lists every contributor. Grants with different periodicities are not summed together. Each periodicity is returned as a separate entry.
+- **`service_right`** features are not combined: one contributor's value wins. Do not rely on which one when several grant the same feature key.
+
+`enabled` reflects both the aggregated value and the subscription's state. The field is `false` whenever the subscription is not in a live state (`active`, `trialing`, `assessing`, `past_due`, `soft_failure`), regardless of the aggregated value. Entitlements deliberately stay enabled through dunning.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.entitlements.readSubscriptionEntitlements({ subscriptionId: 1 });
+  // TODO: Handle 'response' of type AggregatedEntitlementsResponse
+} catch (err) {
+  // TODO: Handle 'err' of type Entitlements.ReadSubscriptionEntitlementsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.entitlements.readSubscriptionEntitlements({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type AggregatedEntitlementsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>subscriptionId</code> | <code>number</code> | The Chargify id of the subscription. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.entitlements.readSubscriptionEntitlements(request)`
+
+- **OnSuccess**: <code>[AggregatedEntitlementsResponse](src/models/aggregated-entitlements-response.ts)</code>
+- **OnError**: throws <code>[Entitlements.ReadSubscriptionEntitlementsError](src/resources/entitlements.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.entitlements.readSubscriptionEntitlements(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;AggregatedEntitlementsResponse, Entitlements.ReadSubscriptionEntitlementsError&gt;</code>, with `result.value` of type <code>[AggregatedEntitlementsResponse](src/models/aggregated-entitlements-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -4977,7 +7841,7 @@ try {
 > Source: [Events](src/resources/events.ts)
 
 <details>
-<summary><code>listEvents(request: Events.ListEventsRequest, options?: RequestOptions): ApiPromise&lt;EventResponse[], ResponseError&gt;</code></summary>
+<summary><code>listEvents(request: Events.ListEventsRequest, options?: RequestOptions): ApiPromise&lt;EventResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4989,29 +7853,11 @@ try {
 
 Lists events for a site.
 
-## Events Intro
+Events include various activity that happens around a Site. This information is **especially** useful to track down issues that arise when subscriptions are not created due to errors.
 
-Advanced Billing Events include various activity that happens around a Site. This information is **especially** useful to track down issues that arise when subscriptions are not created due to errors.
+Within the UI, Events are referred to as Site Activity. For more information, see [Site Activity](https://maxio.zendesk.com/hc/en-us/articles/24250671733517-Site-Activity).
 
-Within the Advanced Billing UI, "Events" are referred to as "Site Activity".  See the [Site Activity](https://maxio.zendesk.com/hc/en-us/articles/24250671733517-Site-Activity) article in the product documentation for details on how to record view Events / Site Activty in the Advanced Billing UI.
-
-If you’re using the [enhanced Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology), you’ll see updated naming in webhook events and messages.
-
-Event name changes:
-
-- subscription_product_change → subscription_plan_change
-- component_allocation_change → allocation_change
-- component_billing_date_change → product_billing_date_change
-
-Message updates:
-
-- “Plan changed on Subscription from previous plan to new plan”
-- “Successful payment for allocation changes to Product on Subscription”
-- “Failed payment for allocation changes to Product on Subscription”
-
-## List Events for a Site
-
-This method will retrieve a list of events for a site. Use query string filters to narrow down results. You may use the `key` filter as part of your query string to narrow down results.
+Use query string filters to narrow down results. You can use the `filter` parameter to filter by event key.
 
 ### Legacy Filters
 
@@ -5025,7 +7871,7 @@ The following keys are no longer supported.
 + `zferral_revenue_post_success` - (Specific to the deprecated Zferral integration)
 
 ## Event Key
-The event type is identified by the key property. You can check supported keys [here]($m/Event%20Key).
+The event type is identified by the key property. See [Event Key]($m/Event%20Key) for a complete list of supported keys.
 
 ## Event Specific Data
 
@@ -5070,20 +7916,64 @@ Here’s an example event for the `subscription_state_change` event:
  }
 ```
 
+## Enhanced Catalog Experience
+
+If you’re using the [enhanced Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology), you’ll see updated naming in webhook events and messages.
+
+Event name changes:
+
+- subscription_product_change → subscription_plan_change
+- component_allocation_change → allocation_change
+- component_billing_date_change → product_billing_date_change
+
+Message updates:
+
+- “Plan changed on Subscription from previous plan to new plan”
+- “Successful payment for allocation changes to Product on Subscription”
+- “Failed payment for allocation changes to Product on Subscription”
+
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.events.listEvents();
+  const response = await client.events.listEvents({
+    page: 1,
+    perPage: 50,
+    filter: [EventKey.CustomFieldValueChange, EventKey.PaymentSuccess],
+    dateField: ListEventsDateField.CreatedAt,
+  });
   // TODO: Handle 'response' of type EventResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.events.listEvents({
+  page: 1,
+  perPage: 50,
+  filter: [EventKey.CustomFieldValueChange, EventKey.PaymentSuccess],
+  dateField: ListEventsDateField.CreatedAt,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type EventResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -5097,11 +7987,11 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>sinceId?</code> | <code>number</code> | Returns events with an id greater than or equal to the one specified. |
 | <code>maxId?</code> | <code>number</code> | Returns events with an id less than or equal to the one specified. |
-| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned events. |
+| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned events.<br>**Default**: "desc" |
 | <code>filter?</code> | <code>[EventKey](src/models/event-key.ts)[]</code> | You can pass multiple event keys after comma.<br>Use in query `filter=signup_success,payment_success`. |
 | <code>dateField?</code> | <code>[ListEventsDateField](src/models/list-events-date-field.ts)</code> | The type of filter you would like to apply to your search. |
 | <code>startDate?</code> | <code>string</code> | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns components with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
@@ -5117,9 +8007,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[EventResponse](src/models/event-response.ts)[]</code>
+**Direct**: `await client.events.listEvents(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[EventResponse](src/models/event-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.events.listEvents(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;EventResponse[], ApiError&gt;</code>, with `result.value` of type <code>[EventResponse](src/models/event-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5130,7 +8028,7 @@ try {
 </details>
 
 <details>
-<summary><code>listSubscriptionEvents(request: Events.ListSubscriptionEventsRequest, options?: RequestOptions): ApiPromise&lt;EventResponse[], ResponseError&gt;</code></summary>
+<summary><code>listSubscriptionEvents(request: Events.ListSubscriptionEventsRequest, options?: RequestOptions): ApiPromise&lt;EventResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -5143,7 +8041,15 @@ try {
 Lists events for a subscription.
 
 ## Event Key
-The event type is identified by the key property. You can check supported keys [here]($m/Event%20Key).
+The event type is identified by the key property. See [Event Key]($m/Event%20Key) for a complete list of supported keys.
+
+## Event Specific Data
+
+Different event types may include additional data in `event_specific_data` property.
+While some events share the same schema for `event_specific_data`, others may not include it at all.
+For precise mappings from key to event_specific_data, refer to [Event]($m/Event).
+
+## Enhanced Catalog Experience
 
 If you’re using the [enhanced Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology), you’ll see updated naming in webhook events and messages.
 
@@ -5159,26 +8065,48 @@ Message updates:
 - “Failed payment for allocation changes to Product on Subscription”
 - “Plan changed on Subscription from previous plan to new plan”
 
-## Event Specific Data
-
-Different event types may include additional data in `event_specific_data` property.
-While some events share the same schema for `event_specific_data`, others may not include it at all.
-For precise mappings from key to event_specific_data, refer to [Event]($m/Event).
-
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.events.listSubscriptionEvents({ subscriptionId });
+  const response = await client.events.listSubscriptionEvents({
+    subscriptionId: 1,
+    page: 1,
+    perPage: 50,
+    filter: [EventKey.CustomFieldValueChange, EventKey.PaymentSuccess],
+  });
   // TODO: Handle 'response' of type EventResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.events.listSubscriptionEvents({
+  subscriptionId: 1,
+  page: 1,
+  perPage: 50,
+  filter: [EventKey.CustomFieldValueChange, EventKey.PaymentSuccess],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type EventResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -5193,11 +8121,11 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>subscriptionId</code> | <code>number</code> | The Chargify id of the subscription. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>sinceId?</code> | <code>number</code> | Returns events with an id greater than or equal to the one specified. |
 | <code>maxId?</code> | <code>number</code> | Returns events with an id less than or equal to the one specified. |
-| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned events. |
+| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned events.<br>**Default**: "desc" |
 | <code>filter?</code> | <code>[EventKey](src/models/event-key.ts)[]</code> | You can pass multiple event keys after comma.<br>Use in query `filter=signup_success,payment_success`. |
 
 </dd>
@@ -5208,9 +8136,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[EventResponse](src/models/event-response.ts)[]</code>
+**Direct**: `await client.events.listSubscriptionEvents(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[EventResponse](src/models/event-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.events.listSubscriptionEvents(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;EventResponse[], ApiError&gt;</code>, with `result.value` of type <code>[EventResponse](src/models/event-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5221,7 +8157,7 @@ try {
 </details>
 
 <details>
-<summary><code>readEventsCount(request: Events.ReadEventsCountRequest, options?: RequestOptions): ApiPromise&lt;CountResponse, ResponseError&gt;</code></summary>
+<summary><code>readEventsCount(request: Events.ReadEventsCountRequest, options?: RequestOptions): ApiPromise&lt;CountResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -5250,17 +8186,43 @@ Message updates:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.events.readEventsCount();
+  const response = await client.events.readEventsCount({
+    page: 1,
+    perPage: 50,
+    filter: [EventKey.CustomFieldValueChange, EventKey.PaymentSuccess],
+  });
   // TODO: Handle 'response' of type CountResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.events.readEventsCount({
+  page: 1,
+  perPage: 50,
+  filter: [EventKey.CustomFieldValueChange, EventKey.PaymentSuccess],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CountResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -5274,11 +8236,11 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>sinceId?</code> | <code>number</code> | Returns events with an id greater than or equal to the one specified. |
 | <code>maxId?</code> | <code>number</code> | Returns events with an id less than or equal to the one specified. |
-| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned events. |
+| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned events.<br>**Default**: "desc" |
 | <code>filter?</code> | <code>[EventKey](src/models/event-key.ts)[]</code> | You can pass multiple event keys after comma.<br>Use in query `filter=signup_success,payment_success`. |
 
 </dd>
@@ -5289,9 +8251,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CountResponse](src/models/count-response.ts)</code>
+**Direct**: `await client.events.readEventsCount(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CountResponse](src/models/count-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.events.readEventsCount(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CountResponse, ApiError&gt;</code>, with `result.value` of type <code>[CountResponse](src/models/count-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5325,19 +8295,41 @@ You may specify component and/or price point by using either the numeric ID or t
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.eventsBasedBillingSegments.bulkCreateSegments({ componentId, pricePointId });
+  const response = await client.eventsBasedBillingSegments.bulkCreateSegments({
+    componentId: "some example string",
+    pricePointId: "some example string",
+  });
   // TODO: Handle 'response' of type ListSegmentsResponse
 } catch (err) {
-  if (err instanceof EventsBasedBillingSegments.BulkCreateSegmentsError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type EventsBasedBillingSegments.BulkCreateSegmentsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.eventsBasedBillingSegments.bulkCreateSegments({
+  componentId: "some example string",
+  pricePointId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListSegmentsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -5363,9 +8355,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+**Direct**: `await client.eventsBasedBillingSegments.bulkCreateSegments(request)`
 
-**OnError**: <code>[EventsBasedBillingSegments.BulkCreateSegmentsError](src/resources/events-based-billing-segments.ts)</code>
+- **OnSuccess**: <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+- **OnError**: throws <code>[EventsBasedBillingSegments.BulkCreateSegmentsError](src/resources/events-based-billing-segments.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.eventsBasedBillingSegments.bulkCreateSegments(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListSegmentsResponse, EventsBasedBillingSegments.BulkCreateSegmentsError&gt;</code>, with `result.value` of type <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5395,19 +8395,41 @@ You may specify component and/or price point by using either the numeric ID or t
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.eventsBasedBillingSegments.bulkUpdateSegments({ componentId, pricePointId });
+  const response = await client.eventsBasedBillingSegments.bulkUpdateSegments({
+    componentId: "some example string",
+    pricePointId: "some example string",
+  });
   // TODO: Handle 'response' of type ListSegmentsResponse
 } catch (err) {
-  if (err instanceof EventsBasedBillingSegments.BulkUpdateSegmentsError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type EventsBasedBillingSegments.BulkUpdateSegmentsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.eventsBasedBillingSegments.bulkUpdateSegments({
+  componentId: "some example string",
+  pricePointId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListSegmentsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -5433,9 +8455,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+**Direct**: `await client.eventsBasedBillingSegments.bulkUpdateSegments(request)`
 
-**OnError**: <code>[EventsBasedBillingSegments.BulkUpdateSegmentsError](src/resources/events-based-billing-segments.ts)</code>
+- **OnSuccess**: <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+- **OnError**: throws <code>[EventsBasedBillingSegments.BulkUpdateSegmentsError](src/resources/events-based-billing-segments.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.eventsBasedBillingSegments.bulkUpdateSegments(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListSegmentsResponse, EventsBasedBillingSegments.BulkUpdateSegmentsError&gt;</code>, with `result.value` of type <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5463,19 +8493,63 @@ You may specify component and/or price point by using either the numeric ID or t
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.eventsBasedBillingSegments.createSegment({ componentId, pricePointId });
+  const response = await client.eventsBasedBillingSegments.createSegment({
+    componentId: "some example string",
+    pricePointId: "some example string",
+    body: {
+      segment: {
+        segmentProperty1Value: "France",
+        segmentProperty2Value: "Spain",
+        pricingScheme: PricingScheme.Volume,
+        prices: [
+          { startingQuantity: 1, endingQuantity: 10000, unitPrice: 0.19 },
+          { startingQuantity: 10001, unitPrice: 0.09 },
+        ],
+      },
+    },
+  });
   // TODO: Handle 'response' of type SegmentResponse
 } catch (err) {
-  if (err instanceof EventsBasedBillingSegments.CreateSegmentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type EventsBasedBillingSegments.CreateSegmentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.eventsBasedBillingSegments.createSegment({
+  componentId: "some example string",
+  pricePointId: "some example string",
+  body: {
+    segment: {
+      segmentProperty1Value: "France",
+      segmentProperty2Value: "Spain",
+      pricingScheme: PricingScheme.Volume,
+      prices: [
+        { startingQuantity: 1, endingQuantity: 10000, unitPrice: 0.19 },
+        { startingQuantity: 10001, unitPrice: 0.09 },
+      ],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SegmentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -5501,9 +8575,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SegmentResponse](src/models/segment-response.ts)</code>
+**Direct**: `await client.eventsBasedBillingSegments.createSegment(request)`
 
-**OnError**: <code>[EventsBasedBillingSegments.CreateSegmentError](src/resources/events-based-billing-segments.ts)</code>
+- **OnSuccess**: <code>[SegmentResponse](src/models/segment-response.ts)</code>
+- **OnError**: throws <code>[EventsBasedBillingSegments.CreateSegmentError](src/resources/events-based-billing-segments.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.eventsBasedBillingSegments.createSegment(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SegmentResponse, EventsBasedBillingSegments.CreateSegmentError&gt;</code>, with `result.value` of type <code>[SegmentResponse](src/models/segment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5531,18 +8613,42 @@ You may specify component and/or price point by using either the numeric ID or t
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.eventsBasedBillingSegments.deleteSegment({ componentId, pricePointId, id });
+  await client.eventsBasedBillingSegments.deleteSegment({
+    componentId: "some example string",
+    pricePointId: "some example string",
+    id: 1.5,
+  });
 } catch (err) {
-  if (err instanceof EventsBasedBillingSegments.DeleteSegmentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type EventsBasedBillingSegments.DeleteSegmentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.eventsBasedBillingSegments.deleteSegment({
+  componentId: "some example string",
+  pricePointId: "some example string",
+  id: 1.5,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -5568,9 +8674,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.eventsBasedBillingSegments.deleteSegment(request)`
 
-**OnError**: <code>[EventsBasedBillingSegments.DeleteSegmentError](src/resources/events-based-billing-segments.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[EventsBasedBillingSegments.DeleteSegmentError](src/resources/events-based-billing-segments.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.eventsBasedBillingSegments.deleteSegment(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, EventsBasedBillingSegments.DeleteSegmentError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5600,7 +8714,7 @@ You may specify component and/or price point by using either the numeric ID or t
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -5608,17 +8722,37 @@ You may specify component and/or price point by using either the numeric ID or t
 ```ts
 try {
   const response = await client.eventsBasedBillingSegments.listSegmentsForPricePoint({
-    componentId,
-    pricePointId,
+    componentId: "some example string",
+    pricePointId: "some example string",
+    page: 1,
+    perPage: 50,
   });
   // TODO: Handle 'response' of type ListSegmentsResponse
 } catch (err) {
-  if (
-    err instanceof EventsBasedBillingSegments.ListSegmentsForPricePointError &&
-      err.payload.kind === "error404"
-  ) {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type EventsBasedBillingSegments.ListSegmentsForPricePointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.eventsBasedBillingSegments.listSegmentsForPricePoint({
+  componentId: "some example string",
+  pricePointId: "some example string",
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListSegmentsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -5634,8 +8768,8 @@ try {
 | --- | --- | --- |
 | <code>componentId</code> | <code>string</code> | ID or Handle for the Component |
 | <code>pricePointId</code> | <code>string</code> | ID or Handle for the Price Point belonging to the Component |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 30. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 30 |
 | <code>filter?</code> | <code>[ListSegmentsFilter](src/models/list-segments-filter.ts)</code> | Filter to use for List Segments for a Price Point operation |
 
 </dd>
@@ -5646,9 +8780,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+**Direct**: `await client.eventsBasedBillingSegments.listSegmentsForPricePoint(request)`
 
-**OnError**: <code>[EventsBasedBillingSegments.ListSegmentsForPricePointError](src/resources/events-based-billing-segments.ts)</code>
+- **OnSuccess**: <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+- **OnError**: throws <code>[EventsBasedBillingSegments.ListSegmentsForPricePointError](src/resources/events-based-billing-segments.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.eventsBasedBillingSegments.listSegmentsForPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListSegmentsResponse, EventsBasedBillingSegments.ListSegmentsForPricePointError&gt;</code>, with `result.value` of type <code>[ListSegmentsResponse](src/models/list-segments-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5669,26 +8811,50 @@ try {
 <dl>
 <dd>
 
-Updates a single segment for a component with a segmented metric. It allows you to update the pricing for the segment.
+Updates a single segment for a component with a segmented metric. You can also update the pricing for the segment.
 
-You may specify component and/or price point by using either the numeric ID or the `handle:gold` syntax.
+You can specify component and/or price point by using either the numeric ID or the `handle:gold` syntax.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.eventsBasedBillingSegments.updateSegment({ componentId, pricePointId, id });
+  const response = await client.eventsBasedBillingSegments.updateSegment({
+    componentId: "some example string",
+    pricePointId: "some example string",
+    id: 1.5,
+  });
   // TODO: Handle 'response' of type SegmentResponse
 } catch (err) {
-  if (err instanceof EventsBasedBillingSegments.UpdateSegmentError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type EventsBasedBillingSegments.UpdateSegmentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.eventsBasedBillingSegments.updateSegment({
+  componentId: "some example string",
+  pricePointId: "some example string",
+  id: 1.5,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SegmentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -5715,9 +8881,568 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SegmentResponse](src/models/segment-response.ts)</code>
+**Direct**: `await client.eventsBasedBillingSegments.updateSegment(request)`
 
-**OnError**: <code>[EventsBasedBillingSegments.UpdateSegmentError](src/resources/events-based-billing-segments.ts)</code>
+- **OnSuccess**: <code>[SegmentResponse](src/models/segment-response.ts)</code>
+- **OnError**: throws <code>[EventsBasedBillingSegments.UpdateSegmentError](src/resources/events-based-billing-segments.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.eventsBasedBillingSegments.updateSegment(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SegmentResponse, EventsBasedBillingSegments.UpdateSegmentError&gt;</code>, with `result.value` of type <code>[SegmentResponse](src/models/segment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+## FeatureTemplates
+
+> Source: [FeatureTemplates](src/resources/feature-templates.ts)
+
+<details>
+<summary><code>archiveFeatureTemplate(request: FeatureTemplates.ArchiveFeatureTemplateRequest, options?: RequestOptions): ApiPromise&lt;undefined, FeatureTemplates.ArchiveFeatureTemplateError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Archives a feature template. Archived feature templates are not addressable via [Read Feature Template]($e/Feature%20Templates/readFeatureTemplate) or [Update Feature Template]($e/Feature%20Templates/updateFeatureTemplate). Both endpoints return `404` until the template is restored.
+
+The feature template record itself is never hard-deleted, and can always be restored with [Restore Feature Template]($e/Feature%20Templates/restoreFeatureTemplate). Reversibility does not extend to `remove_from_catalog=true`: the feature catalog items and entitlements that parameter destroys are gone permanently, and restoring the template will not bring subscriber access back.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  await client.featureTemplates.archiveFeatureTemplate({ id: 1 });
+} catch (err) {
+  // TODO: Handle 'err' of type FeatureTemplates.ArchiveFeatureTemplateError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.featureTemplates.archiveFeatureTemplate({ id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature template. |
+| <code>removeFromCatalog?</code> | <code>boolean</code> | When `true`, also destroys every feature catalog item created from this template and cascades to their entitlements, revoking subscriber access immediately. When `false` (default), the feature template and its feature catalog items are archived, and existing entitlements are preserved.<br>**Default**: false |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.featureTemplates.archiveFeatureTemplate(request)`
+
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[FeatureTemplates.ArchiveFeatureTemplateError](src/resources/feature-templates.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.featureTemplates.archiveFeatureTemplate(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, FeatureTemplates.ArchiveFeatureTemplateError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>createFeatureTemplate(request: FeatureTemplates.CreateFeatureTemplateRequestParams, options?: RequestOptions): ApiPromise&lt;FeatureTemplateResponse, FeatureTemplates.CreateFeatureTemplateError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Defines a new feature at the site level. Feature templates aren't billable on their own. Attach a template to products or components to grant the feature to subscribers.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.featureTemplates.createFeatureTemplate({
+    body: { feature: { key: "sso", name: "Single Sign-On", kind: FeatureKind.AccessRight } },
+  });
+  // TODO: Handle 'response' of type FeatureTemplateResponse
+} catch (err) {
+  // TODO: Handle 'err' of type FeatureTemplates.CreateFeatureTemplateError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.featureTemplates.createFeatureTemplate({
+  body: { feature: { key: "sso", name: "Single Sign-On", kind: FeatureKind.AccessRight } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureTemplateResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>body?</code> | <code>[CreateFeatureTemplateRequest](src/models/create-feature-template-request.ts)</code> | - |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.featureTemplates.createFeatureTemplate(request)`
+
+- **OnSuccess**: <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: throws <code>[FeatureTemplates.CreateFeatureTemplateError](src/resources/feature-templates.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.featureTemplates.createFeatureTemplate(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureTemplateResponse, FeatureTemplates.CreateFeatureTemplateError&gt;</code>, with `result.value` of type <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>listFeatureTemplates(request: FeatureTemplates.ListFeatureTemplatesRequest, options?: RequestOptions): ApiPromise&lt;FeatureTemplatesListResponse, FeatureTemplates.ListFeatureTemplatesError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Lists the feature templates defined for your site, active (non-archived) ones by default. Pass `status=archived` or `status=all` to widen the result set.
+
+Supply `page` or `per_page` to paginate. Without either parameter, the response includes the full result set.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.featureTemplates.listFeatureTemplates({ page: 1, perPage: 50 });
+  // TODO: Handle 'response' of type FeatureTemplatesListResponse
+} catch (err) {
+  // TODO: Handle 'err' of type FeatureTemplates.ListFeatureTemplatesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.featureTemplates.listFeatureTemplates({ page: 1, perPage: 50 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureTemplatesListResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
+| <code>status?</code> | <code>[Status1](src/models/status1.ts)</code> | Filters by archived state. Defaults to `active` (non-archived templates only).<br>**Default**: "active" |
+| <code>q?</code> | <code>string</code> | Filters to feature templates whose name contains this substring (case-insensitive). |
+| <code>kind?</code> | <code>[Kind](src/models/kind.ts)</code> | Filters by feature kind. |
+| <code>updatedFrom?</code> | <code>string</code> (date) | Returns feature templates updated on or after this date. |
+| <code>updatedTo?</code> | <code>string</code> (date) | Returns feature templates updated on or before this date. |
+| <code>sortBy?</code> | <code>[SortBy](src/models/sort-by.ts)</code> | The field to sort results by.<br>**Default**: "name" |
+| <code>sortDirection?</code> | <code>[SortDirection](src/models/sort-direction.ts)</code> | The sort direction of the returned feature templates.<br>**Default**: "asc" |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.featureTemplates.listFeatureTemplates(request)`
+
+- **OnSuccess**: <code>[FeatureTemplatesListResponse](src/models/feature-templates-list-response.ts)</code>
+- **OnError**: throws <code>[FeatureTemplates.ListFeatureTemplatesError](src/resources/feature-templates.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.featureTemplates.listFeatureTemplates(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureTemplatesListResponse, FeatureTemplates.ListFeatureTemplatesError&gt;</code>, with `result.value` of type <code>[FeatureTemplatesListResponse](src/models/feature-templates-list-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>readFeatureTemplate(request: FeatureTemplates.ReadFeatureTemplateRequest, options?: RequestOptions): ApiPromise&lt;FeatureTemplateResponse, FeatureTemplates.ReadFeatureTemplateError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Returns a single feature template. Archived feature templates are not addressable here and return `404`. Restore a template first to read or update it.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.featureTemplates.readFeatureTemplate({ id: 1 });
+  // TODO: Handle 'response' of type FeatureTemplateResponse
+} catch (err) {
+  // TODO: Handle 'err' of type FeatureTemplates.ReadFeatureTemplateError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.featureTemplates.readFeatureTemplate({ id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureTemplateResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature template. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.featureTemplates.readFeatureTemplate(request)`
+
+- **OnSuccess**: <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: throws <code>[FeatureTemplates.ReadFeatureTemplateError](src/resources/feature-templates.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.featureTemplates.readFeatureTemplate(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureTemplateResponse, FeatureTemplates.ReadFeatureTemplateError&gt;</code>, with `result.value` of type <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>restoreFeatureTemplate(request: FeatureTemplates.RestoreFeatureTemplateRequest, options?: RequestOptions): ApiPromise&lt;FeatureTemplateResponse, FeatureTemplates.RestoreFeatureTemplateError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Clears the feature template's archived state. Feature catalog items created from this template are not automatically restored. Restore each one individually.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.featureTemplates.restoreFeatureTemplate({ id: 1 });
+  // TODO: Handle 'response' of type FeatureTemplateResponse
+} catch (err) {
+  // TODO: Handle 'err' of type FeatureTemplates.RestoreFeatureTemplateError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.featureTemplates.restoreFeatureTemplate({ id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureTemplateResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature template. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.featureTemplates.restoreFeatureTemplate(request)`
+
+- **OnSuccess**: <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: throws <code>[FeatureTemplates.RestoreFeatureTemplateError](src/resources/feature-templates.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.featureTemplates.restoreFeatureTemplate(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureTemplateResponse, FeatureTemplates.RestoreFeatureTemplateError&gt;</code>, with `result.value` of type <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>updateFeatureTemplate(request: FeatureTemplates.UpdateFeatureTemplateRequestParams, options?: RequestOptions): ApiPromise&lt;FeatureTemplateResponse, FeatureTemplates.UpdateFeatureTemplateError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Updates the name, description, unit, value type, default value, or default periodicity of a feature template. `key` is rejected on every update. `kind` is rejected once any feature catalog item has been created from this template.
+
+Archived feature templates are not addressable here and return `404`. Restore a template first to update it.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.featureTemplates.updateFeatureTemplate({ id: 1 });
+  // TODO: Handle 'response' of type FeatureTemplateResponse
+} catch (err) {
+  // TODO: Handle 'err' of type FeatureTemplates.UpdateFeatureTemplateError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.featureTemplates.updateFeatureTemplate({ id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureTemplateResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature template. |
+| <code>body?</code> | <code>[UpdateFeatureTemplateRequest](src/models/update-feature-template-request.ts)</code> | - |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.featureTemplates.updateFeatureTemplate(request)`
+
+- **OnSuccess**: <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: throws <code>[FeatureTemplates.UpdateFeatureTemplateError](src/resources/feature-templates.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.featureTemplates.updateFeatureTemplate(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureTemplateResponse, FeatureTemplates.UpdateFeatureTemplateError&gt;</code>, with `result.value` of type <code>[FeatureTemplateResponse](src/models/feature-template-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5732,7 +9457,7 @@ try {
 > Source: [Insights](src/resources/insights.ts)
 
 <details>
-<summary><code>listMrrMovements(request: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise&lt;ListMrrResponse, ResponseError&gt;</code></summary>
+<summary><code>listMrrMovements(request: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise&lt;ListMrrResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -5768,17 +9493,35 @@ Usage includes revenue from:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.insights.listMrrMovements();
+  const response = await client.insights.listMrrMovements({ page: 1, perPage: 20 });
   // TODO: Handle 'response' of type ListMrrResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.insights.listMrrMovements({ page: 1, perPage: 20 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListMrrResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -5793,8 +9536,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>subscriptionId?</code> | <code>number</code> | (Optional) Filter results by subscription. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 10. The maximum allowed values is 50; any per_page value over 50 will be changed to 50.<br>Use in query `per_page=20`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 10. The maximum allowed values is 50; any per_page value over 50 will be changed to 50.<br>Use in query `per_page=20`.<br>**Default**: 10 |
 | <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
 
 </dd>
@@ -5805,9 +9548,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListMrrResponse](src/models/list-mrr-response.ts)</code>
+**Direct**: `await client.insights.listMrrMovements(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListMrrResponse](src/models/list-mrr-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.insights.listMrrMovements(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListMrrResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListMrrResponse](src/models/list-mrr-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5833,22 +9584,45 @@ Lists your site's current MRR, including plan and usage breakouts split per subs
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.insights.listMrrPerSubscription();
+  const response = await client.insights.listMrrPerSubscription({
+    atTime: "at_time=2022-01-10T10:00:00-05:00",
+    page: 1,
+    perPage: 50,
+    direction: Direction.Desc,
+  });
   // TODO: Handle 'response' of type SubscriptionMrrResponse
 } catch (err) {
-  if (
-    err instanceof Insights.ListMrrPerSubscriptionError &&
-      err.payload.kind === "subscriptionsMrrErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type SubscriptionsMrrErrorResponse1
-  }
+  // TODO: Handle 'err' of type Insights.ListMrrPerSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.insights.listMrrPerSubscription({
+  atTime: "at_time=2022-01-10T10:00:00-05:00",
+  page: 1,
+  perPage: 50,
+  direction: Direction.Desc,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionMrrResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -5864,8 +9638,8 @@ try {
 | --- | --- | --- |
 | <code>filter?</code> | <code>[ListMrrFilter](src/models/list-mrr-filter.ts)</code> | Filter to use for List MRR per subscription operation |
 | <code>atTime?</code> | <code>string</code> | Submit a timestamp in ISO8601 format to request MRR for a historic time. Use in query: `at_time=2022-01-10T10:00:00-05:00`. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | Controls the order in which results are returned. Records are ordered by subscription_id in ascending order by default. Use in query `direction=desc`. |
 
 </dd>
@@ -5876,9 +9650,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionMrrResponse](src/models/subscription-mrr-response.ts)</code>
+**Direct**: `await client.insights.listMrrPerSubscription(request)`
 
-**OnError**: <code>[Insights.ListMrrPerSubscriptionError](src/resources/insights.ts)</code>
+- **OnSuccess**: <code>[SubscriptionMrrResponse](src/models/subscription-mrr-response.ts)</code>
+- **OnError**: throws <code>[Insights.ListMrrPerSubscriptionError](src/resources/insights.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.insights.listMrrPerSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionMrrResponse, Insights.ListMrrPerSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionMrrResponse](src/models/subscription-mrr-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5889,7 +9671,7 @@ try {
 </details>
 
 <details>
-<summary><code>readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise&lt;MrrResponse, ResponseError&gt;</code></summary>
+<summary><code>readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise&lt;MrrResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -5904,7 +9686,7 @@ Returns your site's current MRR, including plan and usage breakouts.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -5914,7 +9696,25 @@ try {
   const response = await client.insights.readMrr();
   // TODO: Handle 'response' of type MrrResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.insights.readMrr().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type MrrResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -5939,9 +9739,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[MrrResponse](src/models/mrr-response.ts)</code>
+**Direct**: `await client.insights.readMrr(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[MrrResponse](src/models/mrr-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.insights.readMrr(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;MrrResponse, ApiError&gt;</code>, with `result.value` of type <code>[MrrResponse](src/models/mrr-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -5952,7 +9760,7 @@ try {
 </details>
 
 <details>
-<summary><code>readSiteStats(options?: RequestOptions): ApiPromise&lt;SiteSummary, ResponseError&gt;</code></summary>
+<summary><code>readSiteStats(options?: RequestOptions): ApiPromise&lt;SiteSummary, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -5975,7 +9783,7 @@ https://subdomain.chargify.com/dashboard
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -5985,7 +9793,25 @@ try {
   const response = await client.insights.readSiteStats();
   // TODO: Handle 'response' of type SiteSummary
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.insights.readSiteStats().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SiteSummary
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -5997,9 +9823,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SiteSummary](src/models/site-summary.ts)</code>
+**Direct**: `await client.insights.readSiteStats()`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SiteSummary](src/models/site-summary.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.insights.readSiteStats().asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SiteSummary, ApiError&gt;</code>, with `result.value` of type <code>[SiteSummary](src/models/site-summary.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6207,19 +10041,41 @@ By default, invoices will be created with open status. Possible alternative is `
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.createInvoice({ subscriptionId });
+  const response = await client.invoices.createInvoice({
+    subscriptionId: 1,
+    body: { invoice: { lineItems: [{ title: "A Product", quantity: 12, unitPrice: "150.00" }] } },
+  });
   // TODO: Handle 'response' of type InvoiceResponse
 } catch (err) {
-  if (err instanceof Invoices.CreateInvoiceError && err.payload.kind === "errorArrayMapResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.CreateInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.createInvoice({
+  subscriptionId: 1,
+  body: { invoice: { lineItems: [{ title: "A Product", quantity: 12, unitPrice: "150.00" }] } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type InvoiceResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -6244,9 +10100,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[InvoiceResponse](src/models/invoice-response.ts)</code>
+**Direct**: `await client.invoices.createInvoice(request)`
 
-**OnError**: <code>[Invoices.CreateInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[InvoiceResponse](src/models/invoice-response.ts)</code>
+- **OnError**: throws <code>[Invoices.CreateInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.createInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;InvoiceResponse, Invoices.CreateInvoiceError&gt;</code>, with `result.value` of type <code>[InvoiceResponse](src/models/invoice-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6276,18 +10140,37 @@ A successful deletion returns a `204 No Content` response and the invoice is per
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.invoices.deleteInvoice({ subscriptionId, uid });
+  await client.invoices.deleteInvoice({ subscriptionId: 1, uid: "some example string" });
 } catch (err) {
-  if (err instanceof Invoices.DeleteInvoiceError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.DeleteInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.deleteInvoice({
+  subscriptionId: 1,
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -6312,9 +10195,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.invoices.deleteInvoice(request)`
 
-**OnError**: <code>[Invoices.DeleteInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[Invoices.DeleteInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.deleteInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, Invoices.DeleteInvoiceError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6349,19 +10240,35 @@ For Automatic subscriptions, prepayments and service credits will apply to the i
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.issueInvoice({ uid });
+  const response = await client.invoices.issueInvoice({ uid: "some example string" });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof Invoices.IssueInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Invoices.IssueInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.issueInvoice({ uid: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -6386,9 +10293,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.invoices.issueInvoice(request)`
 
-**OnError**: <code>[Invoices.IssueInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[Invoices.IssueInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.issueInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, Invoices.IssueInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6399,7 +10314,7 @@ try {
 </details>
 
 <details>
-<summary><code>listConsolidatedInvoiceSegments(request: Invoices.ListConsolidatedInvoiceSegmentsRequest, options?: RequestOptions): ApiPromise&lt;ConsolidatedInvoice, ResponseError&gt;</code></summary>
+<summary><code>listConsolidatedInvoiceSegments(request: Invoices.ListConsolidatedInvoiceSegmentsRequest, options?: RequestOptions): ApiPromise&lt;ConsolidatedInvoice, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6414,17 +10329,43 @@ Lists segments for a consolidated invoice. Invoice segments returned on the inde
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.listConsolidatedInvoiceSegments({ invoiceUid });
+  const response = await client.invoices.listConsolidatedInvoiceSegments({
+    invoiceUid: "some example string",
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ConsolidatedInvoice
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.listConsolidatedInvoiceSegments({
+  invoiceUid: "some example string",
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ConsolidatedInvoice
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -6439,9 +10380,9 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>invoiceUid</code> | <code>string</code> | The unique identifier of the consolidated invoice |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | Sort direction of the returned segments. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
+| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | Sort direction of the returned segments.<br>**Default**: "asc" |
 
 </dd>
 </dl>
@@ -6451,9 +10392,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ConsolidatedInvoice](src/models/consolidated-invoice.ts)</code>
+**Direct**: `await client.invoices.listConsolidatedInvoiceSegments(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ConsolidatedInvoice](src/models/consolidated-invoice.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.invoices.listConsolidatedInvoiceSegments(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ConsolidatedInvoice, ApiError&gt;</code>, with `result.value` of type <code>[ConsolidatedInvoice](src/models/consolidated-invoice.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6464,7 +10413,7 @@ try {
 </details>
 
 <details>
-<summary><code>listCreditNotes(request: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise&lt;ListCreditNotesResponse, ResponseError&gt;</code></summary>
+<summary><code>listCreditNotes(request: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise&lt;ListCreditNotesResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6481,17 +10430,43 @@ By default, the credit notes returned by this endpoint will exclude the arrays o
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.listCreditNotes();
+  const response = await client.invoices.listCreditNotes({
+    dateField: CreditNoteDateField.IssueDate,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ListCreditNotesResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.listCreditNotes({
+  dateField: CreditNoteDateField.IssueDate,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListCreditNotesResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -6506,13 +10481,19 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>subscriptionId?</code> | <code>number</code> | The subscription's Advanced Billing id |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| <code>lineItems?</code> | <code>boolean</code> | Include line items data. |
-| <code>discounts?</code> | <code>boolean</code> | Include discounts data. |
-| <code>taxes?</code> | <code>boolean</code> | Include taxes data. |
-| <code>refunds?</code> | <code>boolean</code> | Include refunds data. |
-| <code>applications?</code> | <code>boolean</code> | Include applications data. |
+| <code>dateField?</code> | <code>[CreditNoteDateField](src/models/credit-note-date-field.ts)</code> | The type of filter you would like to apply to your search. Use in query `date_field=issue_date`. If a date range is provided without an explicit `date_field`, it defaults to `issue_date`. If only `start_datetime`/`end_datetime` are provided without an explicit `date_field`, it defaults to `created_at` instead. An unrecognized `date_field` is ignored rather than raising an error.<br>**Default**: "issue_date" |
+| <code>startDate?</code> | <code>string</code> | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns credit notes with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
+| <code>endDate?</code> | <code>string</code> | The end date (format YYYY-MM-DD) with which to filter the date_field. Returns credit notes with a timestamp up to and including 11:59:59PM in your site’s time zone on the date specified. |
+| <code>startDatetime?</code> | <code>string</code> | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns credit notes with a timestamp at or after exact time provided in query. If provided, this parameter will be used instead of start_date. If no timezone offset is included in the value, it is interpreted as UTC. Allowed to be used only along with date_field set to created_at or updated_at. |
+| <code>endDatetime?</code> | <code>string</code> | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns credit notes with a timestamp at or before exact time provided in query. If provided, this parameter will be used instead of end_date. If no timezone offset is included in the value, it is interpreted as UTC. Allowed to be used only along with date_field set to created_at or updated_at. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
+| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned credit notes, sorted by sequence_number.<br>**Default**: "desc" |
+| <code>lineItems?</code> | <code>boolean</code> | Include line items data.<br>**Default**: false |
+| <code>discounts?</code> | <code>boolean</code> | Include discounts data.<br>**Default**: false |
+| <code>taxes?</code> | <code>boolean</code> | Include taxes data.<br>**Default**: false |
+| <code>refunds?</code> | <code>boolean</code> | Include refunds data.<br>**Default**: false |
+| <code>applications?</code> | <code>boolean</code> | Include applications data.<br>**Default**: false |
 
 </dd>
 </dl>
@@ -6522,9 +10503,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListCreditNotesResponse](src/models/list-credit-notes-response.ts)</code>
+**Direct**: `await client.invoices.listCreditNotes(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListCreditNotesResponse](src/models/list-credit-notes-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.invoices.listCreditNotes(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListCreditNotesResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListCreditNotesResponse](src/models/list-credit-notes-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6535,7 +10524,7 @@ try {
 </details>
 
 <details>
-<summary><code>listInvoiceEvents(request: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise&lt;ListInvoiceEventsResponse, ResponseError&gt;</code></summary>
+<summary><code>listInvoiceEvents(request: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise&lt;ListInvoiceEventsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6573,17 +10562,35 @@ Note - invoice events that occurred prior to 09/05/2018 __will not__ contain an 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.listInvoiceEvents();
+  const response = await client.invoices.listInvoiceEvents({ page: 1 });
   // TODO: Handle 'response' of type ListInvoiceEventsResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.listInvoiceEvents({ page: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListInvoiceEventsResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -6599,8 +10606,8 @@ try {
 | --- | --- | --- |
 | <code>sinceDate?</code> | <code>string</code> | The timestamp in a format `YYYY-MM-DD T HH:MM:SS Z`, or `YYYY-MM-DD`(in this case, it returns data from the beginning of the day). of the event from which you want to start the search. All the events before the `since_date` timestamp are not returned in the response. |
 | <code>sinceId?</code> | <code>number</code> | The ID of the event from which you want to start the search(ID is not included. e.g. if ID is set to 2, then all events with ID 3 and more will be shown) This parameter is not used if since_date is defined. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100. The maximum allowed values is 200; any per_page value over 200 will be changed to 200. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>**Default**: 100 |
 | <code>invoiceUid?</code> | <code>string</code> | Providing an invoice_uid allows for scoping of the invoice events to a single invoice or credit note. |
 | <code>withChangeInvoiceStatus?</code> | <code>string</code> | Use this parameter if you want to fetch also invoice events with change_invoice_status type. |
 | <code>eventTypes?</code> | <code>[InvoiceEventType](src/models/invoice-event-type.ts)[]</code> | Filter results by event_type. Supply a comma separated list of event types (listed above). Use in query: `event_types=void_invoice,void_remainder`. |
@@ -6613,9 +10620,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInvoiceEventsResponse](src/models/list-invoice-events-response.ts)</code>
+**Direct**: `await client.invoices.listInvoiceEvents(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListInvoiceEventsResponse](src/models/list-invoice-events-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.invoices.listInvoiceEvents(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListInvoiceEventsResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListInvoiceEventsResponse](src/models/list-invoice-events-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6626,7 +10641,7 @@ try {
 </details>
 
 <details>
-<summary><code>listInvoices(request: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise&lt;ListInvoicesResponse, ResponseError&gt;</code></summary>
+<summary><code>listInvoices(request: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise&lt;ListInvoicesResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6641,17 +10656,51 @@ Lists invoices for a site. By default, invoices returned on the index will only 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.listInvoices();
+  const response = await client.invoices.listInvoices({
+    page: 1,
+    perPage: 50,
+    dateField: InvoiceDateField.IssueDate,
+    customerIds: [1, 2, 3],
+    number: ["1234", "1235"],
+    productIds: [23, 34],
+    sort: InvoiceSortField.TotalAmount,
+  });
   // TODO: Handle 'response' of type ListInvoicesResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.listInvoices({
+  page: 1,
+  perPage: 50,
+  dateField: InvoiceDateField.IssueDate,
+  customerIds: [1, 2, 3],
+  number: ["1234", "1235"],
+  productIds: [23, 34],
+  sort: InvoiceSortField.TotalAmount,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListInvoicesResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -6671,23 +10720,23 @@ try {
 | <code>subscriptionId?</code> | <code>number</code> | The subscription's ID. |
 | <code>subscriptionGroupUid?</code> | <code>string</code> | The UID of the subscription group you want to fetch consolidated invoices for. This will return a paginated list of consolidated invoices for the specified group. |
 | <code>consolidationLevel?</code> | <code>string</code> | The consolidation level of the invoice. Allowed Values: none, parent, child or comma-separated lists of thereof, e.g. none,parent. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned invoices. |
-| <code>lineItems?</code> | <code>boolean</code> | Include line items data. |
-| <code>discounts?</code> | <code>boolean</code> | Include discounts data. |
-| <code>taxes?</code> | <code>boolean</code> | Include taxes data. |
-| <code>credits?</code> | <code>boolean</code> | Include credits data. |
-| <code>payments?</code> | <code>boolean</code> | Include payments data. |
-| <code>customFields?</code> | <code>boolean</code> | Include custom fields data. |
-| <code>refunds?</code> | <code>boolean</code> | Include refunds data. |
-| <code>dateField?</code> | <code>[InvoiceDateField](src/models/invoice-date-field.ts)</code> | The type of filter you would like to apply to your search. Use in query `date_field=issue_date`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
+| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned invoices.<br>**Default**: "desc" |
+| <code>lineItems?</code> | <code>boolean</code> | Include line items data.<br>**Default**: false |
+| <code>discounts?</code> | <code>boolean</code> | Include discounts data.<br>**Default**: false |
+| <code>taxes?</code> | <code>boolean</code> | Include taxes data.<br>**Default**: false |
+| <code>credits?</code> | <code>boolean</code> | Include credits data.<br>**Default**: false |
+| <code>payments?</code> | <code>boolean</code> | Include payments data.<br>**Default**: false |
+| <code>customFields?</code> | <code>boolean</code> | Include custom fields data.<br>**Default**: false |
+| <code>refunds?</code> | <code>boolean</code> | Include refunds data.<br>**Default**: false |
+| <code>dateField?</code> | <code>[InvoiceDateField](src/models/invoice-date-field.ts)</code> | The type of filter you would like to apply to your search. Use in query `date_field=issue_date`.<br>**Default**: "due_date" |
 | <code>startDatetime?</code> | <code>string</code> | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns invoices with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. Allowed to be used only along with date_field set to created_at or updated_at. |
 | <code>endDatetime?</code> | <code>string</code> | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns invoices with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. Allowed to be used only along with date_field set to created_at or updated_at. |
 | <code>customerIds?</code> | <code>number[]</code> | Allows fetching invoices with matching customer id based on provided values. Use in query `customer_ids=1,2,3`. |
 | <code>number?</code> | <code>string[]</code> | Allows fetching invoices with matching invoice number based on provided values. Use in query `number=1234,1235`. |
 | <code>productIds?</code> | <code>number[]</code> | Allows fetching invoices with matching line items product ids based on provided values. Use in query `product_ids=23,34`. |
-| <code>sort?</code> | <code>[InvoiceSortField](src/models/invoice-sort-field.ts)</code> | Allows specification of the order of the returned list. Use in query `sort=total_amount`. |
+| <code>sort?</code> | <code>[InvoiceSortField](src/models/invoice-sort-field.ts)</code> | Allows specification of the order of the returned list. Use in query `sort=total_amount`.<br>**Default**: "number" |
 
 </dd>
 </dl>
@@ -6697,9 +10746,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListInvoicesResponse](src/models/list-invoices-response.ts)</code>
+**Direct**: `await client.invoices.listInvoices(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListInvoicesResponse](src/models/list-invoices-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.invoices.listInvoices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListInvoicesResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListInvoicesResponse](src/models/list-invoices-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6727,22 +10784,37 @@ The endpoint doesn't accept a request body. Customer information differences are
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.previewCustomerInformationChanges({ uid });
+  const response = await client.invoices.previewCustomerInformationChanges({ uid: "some example string" });
   // TODO: Handle 'response' of type CustomerChangesPreviewResponse
 } catch (err) {
-  if (
-    err instanceof Invoices.PreviewCustomerInformationChangesError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.PreviewCustomerInformationChangesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.previewCustomerInformationChanges({
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CustomerChangesPreviewResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -6766,9 +10838,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CustomerChangesPreviewResponse](src/models/customer-changes-preview-response.ts)</code>
+**Direct**: `await client.invoices.previewCustomerInformationChanges(request)`
 
-**OnError**: <code>[Invoices.PreviewCustomerInformationChangesError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[CustomerChangesPreviewResponse](src/models/customer-changes-preview-response.ts)</code>
+- **OnError**: throws <code>[Invoices.PreviewCustomerInformationChangesError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.previewCustomerInformationChanges(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CustomerChangesPreviewResponse, Invoices.PreviewCustomerInformationChangesError&gt;</code>, with `result.value` of type <code>[CustomerChangesPreviewResponse](src/models/customer-changes-preview-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6779,7 +10859,7 @@ try {
 </details>
 
 <details>
-<summary><code>readCreditNote(request: Invoices.ReadCreditNoteRequest, options?: RequestOptions): ApiPromise&lt;CreditNote, ResponseError&gt;</code></summary>
+<summary><code>readCreditNote(request: Invoices.ReadCreditNoteRequest, options?: RequestOptions): ApiPromise&lt;CreditNote, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6794,17 +10874,35 @@ Returns the details for a credit note.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.readCreditNote({ uid });
+  const response = await client.invoices.readCreditNote({ uid: "some example string" });
   // TODO: Handle 'response' of type CreditNote
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.readCreditNote({ uid: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CreditNote
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -6828,9 +10926,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreditNote](src/models/credit-note.ts)</code>
+**Direct**: `await client.invoices.readCreditNote(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[CreditNote](src/models/credit-note.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.invoices.readCreditNote(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CreditNote, ApiError&gt;</code>, with `result.value` of type <code>[CreditNote](src/models/credit-note.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6841,7 +10947,7 @@ try {
 </details>
 
 <details>
-<summary><code>readInvoice(request: Invoices.ReadInvoiceRequest, options?: RequestOptions): ApiPromise&lt;Invoice, ResponseError&gt;</code></summary>
+<summary><code>readInvoice(request: Invoices.ReadInvoiceRequest, options?: RequestOptions): ApiPromise&lt;Invoice, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6868,17 +10974,35 @@ Response: A single Invoice.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.readInvoice({ uid });
+  const response = await client.invoices.readInvoice({ uid: "some example string" });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.readInvoice({ uid: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -6902,9 +11026,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.invoices.readInvoice(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.invoices.readInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, ApiError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6925,24 +11057,60 @@ try {
 <dl>
 <dd>
 
-Applies a payment of a given type against a specific invoice. If you would like to apply a payment across multiple invoices, you can use the Bulk Payment endpoint.
+Applies a payment of a given type against a specific invoice. If you would like to apply a payment across multiple invoices, you can use the [Record Payment for Multiple Invoices]($e/Invoices/recordPaymentForMultipleInvoices) endpoint.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.recordPaymentForInvoice({ uid });
+  const response = await client.invoices.recordPaymentForInvoice({
+    uid: "some example string",
+    body: {
+      payment: {
+        amount: 124.33,
+        memo: "for John Smith",
+        method: InvoicePaymentMethodType.Check,
+        details: "#0102",
+      },
+    },
+  });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof Invoices.RecordPaymentForInvoiceError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.RecordPaymentForInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.recordPaymentForInvoice({
+  uid: "some example string",
+  body: {
+    payment: {
+      amount: 124.33,
+      memo: "for John Smith",
+      method: InvoicePaymentMethodType.Check,
+      details: "#0102",
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -6967,9 +11135,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.invoices.recordPaymentForInvoice(request)`
 
-**OnError**: <code>[Invoices.RecordPaymentForInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[Invoices.RecordPaymentForInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.recordPaymentForInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, Invoices.RecordPaymentForInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -6992,49 +11168,68 @@ try {
 
 Records an external payment against multiple invoices.
 
- To apply a payment to multiple invoices, at minimum, specify the `amount` and `applications` (i.e., `invoice_uid` and `amount`) details.
-
-```
-{
-  "payment": {
-    "memo": "to pay the bills",
-    "details": "check number 8675309",
-    "method": "check",
-    "amount": "250.00",
-    "applications": [
-      {
-        "invoice_uid": "inv_8gk5bwkct3gqt",
-        "amount": "100.00"
-      },
-      {
-        "invoice_uid": "inv_7bc6bwkct3lyt",
-        "amount": "150.00"
-      }
-    ]
-  }
-}
-```
+To apply a payment to multiple invoices, at minimum, specify the `amount` and `applications` (i.e., `invoice_uid` and `amount`) details.
 
 Note that the invoice payment amounts must be greater than 0. Total amount must be greater or equal to invoices payment amount sum.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.recordPaymentForMultipleInvoices();
+  const response = await client.invoices.recordPaymentForMultipleInvoices({
+    body: {
+      payment: {
+        memo: "to pay the bills",
+        details: "check number 8675309",
+        method: InvoicePaymentMethodType.Check,
+        amount: "100.00",
+        applications: [
+          { invoiceUid: "inv_8gk5bwkct3gqt", amount: "50.00" },
+          { invoiceUid: "inv_7bc6bwkct3lyt", amount: "50.00" },
+        ],
+      },
+    },
+  });
   // TODO: Handle 'response' of type MultiInvoicePaymentResponse
 } catch (err) {
-  if (
-    err instanceof Invoices.RecordPaymentForMultipleInvoicesError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.RecordPaymentForMultipleInvoicesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.recordPaymentForMultipleInvoices({
+  body: {
+    payment: {
+      memo: "to pay the bills",
+      details: "check number 8675309",
+      method: InvoicePaymentMethodType.Check,
+      amount: "100.00",
+      applications: [
+        { invoiceUid: "inv_8gk5bwkct3gqt", amount: "50.00" },
+        { invoiceUid: "inv_7bc6bwkct3lyt", amount: "50.00" },
+      ],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type MultiInvoicePaymentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7058,9 +11253,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[MultiInvoicePaymentResponse](src/models/multi-invoice-payment-response.ts)</code>
+**Direct**: `await client.invoices.recordPaymentForMultipleInvoices(request)`
 
-**OnError**: <code>[Invoices.RecordPaymentForMultipleInvoicesError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[MultiInvoicePaymentResponse](src/models/multi-invoice-payment-response.ts)</code>
+- **OnError**: throws <code>[Invoices.RecordPaymentForMultipleInvoicesError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.recordPaymentForMultipleInvoices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;MultiInvoicePaymentResponse, Invoices.RecordPaymentForMultipleInvoicesError&gt;</code>, with `result.value` of type <code>[MultiInvoicePaymentResponse](src/models/multi-invoice-payment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7092,21 +11295,55 @@ Only ungrouped or primary subscriptions may be paid using the "bulk" payment req
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.recordPaymentForSubscription({ subscriptionId });
+  const response = await client.invoices.recordPaymentForSubscription({
+    subscriptionId: 1,
+    body: {
+      payment: {
+        amount: "10.0",
+        memo: "to pay the bills",
+        paymentDetails: "check number 8675309",
+        paymentMethod: InvoicePaymentMethodType.Check,
+      },
+    },
+  });
   // TODO: Handle 'response' of type RecordPaymentResponse
 } catch (err) {
-  if (
-    err instanceof Invoices.RecordPaymentForSubscriptionError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.RecordPaymentForSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.recordPaymentForSubscription({
+  subscriptionId: 1,
+  body: {
+    payment: {
+      amount: "10.0",
+      memo: "to pay the bills",
+      paymentDetails: "check number 8675309",
+      paymentMethod: InvoicePaymentMethodType.Check,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type RecordPaymentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7131,9 +11368,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[RecordPaymentResponse](src/models/record-payment-response.ts)</code>
+**Direct**: `await client.invoices.recordPaymentForSubscription(request)`
 
-**OnError**: <code>[Invoices.RecordPaymentForSubscriptionError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[RecordPaymentResponse](src/models/record-payment-response.ts)</code>
+- **OnError**: throws <code>[Invoices.RecordPaymentForSubscriptionError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.recordPaymentForSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;RecordPaymentResponse, Invoices.RecordPaymentForSubscriptionError&gt;</code>, with `result.value` of type <code>[RecordPaymentResponse](src/models/record-payment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7165,19 +11410,59 @@ For a $50.00 refund on a $100.00 consolidated invoice with one $60.00 segment an
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.refundInvoice({ uid });
+  const response = await client.invoices.refundInvoice({
+    uid: "some example string",
+    body: {
+      refund: {
+        amount: "100.00",
+        memo: "Refund for Basic Plan renewal",
+        paymentId: 12345,
+        external: false,
+        applyCredit: false,
+        voidInvoice: true,
+      },
+    },
+  });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof Invoices.RefundInvoiceError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.RefundInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.refundInvoice({
+  uid: "some example string",
+  body: {
+    refund: {
+      amount: "100.00",
+      memo: "Refund for Basic Plan renewal",
+      paymentId: 12345,
+      external: false,
+      applyCredit: false,
+      voidInvoice: true,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7202,9 +11487,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.invoices.refundInvoice(request)`
 
-**OnError**: <code>[Invoices.RefundInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[Invoices.RefundInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.refundInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, Invoices.RefundInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7241,19 +11534,35 @@ When reopening a consolidated invoice, all of its canceled segments will also be
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.reopenInvoice({ uid });
+  const response = await client.invoices.reopenInvoice({ uid: "some example string" });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof Invoices.ReopenInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload.body' of type unknown
-  }
+  // TODO: Handle 'err' of type Invoices.ReopenInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.reopenInvoice({ uid: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7277,9 +11586,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.invoices.reopenInvoice(request)`
 
-**OnError**: <code>[Invoices.ReopenInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[Invoices.ReopenInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.reopenInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, Invoices.ReopenInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7311,18 +11628,48 @@ On success, a 204 no-content response will be returned. The response does not in
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.invoices.sendInvoice({ uid });
+  await client.invoices.sendInvoice({
+    uid: "some example string",
+    body: {
+      recipientEmails: ["user0@example.com"],
+      ccRecipientEmails: ["user1@example.com"],
+      bccRecipientEmails: ["user2@example.com"],
+    },
+  });
 } catch (err) {
-  if (err instanceof Invoices.SendInvoiceError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.SendInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.sendInvoice({
+  uid: "some example string",
+  body: {
+    recipientEmails: ["user0@example.com"],
+    ccRecipientEmails: ["user1@example.com"],
+    bccRecipientEmails: ["user2@example.com"],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7347,9 +11694,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.invoices.sendInvoice(request)`
 
-**OnError**: <code>[Invoices.SendInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[Invoices.SendInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.sendInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, Invoices.SendInvoiceError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7377,19 +11732,35 @@ The endpoint doesn't accept a request body. Customer information differences are
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.updateCustomerInformation({ uid });
+  const response = await client.invoices.updateCustomerInformation({ uid: "some example string" });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof Invoices.UpdateCustomerInformationError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.UpdateCustomerInformationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.updateCustomerInformation({ uid: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7413,9 +11784,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.invoices.updateCustomerInformation(request)`
 
-**OnError**: <code>[Invoices.UpdateCustomerInformationError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[Invoices.UpdateCustomerInformationError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.updateCustomerInformation(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, Invoices.UpdateCustomerInformationError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7481,19 +11860,43 @@ A custom memo can be sent with the `memo` parameter. Likewise, custom payment in
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.updateInvoice({ subscriptionId, uid });
+  const response = await client.invoices.updateInvoice({
+    subscriptionId: 1,
+    uid: "some example string",
+    body: { invoice: { netTerms: 30, memo: "Updated memo" } },
+  });
   // TODO: Handle 'response' of type InvoiceResponse
 } catch (err) {
-  if (err instanceof Invoices.UpdateInvoiceError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Invoices.UpdateInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.updateInvoice({
+  subscriptionId: 1,
+  uid: "some example string",
+  body: { invoice: { netTerms: 30, memo: "Updated memo" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type InvoiceResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7519,9 +11922,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[InvoiceResponse](src/models/invoice-response.ts)</code>
+**Direct**: `await client.invoices.updateInvoice(request)`
 
-**OnError**: <code>[Invoices.UpdateInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[InvoiceResponse](src/models/invoice-response.ts)</code>
+- **OnError**: throws <code>[Invoices.UpdateInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.updateInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;InvoiceResponse, Invoices.UpdateInvoiceError&gt;</code>, with `result.value` of type <code>[InvoiceResponse](src/models/invoice-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7547,19 +11958,41 @@ Voids any invoice with the "open" or "canceled" status.  It will also allow void
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.invoices.voidInvoice({ uid });
+  const response = await client.invoices.voidInvoice({
+    uid: "some example string",
+    body: { void: { reason: "Duplicate invoice" } },
+  });
   // TODO: Handle 'response' of type Invoice
 } catch (err) {
-  if (err instanceof Invoices.VoidInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload.body' of type unknown
-  }
+  // TODO: Handle 'err' of type Invoices.VoidInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.invoices.voidInvoice({
+  uid: "some example string",
+  body: { void: { reason: "Duplicate invoice" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Invoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7584,9 +12017,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+**Direct**: `await client.invoices.voidInvoice(request)`
 
-**OnError**: <code>[Invoices.VoidInvoiceError](src/resources/invoices.ts)</code>
+- **OnSuccess**: <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: throws <code>[Invoices.VoidInvoiceError](src/resources/invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.invoices.voidInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Invoice, Invoices.VoidInvoiceError&gt;</code>, with `result.value` of type <code>[Invoice](src/models/invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7601,7 +12042,7 @@ try {
 > Source: [Offers](src/resources/offers.ts)
 
 <details>
-<summary><code>archiveOffer(request: Offers.ArchiveOfferRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>archiveOffer(request: Offers.ArchiveOfferRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -7616,16 +12057,34 @@ Archives an existing offer. Please provide an `offer_id` in order to archive the
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.offers.archiveOffer({ offerId });
+  await client.offers.archiveOffer({ offerId: 1 });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.offers.archiveOffer({ offerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -7649,9 +12108,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.offers.archiveOffer(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.offers.archiveOffer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7672,15 +12139,13 @@ try {
 <dl>
 <dd>
 
-Creates an offer within your Advanced Billing site.
-
-## Documentation
+Creates an offer within your site.
 
 Offers allow you to package complicated combinations of products, components and coupons into a convenient package which can then be subscribed to just like products.
 
 Once an offer is defined it can be used as an alternative to the product when creating subscriptions.
 
-Full documentation on how to use offers in the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/articles/24261295098637-Offers-Overview).
+For more information, see [Offers](https://maxio.zendesk.com/hc/en-us/articles/24261295098637-Offers-Overview) in the product documentation.
 
 ## Using a Product Price Point
 
@@ -7689,19 +12154,59 @@ You can optionally pass in a `product_price_point_id` that corresponds with the 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.offers.createOffer();
+  const response = await client.offers.createOffer({
+    body: {
+      offer: {
+        name: "Solo",
+        handle: "han_shot_first",
+        description: "A Star Wars Story",
+        productId: 31,
+        productPricePointId: 102,
+        components: [{ componentId: 24, startingQuantity: 1 }],
+        coupons: ["DEF456"],
+      },
+    },
+  });
   // TODO: Handle 'response' of type OfferResponse
 } catch (err) {
-  if (err instanceof Offers.CreateOfferError && err.payload.kind === "errorArrayMapResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type Offers.CreateOfferError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.offers.createOffer({
+  body: {
+    offer: {
+      name: "Solo",
+      handle: "han_shot_first",
+      description: "A Star Wars Story",
+      productId: 31,
+      productPricePointId: 102,
+      components: [{ componentId: 24, startingQuantity: 1 }],
+      coupons: ["DEF456"],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type OfferResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7725,9 +12230,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[OfferResponse](src/models/offer-response.ts)</code>
+**Direct**: `await client.offers.createOffer(request)`
 
-**OnError**: <code>[Offers.CreateOfferError](src/resources/offers.ts)</code>
+- **OnSuccess**: <code>[OfferResponse](src/models/offer-response.ts)</code>
+- **OnError**: throws <code>[Offers.CreateOfferError](src/resources/offers.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.offers.createOffer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;OfferResponse, Offers.CreateOfferError&gt;</code>, with `result.value` of type <code>[OfferResponse](src/models/offer-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7753,19 +12266,35 @@ Lists offers for a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.offers.listOffers();
+  const response = await client.offers.listOffers({ page: 1, perPage: 50, includeArchived: true });
   // TODO: Handle 'response' of type ListOffersResponse
 } catch (err) {
-  if (err instanceof Offers.ListOffersError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Offers.ListOffersError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.offers.listOffers({ page: 1, perPage: 50, includeArchived: true }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListOffersResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7779,8 +12308,8 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>includeArchived?</code> | <code>boolean</code> | Include archived products. Use in query: `include_archived=true`. |
 
 </dd>
@@ -7791,9 +12320,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListOffersResponse](src/models/list-offers-response.ts)</code>
+**Direct**: `await client.offers.listOffers(request)`
 
-**OnError**: <code>[Offers.ListOffersError](src/resources/offers.ts)</code>
+- **OnSuccess**: <code>[ListOffersResponse](src/models/list-offers-response.ts)</code>
+- **OnError**: throws <code>[Offers.ListOffersError](src/resources/offers.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.offers.listOffers(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListOffersResponse, Offers.ListOffersError&gt;</code>, with `result.value` of type <code>[ListOffersResponse](src/models/list-offers-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7804,7 +12341,7 @@ try {
 </details>
 
 <details>
-<summary><code>readOffer(request: Offers.ReadOfferRequest, options?: RequestOptions): ApiPromise&lt;OfferResponse, ResponseError&gt;</code></summary>
+<summary><code>readOffer(request: Offers.ReadOfferRequest, options?: RequestOptions): ApiPromise&lt;OfferResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -7819,17 +12356,35 @@ Returns a specific offer's attributes. This is different from listing all offers
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.offers.readOffer({ offerId });
+  const response = await client.offers.readOffer({ offerId: 1 });
   // TODO: Handle 'response' of type OfferResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.offers.readOffer({ offerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type OfferResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -7853,9 +12408,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[OfferResponse](src/models/offer-response.ts)</code>
+**Direct**: `await client.offers.readOffer(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[OfferResponse](src/models/offer-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.offers.readOffer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;OfferResponse, ApiError&gt;</code>, with `result.value` of type <code>[OfferResponse](src/models/offer-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7866,7 +12429,7 @@ try {
 </details>
 
 <details>
-<summary><code>unarchiveOffer(request: Offers.UnarchiveOfferRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>unarchiveOffer(request: Offers.UnarchiveOfferRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -7881,16 +12444,34 @@ Unarchives a previously archived offer. Please provide an `offer_id` in order to
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.offers.unarchiveOffer({ offerId });
+  await client.offers.unarchiveOffer({ offerId: 1 });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.offers.unarchiveOffer({ offerId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -7914,9 +12495,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.offers.unarchiveOffer(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.offers.unarchiveOffer(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -7948,7 +12537,7 @@ You must elect to change the existing payment profile to a new payment profile I
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -7956,17 +12545,33 @@ You must elect to change the existing payment profile to a new payment profile I
 ```ts
 try {
   const response = await client.paymentProfiles.changeSubscriptionDefaultPaymentProfile({
-    subscriptionId,
-    paymentProfileId,
+    subscriptionId: 1,
+    paymentProfileId: 1,
   });
   // TODO: Handle 'response' of type PaymentProfileResponse
 } catch (err) {
-  if (
-    err instanceof PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError &&
-      err.payload.kind === "error404"
-  ) {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.changeSubscriptionDefaultPaymentProfile({
+  subscriptionId: 1,
+  paymentProfileId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaymentProfileResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -7991,9 +12596,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+**Direct**: `await client.paymentProfiles.changeSubscriptionDefaultPaymentProfile(request)`
 
-**OnError**: <code>[PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: throws <code>[PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.changeSubscriptionDefaultPaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaymentProfileResponse, PaymentProfiles.ChangeSubscriptionDefaultPaymentProfileError&gt;</code>, with `result.value` of type <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8023,7 +12636,7 @@ The new payment profile must belong to the subscription group's customer, otherw
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -8031,17 +12644,33 @@ The new payment profile must belong to the subscription group's customer, otherw
 ```ts
 try {
   const response = await client.paymentProfiles.changeSubscriptionGroupDefaultPaymentProfile({
-    uid,
-    paymentProfileId,
+    uid: "some example string",
+    paymentProfileId: 1,
   });
   // TODO: Handle 'response' of type PaymentProfileResponse
 } catch (err) {
-  if (
-    err instanceof PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.changeSubscriptionGroupDefaultPaymentProfile({
+  uid: "some example string",
+  paymentProfileId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaymentProfileResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8066,9 +12695,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+**Direct**: `await client.paymentProfiles.changeSubscriptionGroupDefaultPaymentProfile(request)`
 
-**OnError**: <code>[PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: throws <code>[PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.changeSubscriptionGroupDefaultPaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaymentProfileResponse, PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfileError&gt;</code>, with `result.value` of type <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8126,19 +12763,39 @@ See the [3D Secure Post-Authentication Flow](https://docs.maxio.com/hc/en-us/art
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.paymentProfiles.createPaymentProfile();
+  const response = await client.paymentProfiles.createPaymentProfile({
+    body: { paymentProfile: { chargifyToken: "tok_w68qcpnftyv53jk33jv6wk3w", customerId: 1036 } },
+  });
   // TODO: Handle 'response' of type PaymentProfileResponse
 } catch (err) {
-  if (err instanceof PaymentProfiles.CreatePaymentProfileError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.CreatePaymentProfileError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.createPaymentProfile({
+  body: { paymentProfile: { chargifyToken: "tok_w68qcpnftyv53jk33jv6wk3w", customerId: 1036 } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaymentProfileResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8162,9 +12819,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+**Direct**: `await client.paymentProfiles.createPaymentProfile(request)`
 
-**OnError**: <code>[PaymentProfiles.CreatePaymentProfileError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: throws <code>[PaymentProfiles.CreatePaymentProfileError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.createPaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaymentProfileResponse, PaymentProfiles.CreatePaymentProfileError&gt;</code>, with `result.value` of type <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8175,7 +12840,7 @@ try {
 </details>
 
 <details>
-<summary><code>deleteSubscriptionGroupPaymentProfile(request: PaymentProfiles.DeleteSubscriptionGroupPaymentProfileRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>deleteSubscriptionGroupPaymentProfile(request: PaymentProfiles.DeleteSubscriptionGroupPaymentProfileRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -8192,16 +12857,40 @@ Deletes a Payment Profile belonging to a Subscription Group.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.paymentProfiles.deleteSubscriptionGroupPaymentProfile({ uid, paymentProfileId });
+  await client.paymentProfiles.deleteSubscriptionGroupPaymentProfile({
+    uid: "some example string",
+    paymentProfileId: 1,
+  });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.deleteSubscriptionGroupPaymentProfile({
+  uid: "some example string",
+  paymentProfileId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -8226,9 +12915,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.paymentProfiles.deleteSubscriptionGroupPaymentProfile(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.paymentProfiles.deleteSubscriptionGroupPaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8239,7 +12936,7 @@ try {
 </details>
 
 <details>
-<summary><code>deleteSubscriptionsPaymentProfile(request: PaymentProfiles.DeleteSubscriptionsPaymentProfileRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>deleteSubscriptionsPaymentProfile(request: PaymentProfiles.DeleteSubscriptionsPaymentProfileRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -8251,23 +12948,44 @@ try {
 
 Deletes a payment profile belonging to the customer on the subscription.
 
-+ If the customer has multiple subscriptions, the payment profile will be removed from all of them.
+If the customer has multiple subscriptions, the payment profile is removed from all of them.
 
-+ If you delete the default payment profile for a subscription, you will need to specify another payment profile to be the default through the api, or either prompt the user to enter a card in the billing portal or on the self-service page, or visit the Payment Details tab on the subscription in the Admin UI and use the “Add New Credit Card” or “Make Active Payment Method” link, (depending on whether there are other cards present).
+If you delete the default payment profile for a subscription, you need to specify another payment profile to be the default through the API, or either prompt the user to enter a card in the billing portal or on the self-service page, or visit the Payment Details tab on the subscription in the Admin UI and use the “Add New Credit Card” or “Make Active Payment Method” link, (depending on whether there are other cards present).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.paymentProfiles.deleteSubscriptionsPaymentProfile({ subscriptionId, paymentProfileId });
+  await client.paymentProfiles.deleteSubscriptionsPaymentProfile({ subscriptionId: 1, paymentProfileId: 1 });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.deleteSubscriptionsPaymentProfile({
+  subscriptionId: 1,
+  paymentProfileId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -8292,9 +13010,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.paymentProfiles.deleteSubscriptionsPaymentProfile(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.paymentProfiles.deleteSubscriptionsPaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8317,23 +13043,39 @@ try {
 
 Deletes an unused payment profile.
 
-If the payment profile is in use by one or more subscriptions or groups, a 422 and error message will be returned.
+If the payment profile is in use by one or more subscriptions or groups, an error message is returned.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.paymentProfiles.deleteUnusedPaymentProfile({ paymentProfileId });
+  await client.paymentProfiles.deleteUnusedPaymentProfile({ paymentProfileId: 1 });
 } catch (err) {
-  if (err instanceof PaymentProfiles.DeleteUnusedPaymentProfileError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.DeleteUnusedPaymentProfileError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.deleteUnusedPaymentProfile({ paymentProfileId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8357,9 +13099,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.paymentProfiles.deleteUnusedPaymentProfile(request)`
 
-**OnError**: <code>[PaymentProfiles.DeleteUnusedPaymentProfileError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[PaymentProfiles.DeleteUnusedPaymentProfileError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.deleteUnusedPaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, PaymentProfiles.DeleteUnusedPaymentProfileError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8370,7 +13120,7 @@ try {
 </details>
 
 <details>
-<summary><code>listPaymentProfiles(request: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise&lt;PaymentProfileResponse[], ResponseError&gt;</code></summary>
+<summary><code>listPaymentProfiles(request: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise&lt;PaymentProfileResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -8380,22 +13130,40 @@ try {
 <dl>
 <dd>
 
-Lists all active payment profiles for a site, or for one customer within a site. If no payment profiles are found, this endpoint will return an empty array, not a 404.
+Lists all active payment profiles for a site, or for one customer within a site. If no payment profiles are found, this endpoint returns an empty array.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.paymentProfiles.listPaymentProfiles();
+  const response = await client.paymentProfiles.listPaymentProfiles({ page: 1, perPage: 50 });
   // TODO: Handle 'response' of type PaymentProfileResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.listPaymentProfiles({ page: 1, perPage: 50 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaymentProfileResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -8409,8 +13177,8 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>customerId?</code> | <code>number</code> | The ID of the customer for which you wish to list payment profiles |
 
 </dd>
@@ -8421,9 +13189,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)[]</code>
+**Direct**: `await client.paymentProfiles.listPaymentProfiles(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.paymentProfiles.listPaymentProfiles(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaymentProfileResponse[], ApiError&gt;</code>, with `result.value` of type <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8453,19 +13229,37 @@ To obtain a One Time Token you have to use [Chargify.js](https://docs.maxio.com/
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.paymentProfiles.readOneTimeToken({ chargifyToken });
+  const response = await client.paymentProfiles.readOneTimeToken({ chargifyToken: "some example string" });
   // TODO: Handle 'response' of type GetOneTimeTokenRequest
 } catch (err) {
-  if (err instanceof PaymentProfiles.ReadOneTimeTokenError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.ReadOneTimeTokenError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.readOneTimeToken({
+  chargifyToken: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type GetOneTimeTokenRequest
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8489,9 +13283,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[GetOneTimeTokenRequest](src/models/get-one-time-token-request.ts)</code>
+**Direct**: `await client.paymentProfiles.readOneTimeToken(request)`
 
-**OnError**: <code>[PaymentProfiles.ReadOneTimeTokenError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>[GetOneTimeTokenRequest](src/models/get-one-time-token-request.ts)</code>
+- **OnError**: throws <code>[PaymentProfiles.ReadOneTimeTokenError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.readOneTimeToken(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;GetOneTimeTokenRequest, PaymentProfiles.ReadOneTimeTokenError&gt;</code>, with `result.value` of type <code>[GetOneTimeTokenRequest](src/models/get-one-time-token-request.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8553,19 +13355,35 @@ Example response for Bank Account:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.paymentProfiles.readPaymentProfile({ paymentProfileId });
+  const response = await client.paymentProfiles.readPaymentProfile({ paymentProfileId: 1 });
   // TODO: Handle 'response' of type PaymentProfileResponse
 } catch (err) {
-  if (err instanceof PaymentProfiles.ReadPaymentProfileError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.ReadPaymentProfileError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.readPaymentProfile({ paymentProfileId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaymentProfileResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8589,9 +13407,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+**Direct**: `await client.paymentProfiles.readPaymentProfile(request)`
 
-**OnError**: <code>[PaymentProfiles.ReadPaymentProfileError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: throws <code>[PaymentProfiles.ReadPaymentProfileError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.readPaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaymentProfileResponse, PaymentProfiles.ReadPaymentProfileError&gt;</code>, with `result.value` of type <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8623,18 +13449,36 @@ These error responses are designed to prevent excessive or invalid requests, and
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.paymentProfiles.sendRequestUpdatePaymentEmail({ subscriptionId });
+  await client.paymentProfiles.sendRequestUpdatePaymentEmail({ subscriptionId: 1 });
 } catch (err) {
-  if (err instanceof PaymentProfiles.SendRequestUpdatePaymentEmailError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.SendRequestUpdatePaymentEmailError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.sendRequestUpdatePaymentEmail({
+  subscriptionId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8658,9 +13502,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.paymentProfiles.sendRequestUpdatePaymentEmail(request)`
 
-**OnError**: <code>[PaymentProfiles.SendRequestUpdatePaymentEmailError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[PaymentProfiles.SendRequestUpdatePaymentEmailError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.sendRequestUpdatePaymentEmail(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, PaymentProfiles.SendRequestUpdatePaymentEmailError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8721,19 +13573,63 @@ The result will be that you have updated the billing information for the card, y
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.paymentProfiles.updatePaymentProfile({ paymentProfileId });
+  const response = await client.paymentProfiles.updatePaymentProfile({
+    paymentProfileId: 1,
+    body: {
+      paymentProfile: {
+        firstName: "Graham",
+        lastName: "Test",
+        billingAddress: "456 Juniper Court",
+        billingCity: "Boulder",
+        billingState: "CO",
+        billingZip: "80302",
+        billingCountry: "US",
+        billingAddress2: "some example string",
+      },
+    },
+  });
   // TODO: Handle 'response' of type PaymentProfileResponse
 } catch (err) {
-  if (err instanceof PaymentProfiles.UpdatePaymentProfileError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.UpdatePaymentProfileError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.updatePaymentProfile({
+  paymentProfileId: 1,
+  body: {
+    paymentProfile: {
+      firstName: "Graham",
+      lastName: "Test",
+      billingAddress: "456 Juniper Court",
+      billingCity: "Boulder",
+      billingState: "CO",
+      billingZip: "80302",
+      billingCountry: "US",
+      billingAddress2: "some example string",
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PaymentProfileResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8758,9 +13654,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+**Direct**: `await client.paymentProfiles.updatePaymentProfile(request)`
 
-**OnError**: <code>[PaymentProfiles.UpdatePaymentProfileError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: throws <code>[PaymentProfiles.UpdatePaymentProfileError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.updatePaymentProfile(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PaymentProfileResponse, PaymentProfiles.UpdatePaymentProfileError&gt;</code>, with `result.value` of type <code>[PaymentProfileResponse](src/models/payment-profile-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8786,19 +13690,41 @@ Verifies a bank account. Submit the two small deposit amounts the customer recei
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.paymentProfiles.verifyBankAccount({ bankAccountId });
+  const response = await client.paymentProfiles.verifyBankAccount({
+    bankAccountId: 1,
+    body: { bankAccountVerification: { deposit1InCents: 32, deposit2InCents: 45 } },
+  });
   // TODO: Handle 'response' of type BankAccountResponse
 } catch (err) {
-  if (err instanceof PaymentProfiles.VerifyBankAccountError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type PaymentProfiles.VerifyBankAccountError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.paymentProfiles.verifyBankAccount({
+  bankAccountId: 1,
+  body: { bankAccountVerification: { deposit1InCents: 32, deposit2InCents: 45 } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BankAccountResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8823,9 +13749,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BankAccountResponse](src/models/bank-account-response.ts)</code>
+**Direct**: `await client.paymentProfiles.verifyBankAccount(request)`
 
-**OnError**: <code>[PaymentProfiles.VerifyBankAccountError](src/resources/payment-profiles.ts)</code>
+- **OnSuccess**: <code>[BankAccountResponse](src/models/bank-account-response.ts)</code>
+- **OnError**: throws <code>[PaymentProfiles.VerifyBankAccountError](src/resources/payment-profiles.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.paymentProfiles.verifyBankAccount(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BankAccountResponse, PaymentProfiles.VerifyBankAccountError&gt;</code>, with `result.value` of type <code>[BankAccountResponse](src/models/bank-account-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8850,26 +13784,58 @@ try {
 <dl>
 <dd>
 
-Creates a Product Family within your Advanced Billing site. Create a Product Family to act as a container for your products, components, and coupons.
+Creates a Product Family within your site. Create a Product Family to act as a container for your products, components, and coupons.
 
 Full documentation on how Product Families operate within the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/articles/24261098936205-Product-Families).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productFamilies.createProductFamily();
+  const response = await client.productFamilies.createProductFamily({
+    body: {
+      productFamily: {
+        name: "Acme Projects",
+        description: "Amazing project management tool",
+        surcharging: false,
+      },
+    },
+  });
   // TODO: Handle 'response' of type ProductFamilyResponse
 } catch (err) {
-  if (err instanceof ProductFamilies.CreateProductFamilyError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ProductFamilies.CreateProductFamilyError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFamilies.createProductFamily({
+  body: {
+    productFamily: {
+      name: "Acme Projects",
+      description: "Amazing project management tool",
+      surcharging: false,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductFamilyResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -8893,9 +13859,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductFamilyResponse](src/models/product-family-response.ts)</code>
+**Direct**: `await client.productFamilies.createProductFamily(request)`
 
-**OnError**: <code>[ProductFamilies.CreateProductFamilyError](src/resources/product-families.ts)</code>
+- **OnSuccess**: <code>[ProductFamilyResponse](src/models/product-family-response.ts)</code>
+- **OnError**: throws <code>[ProductFamilies.CreateProductFamilyError](src/resources/product-families.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFamilies.createProductFamily(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductFamilyResponse, ProductFamilies.CreateProductFamilyError&gt;</code>, with `result.value` of type <code>[ProductFamilyResponse](src/models/product-family-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8906,7 +13880,7 @@ try {
 </details>
 
 <details>
-<summary><code>listProductFamilies(request: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse[], ResponseError&gt;</code></summary>
+<summary><code>listProductFamilies(request: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -8921,17 +13895,37 @@ Lists Product Families for a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productFamilies.listProductFamilies();
+  const response = await client.productFamilies.listProductFamilies({ dateField: BasicDateField.UpdatedAt });
   // TODO: Handle 'response' of type ProductFamilyResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFamilies.listProductFamilies({
+  dateField: BasicDateField.UpdatedAt,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductFamilyResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -8959,9 +13953,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductFamilyResponse](src/models/product-family-response.ts)[]</code>
+**Direct**: `await client.productFamilies.listProductFamilies(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductFamilyResponse](src/models/product-family-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.productFamilies.listProductFamilies(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductFamilyResponse[], ApiError&gt;</code>, with `result.value` of type <code>[ProductFamilyResponse](src/models/product-family-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -8987,19 +13989,47 @@ Retrieves a list of Products belonging to a Product Family.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productFamilies.listProductsForProductFamily({ productFamilyId });
+  const response = await client.productFamilies.listProductsForProductFamily({
+    productFamilyId: "some example string",
+    page: 1,
+    perPage: 50,
+    dateField: BasicDateField.UpdatedAt,
+    include: ListProductsInclude.PrepaidProductPricePoint,
+  });
   // TODO: Handle 'response' of type ProductResponse[]
 } catch (err) {
-  if (err instanceof ProductFamilies.ListProductsForProductFamilyError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload.body' of type string
-  }
+  // TODO: Handle 'err' of type ProductFamilies.ListProductsForProductFamilyError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFamilies.listProductsForProductFamily({
+  productFamilyId: "some example string",
+  page: 1,
+  perPage: 50,
+  dateField: BasicDateField.UpdatedAt,
+  include: ListProductsInclude.PrepaidProductPricePoint,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9014,8 +14044,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>productFamilyId</code> | <code>string</code> | Either the product family's id or its handle prefixed with `handle:` |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>dateField?</code> | <code>[BasicDateField](src/models/basic-date-field.ts)</code> | The type of filter you would like to apply to your search.<br>Use in query: `date_field=created_at`. |
 | <code>filter?</code> | <code>[ListProductsFilter](src/models/list-products-filter.ts)</code> | Filter to use for List Products operations |
 | <code>startDate?</code> | <code>string</code> (date) | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns products with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
@@ -9033,9 +14063,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)[]</code>
+**Direct**: `await client.productFamilies.listProductsForProductFamily(request)`
 
-**OnError**: <code>[ProductFamilies.ListProductsForProductFamilyError](src/resources/product-families.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)[]</code>
+- **OnError**: throws <code>[ProductFamilies.ListProductsForProductFamilyError](src/resources/product-families.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFamilies.listProductsForProductFamily(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse[], ProductFamilies.ListProductsForProductFamilyError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9046,7 +14084,7 @@ try {
 </details>
 
 <details>
-<summary><code>readProductFamily(request: ProductFamilies.ReadProductFamilyRequest, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse, ResponseError&gt;</code></summary>
+<summary><code>readProductFamily(request: ProductFamilies.ReadProductFamilyRequest, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9063,17 +14101,35 @@ The product family can be specified either with the id number, or with the `hand
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productFamilies.readProductFamily({ id });
+  const response = await client.productFamilies.readProductFamily({ id: 1 });
   // TODO: Handle 'response' of type ProductFamilyResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFamilies.readProductFamily({ id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductFamilyResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -9097,9 +14153,555 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductFamilyResponse](src/models/product-family-response.ts)</code>
+**Direct**: `await client.productFamilies.readProductFamily(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductFamilyResponse](src/models/product-family-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.productFamilies.readProductFamily(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductFamilyResponse, ApiError&gt;</code>, with `result.value` of type <code>[ProductFamilyResponse](src/models/product-family-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+## ProductFeatures
+
+> Source: [ProductFeatures](src/resources/product-features.ts)
+
+<details>
+<summary><code>createProductFeature(request: ProductFeatures.CreateProductFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ProductFeatures.CreateProductFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Attaches a feature template to this product with a concrete value. Pass `price_point_type: "ProductPricePoint"` and `price_point_id` to create an override scoped to a single product price point instead of the whole product.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.productFeatures.createProductFeature({ productId: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ProductFeatures.CreateProductFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFeatures.createProductFeature({ productId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>productId</code> | <code>number</code> | The Advanced Billing id of the product. |
+| <code>body?</code> | <code>[CreateFeatureCatalogItemRequest](src/models/create-feature-catalog-item-request.ts)</code> | - |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.productFeatures.createProductFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ProductFeatures.CreateProductFeatureError](src/resources/product-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFeatures.createProductFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ProductFeatures.CreateProductFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>listProductFeatures(request: ProductFeatures.ListProductFeaturesRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemsListResponse, ProductFeatures.ListProductFeaturesError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Lists the feature catalog items attached to this product, including price-point-specific overrides.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.productFeatures.listProductFeatures({ productId: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemsListResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ProductFeatures.ListProductFeaturesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFeatures.listProductFeatures({ productId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemsListResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>productId</code> | <code>number</code> | The Advanced Billing id of the product. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.productFeatures.listProductFeatures(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemsListResponse](src/models/feature-catalog-items-list-response.ts)</code>
+- **OnError**: throws <code>[ProductFeatures.ListProductFeaturesError](src/resources/product-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFeatures.listProductFeatures(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemsListResponse, ProductFeatures.ListProductFeaturesError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemsListResponse](src/models/feature-catalog-items-list-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>readProductFeature(request: ProductFeatures.ReadProductFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ProductFeatures.ReadProductFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Returns a single feature catalog item attached to this product.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.productFeatures.readProductFeature({ productId: 1, id: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ProductFeatures.ReadProductFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFeatures.readProductFeature({ productId: 1, id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>productId</code> | <code>number</code> | The Advanced Billing id of the product. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.productFeatures.readProductFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ProductFeatures.ReadProductFeatureError](src/resources/product-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFeatures.readProductFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ProductFeatures.ReadProductFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>removeProductFeature(request: ProductFeatures.RemoveProductFeatureRequest, options?: RequestOptions): ApiPromise&lt;undefined, ProductFeatures.RemoveProductFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Removes a feature catalog item from this product.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  await client.productFeatures.removeProductFeature({ productId: 1, id: 1 });
+} catch (err) {
+  // TODO: Handle 'err' of type ProductFeatures.RemoveProductFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFeatures.removeProductFeature({ productId: 1, id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>productId</code> | <code>number</code> | The Advanced Billing id of the product. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+| <code>destroyEntitlements?</code> | <code>boolean</code> | When `true`, permanently deletes this feature catalog item and every entitlement it created, revoking subscriber access immediately. When `false` (default), the feature catalog item is archived and existing entitlements are preserved.<br>**Default**: false |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.productFeatures.removeProductFeature(request)`
+
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ProductFeatures.RemoveProductFeatureError](src/resources/product-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFeatures.removeProductFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ProductFeatures.RemoveProductFeatureError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>restoreProductFeature(request: ProductFeatures.RestoreProductFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ProductFeatures.RestoreProductFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Clears the archived state of a feature catalog item attached to this product. Returns `422` if the parent feature template is still archived. Restore the feature template first.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.productFeatures.restoreProductFeature({ productId: 1, id: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ProductFeatures.RestoreProductFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFeatures.restoreProductFeature({ productId: 1, id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>productId</code> | <code>number</code> | The Advanced Billing id of the product. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.productFeatures.restoreProductFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ProductFeatures.RestoreProductFeatureError](src/resources/product-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFeatures.restoreProductFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ProductFeatures.RestoreProductFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</details>
+
+<details>
+<summary><code>updateProductFeature(request: ProductFeatures.UpdateProductFeatureRequest, options?: RequestOptions): ApiPromise&lt;FeatureCatalogItemResponse, ProductFeatures.UpdateProductFeatureError&gt;</code></summary>
+
+<dl>
+<dd>
+
+### Description
+
+<dl>
+<dd>
+
+Updates the value or periodicity of a feature catalog item attached to this product.
+
+</dd>
+</dl>
+
+### Direct Usage
+
+<dl>
+<dd>
+
+```ts
+try {
+  const response = await client.productFeatures.updateProductFeature({ productId: 1, id: 1 });
+  // TODO: Handle 'response' of type FeatureCatalogItemResponse
+} catch (err) {
+  // TODO: Handle 'err' of type ProductFeatures.UpdateProductFeatureError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productFeatures.updateProductFeature({ productId: 1, id: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FeatureCatalogItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Parameters
+
+<dl>
+<dd>
+
+| Name | Type | Description |
+| --- | --- | --- |
+| <code>productId</code> | <code>number</code> | The Advanced Billing id of the product. |
+| <code>id</code> | <code>number</code> | The Advanced Billing id of the feature catalog item. |
+| <code>body?</code> | <code>[UpdateFeatureCatalogItemRequest](src/models/update-feature-catalog-item-request.ts)</code> | - |
+
+</dd>
+</dl>
+
+### Response
+
+<dl>
+<dd>
+
+**Direct**: `await client.productFeatures.updateProductFeature(request)`
+
+- **OnSuccess**: <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: throws <code>[ProductFeatures.UpdateProductFeatureError](src/resources/product-features.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productFeatures.updateProductFeature(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FeatureCatalogItemResponse, ProductFeatures.UpdateProductFeatureError&gt;</code>, with `result.value` of type <code>[FeatureCatalogItemResponse](src/models/feature-catalog-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9131,19 +14733,35 @@ This will restrict the option to chose the product for purchase via the Billing 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.products.archiveProduct({ productId });
+  const response = await client.products.archiveProduct({ productId: 1 });
   // TODO: Handle 'response' of type ProductResponse
 } catch (err) {
-  if (err instanceof Products.ArchiveProductError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Products.ArchiveProductError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.products.archiveProduct({ productId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9167,9 +14785,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+**Direct**: `await client.products.archiveProduct(request)`
 
-**OnError**: <code>[Products.ArchiveProductError](src/resources/products.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: throws <code>[Products.ArchiveProductError](src/resources/products.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.products.archiveProduct(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse, Products.ArchiveProductError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9190,31 +14816,79 @@ try {
 <dl>
 <dd>
 
-Creates a product in your Advanced Billing site.
+Creates a product in your site.
 
-If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, the `auto_create_signup_page` parameter is not supported. If `auto_create_signup_page` is included (with any value) an error is returned. 
+If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, the `auto_create_signup_page` parameter is not supported. If `auto_create_signup_page` is included (with any value) an error is returned.
 
-See the following product documentation for more information:
+For more information, see:
 
-+ [Products Documentation](https://maxio.zendesk.com/hc/en-us/articles/24261090117645-Products-Overview)
++ [Products Overview](https://maxio.zendesk.com/hc/en-us/articles/24261090117645-Products-Overview)
 + [Changing a Subscription's Product](https://maxio.zendesk.com/hc/en-us/articles/24252069837581-Product-Changes-and-Migrations)
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.products.createProduct({ productFamilyId });
+  const response = await client.products.createProduct({
+    productFamilyId: "some example string",
+    body: {
+      product: {
+        name: "Gold Plan",
+        handle: "gold",
+        description: "This is our gold plan.",
+        accountingCode: "123",
+        requireCreditCard: true,
+        priceInCents: 1000,
+        interval: 1,
+        intervalUnit: IntervalUnit.Month,
+        autoCreateSignupPage: true,
+        taxCode: "D0000000",
+      },
+    },
+  });
   // TODO: Handle 'response' of type ProductResponse
 } catch (err) {
-  if (err instanceof Products.CreateProductError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Products.CreateProductError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.products.createProduct({
+  productFamilyId: "some example string",
+  body: {
+    product: {
+      name: "Gold Plan",
+      handle: "gold",
+      description: "This is our gold plan.",
+      accountingCode: "123",
+      requireCreditCard: true,
+      priceInCents: 1000,
+      interval: 1,
+      intervalUnit: IntervalUnit.Month,
+      autoCreateSignupPage: true,
+      taxCode: "D0000000",
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9239,9 +14913,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+**Direct**: `await client.products.createProduct(request)`
 
-**OnError**: <code>[Products.CreateProductError](src/resources/products.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: throws <code>[Products.CreateProductError](src/resources/products.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.products.createProduct(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse, Products.CreateProductError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9252,7 +14934,7 @@ try {
 </details>
 
 <details>
-<summary><code>listProducts(request: Products.ListProductsRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse[], ResponseError&gt;</code></summary>
+<summary><code>listProducts(request: Products.ListProductsRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9267,17 +14949,47 @@ Lists products belonging to a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.products.listProducts();
+  const response = await client.products.listProducts({
+    dateField: BasicDateField.UpdatedAt,
+    page: 1,
+    perPage: 50,
+    includeArchived: true,
+    include: ListProductsInclude.PrepaidProductPricePoint,
+  });
   // TODO: Handle 'response' of type ProductResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.products.listProducts({
+  dateField: BasicDateField.UpdatedAt,
+  page: 1,
+  perPage: 50,
+  includeArchived: true,
+  include: ListProductsInclude.PrepaidProductPricePoint,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -9297,10 +15009,11 @@ try {
 | <code>endDatetime?</code> | <code>Date</code> (date-time) | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns products with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site''s time zone will be used. If provided, this parameter will be used instead of end_date. |
 | <code>startDate?</code> | <code>string</code> (date) | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns products with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. |
 | <code>startDatetime?</code> | <code>Date</code> (date-time) | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns products with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site''s time zone will be used. If provided, this parameter will be used instead of start_date. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>includeArchived?</code> | <code>boolean</code> | Include archived products. Use in query: `include_archived=true`. |
 | <code>include?</code> | <code>[ListProductsInclude](src/models/list-products-include.ts)</code> | Allows including additional data in the response. Use in query `include=prepaid_product_price_point`. |
+| <code>includeFeatures?</code> | <code>boolean</code> | When `true`, embeds the active feature catalog items for each result in a `features` array. Default value is `false`.<br>**Default**: false |
 
 </dd>
 </dl>
@@ -9310,9 +15023,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)[]</code>
+**Direct**: `await client.products.listProducts(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.products.listProducts(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse[], ApiError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9323,7 +15044,7 @@ try {
 </details>
 
 <details>
-<summary><code>readProduct(request: Products.ReadProductRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse, ResponseError&gt;</code></summary>
+<summary><code>readProduct(request: Products.ReadProductRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9338,17 +15059,35 @@ Reads the current details of a product.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.products.readProduct({ productId });
+  const response = await client.products.readProduct({ productId: 1 });
   // TODO: Handle 'response' of type ProductResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.products.readProduct({ productId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -9363,6 +15102,7 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>productId</code> | <code>number</code> | The Advanced Billing id of the product |
+| <code>includeFeatures?</code> | <code>boolean</code> | When `true`, embeds the active feature catalog items for each result in a `features` array. Default value is `false`.<br>**Default**: false |
 
 </dd>
 </dl>
@@ -9372,9 +15112,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+**Direct**: `await client.products.readProduct(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.products.readProduct(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse, ApiError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9385,7 +15133,7 @@ try {
 </details>
 
 <details>
-<summary><code>readProductByHandle(request: Products.ReadProductByHandleRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse, ResponseError&gt;</code></summary>
+<summary><code>readProductByHandle(request: Products.ReadProductByHandleRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9400,17 +15148,35 @@ Retrieves a Product object by its `api_handle`.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.products.readProductByHandle({ apiHandle });
+  const response = await client.products.readProductByHandle({ apiHandle: "some example string" });
   // TODO: Handle 'response' of type ProductResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.products.readProductByHandle({ apiHandle: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -9434,9 +15200,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+**Direct**: `await client.products.readProductByHandle(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.products.readProductByHandle(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse, ApiError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9470,19 +15244,35 @@ Updating a product using this endpoint will create a new price point and set it 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.products.updateProduct({ productId });
+  const response = await client.products.updateProduct({ productId: 1 });
   // TODO: Handle 'response' of type ProductResponse
 } catch (err) {
-  if (err instanceof Products.UpdateProductError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Products.UpdateProductError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.products.updateProduct({ productId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9507,9 +15297,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+**Direct**: `await client.products.updateProduct(request)`
 
-**OnError**: <code>[Products.UpdateProductError](src/resources/products.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: throws <code>[Products.UpdateProductError](src/resources/products.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.products.updateProduct(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse, Products.UpdateProductError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9539,22 +15337,41 @@ Archives a product price point.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.archiveProductPricePoint({ productId, pricePointId });
+  const response = await client.productPricePoints.archiveProductPricePoint({
+    productId: 1,
+    pricePointId: 1,
+  });
   // TODO: Handle 'response' of type ProductPricePointResponse
 } catch (err) {
-  if (
-    err instanceof ProductPricePoints.ArchiveProductPricePointError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ProductPricePoints.ArchiveProductPricePointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.archiveProductPricePoint({
+  productId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductPricePointResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9579,9 +15396,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+**Direct**: `await client.productPricePoints.archiveProductPricePoint(request)`
 
-**OnError**: <code>[ProductPricePoints.ArchiveProductPricePointError](src/resources/product-price-points.ts)</code>
+- **OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: throws <code>[ProductPricePoints.ArchiveProductPricePointError](src/resources/product-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productPricePoints.archiveProductPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductPricePointResponse, ProductPricePoints.ArchiveProductPricePointError&gt;</code>, with `result.value` of type <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9607,21 +15432,107 @@ Creates multiple product price points in one request.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.bulkCreateProductPricePoints({ productId });
+  const response = await client.productPricePoints.bulkCreateProductPricePoints({
+    productId: 1,
+    body: {
+      pricePoints: [
+        {
+          name: "Educational",
+          handle: "educational",
+          priceInCents: 1000,
+          interval: 1,
+          intervalUnit: IntervalUnit.Month,
+          trialPriceInCents: 4900,
+          trialInterval: 1,
+          trialIntervalUnit: IntervalUnit.Month,
+          trialType: TrialType.PaymentExpected,
+          initialChargeInCents: 120000,
+          initialChargeAfterTrial: false,
+          expirationInterval: 12,
+          expirationIntervalUnit: ExpirationIntervalUnit.Month,
+        },
+        {
+          name: "More Educational",
+          handle: "more-educational",
+          priceInCents: 2000,
+          interval: 1,
+          intervalUnit: IntervalUnit.Month,
+          trialPriceInCents: 4900,
+          trialInterval: 1,
+          trialIntervalUnit: IntervalUnit.Month,
+          trialType: TrialType.PaymentExpected,
+          initialChargeInCents: 120000,
+          initialChargeAfterTrial: false,
+          expirationInterval: 12,
+          expirationIntervalUnit: ExpirationIntervalUnit.Month,
+        },
+      ],
+    },
+  });
   // TODO: Handle 'response' of type BulkCreateProductPricePointsResponse
 } catch (err) {
-  if (
-    err instanceof ProductPricePoints.BulkCreateProductPricePointsError && err.payload.kind === "error422"
-  ) {
-    // TODO: Handle 'err.payload.body' of type Record<string, unknown>
-  }
+  // TODO: Handle 'err' of type ProductPricePoints.BulkCreateProductPricePointsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.bulkCreateProductPricePoints({
+  productId: 1,
+  body: {
+    pricePoints: [
+      {
+        name: "Educational",
+        handle: "educational",
+        priceInCents: 1000,
+        interval: 1,
+        intervalUnit: IntervalUnit.Month,
+        trialPriceInCents: 4900,
+        trialInterval: 1,
+        trialIntervalUnit: IntervalUnit.Month,
+        trialType: TrialType.PaymentExpected,
+        initialChargeInCents: 120000,
+        initialChargeAfterTrial: false,
+        expirationInterval: 12,
+        expirationIntervalUnit: ExpirationIntervalUnit.Month,
+      },
+      {
+        name: "More Educational",
+        handle: "more-educational",
+        priceInCents: 2000,
+        interval: 1,
+        intervalUnit: IntervalUnit.Month,
+        trialPriceInCents: 4900,
+        trialInterval: 1,
+        trialIntervalUnit: IntervalUnit.Month,
+        trialType: TrialType.PaymentExpected,
+        initialChargeInCents: 120000,
+        initialChargeAfterTrial: false,
+        expirationInterval: 12,
+        expirationIntervalUnit: ExpirationIntervalUnit.Month,
+      },
+    ],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BulkCreateProductPricePointsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9646,9 +15557,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BulkCreateProductPricePointsResponse](src/models/bulk-create-product-price-points-response.ts)</code>
+**Direct**: `await client.productPricePoints.bulkCreateProductPricePoints(request)`
 
-**OnError**: <code>[ProductPricePoints.BulkCreateProductPricePointsError](src/resources/product-price-points.ts)</code>
+- **OnSuccess**: <code>[BulkCreateProductPricePointsResponse](src/models/bulk-create-product-price-points-response.ts)</code>
+- **OnError**: throws <code>[ProductPricePoints.BulkCreateProductPricePointsError](src/resources/product-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productPricePoints.bulkCreateProductPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BulkCreateProductPricePointsResponse, ProductPricePoints.BulkCreateProductPricePointsError&gt;</code>, with `result.value` of type <code>[BulkCreateProductPricePointsResponse](src/models/bulk-create-product-price-points-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9678,22 +15597,53 @@ Note: Currency Prices are not able to be created for custom product price points
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.createProductCurrencyPrices({ productPricePointId });
+  const response = await client.productPricePoints.createProductCurrencyPrices({
+    productPricePointId: 1,
+    body: {
+      currencyPrices: [
+        { currency: "EUR", price: 60, role: CurrencyPriceRole.Baseline },
+        { currency: "EUR", price: 30, role: CurrencyPriceRole.Trial },
+        { currency: "EUR", price: 100, role: CurrencyPriceRole.Initial },
+      ],
+    },
+  });
   // TODO: Handle 'response' of type CurrencyPricesResponse
 } catch (err) {
-  if (
-    err instanceof ProductPricePoints.CreateProductCurrencyPricesError &&
-      err.payload.kind === "errorArrayMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type ProductPricePoints.CreateProductCurrencyPricesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.createProductCurrencyPrices({
+  productPricePointId: 1,
+  body: {
+    currencyPrices: [
+      { currency: "EUR", price: 60, role: CurrencyPriceRole.Baseline },
+      { currency: "EUR", price: 30, role: CurrencyPriceRole.Trial },
+      { currency: "EUR", price: 100, role: CurrencyPriceRole.Initial },
+    ],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CurrencyPricesResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9718,9 +15668,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CurrencyPricesResponse](src/models/currency-prices-response.ts)</code>
+**Direct**: `await client.productPricePoints.createProductCurrencyPrices(request)`
 
-**OnError**: <code>[ProductPricePoints.CreateProductCurrencyPricesError](src/resources/product-price-points.ts)</code>
+- **OnSuccess**: <code>[CurrencyPricesResponse](src/models/currency-prices-response.ts)</code>
+- **OnError**: throws <code>[ProductPricePoints.CreateProductCurrencyPricesError](src/resources/product-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productPricePoints.createProductCurrencyPrices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CurrencyPricesResponse, ProductPricePoints.CreateProductCurrencyPricesError&gt;</code>, with `result.value` of type <code>[CurrencyPricesResponse](src/models/currency-prices-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9746,22 +15704,73 @@ Creates a Product Price Point. See the [Product Price Point](https://maxio.zende
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.createProductPricePoint({ productId });
+  const response = await client.productPricePoints.createProductPricePoint({
+    productId: 1,
+    body: {
+      pricePoint: {
+        name: "Educational",
+        handle: "educational",
+        priceInCents: 1000,
+        interval: 1,
+        intervalUnit: IntervalUnit.Month,
+        trialPriceInCents: 4900,
+        trialInterval: 1,
+        trialIntervalUnit: IntervalUnit.Month,
+        trialType: TrialType.PaymentExpected,
+        initialChargeInCents: 120000,
+        initialChargeAfterTrial: false,
+        expirationInterval: 12,
+        expirationIntervalUnit: ExpirationIntervalUnit.Month,
+      },
+    },
+  });
   // TODO: Handle 'response' of type ProductPricePointResponse
 } catch (err) {
-  if (
-    err instanceof ProductPricePoints.CreateProductPricePointError &&
-      err.payload.kind === "productPricePointErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ProductPricePointErrorResponse1
-  }
+  // TODO: Handle 'err' of type ProductPricePoints.CreateProductPricePointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.createProductPricePoint({
+  productId: 1,
+  body: {
+    pricePoint: {
+      name: "Educational",
+      handle: "educational",
+      priceInCents: 1000,
+      interval: 1,
+      intervalUnit: IntervalUnit.Month,
+      trialPriceInCents: 4900,
+      trialInterval: 1,
+      trialIntervalUnit: IntervalUnit.Month,
+      trialType: TrialType.PaymentExpected,
+      initialChargeInCents: 120000,
+      initialChargeAfterTrial: false,
+      expirationInterval: 12,
+      expirationIntervalUnit: ExpirationIntervalUnit.Month,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductPricePointResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9786,9 +15795,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+**Direct**: `await client.productPricePoints.createProductPricePoint(request)`
 
-**OnError**: <code>[ProductPricePoints.CreateProductPricePointError](src/resources/product-price-points.ts)</code>
+- **OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: throws <code>[ProductPricePoints.CreateProductPricePointError](src/resources/product-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productPricePoints.createProductPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductPricePointResponse, ProductPricePoints.CreateProductPricePointError&gt;</code>, with `result.value` of type <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9814,22 +15831,43 @@ Lists Product Price Points belonging to a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.listAllProductPricePoints();
+  const response = await client.productPricePoints.listAllProductPricePoints({
+    include: ListProductsPricePointsInclude.CurrencyPrices,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ListProductPricePointsResponse
 } catch (err) {
-  if (
-    err instanceof ProductPricePoints.ListAllProductPricePointsError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ProductPricePoints.ListAllProductPricePointsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.listAllProductPricePoints({
+  include: ListProductsPricePointsInclude.CurrencyPrices,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListProductPricePointsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -9846,8 +15884,8 @@ try {
 | <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
 | <code>filter?</code> | <code>[ListPricePointsFilter](src/models/list-price-points-filter.ts)</code> | Filter to use for List PricePoints operations |
 | <code>include?</code> | <code>[ListProductsPricePointsInclude](src/models/list-products-price-points-include.ts)</code> | Allows including additional data in the response. Use in query: `include=currency_prices`. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 
 </dd>
 </dl>
@@ -9857,9 +15895,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListProductPricePointsResponse](src/models/list-product-price-points-response.ts)</code>
+**Direct**: `await client.productPricePoints.listAllProductPricePoints(request)`
 
-**OnError**: <code>[ProductPricePoints.ListAllProductPricePointsError](src/resources/product-price-points.ts)</code>
+- **OnSuccess**: <code>[ListProductPricePointsResponse](src/models/list-product-price-points-response.ts)</code>
+- **OnError**: throws <code>[ProductPricePoints.ListAllProductPricePointsError](src/resources/product-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productPricePoints.listAllProductPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListProductPricePointsResponse, ProductPricePoints.ListAllProductPricePointsError&gt;</code>, with `result.value` of type <code>[ListProductPricePointsResponse](src/models/list-product-price-points-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9870,7 +15916,7 @@ try {
 </details>
 
 <details>
-<summary><code>listProductPricePoints(request: ProductPricePoints.ListProductPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ListProductPricePointsResponse, ResponseError&gt;</code></summary>
+<summary><code>listProductPricePoints(request: ProductPricePoints.ListProductPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ListProductPricePointsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9885,17 +15931,43 @@ Retrieves a list of product price points.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.listProductPricePoints({ productId });
+  const response = await client.productPricePoints.listProductPricePoints({
+    productId: 1,
+    page: 1,
+    filterType: [PricePointType.Catalog, PricePointType.Default],
+  });
   // TODO: Handle 'response' of type ListProductPricePointsResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.listProductPricePoints({
+  productId: 1,
+  page: 1,
+  filterType: [PricePointType.Catalog, PricePointType.Default],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListProductPricePointsResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -9910,8 +15982,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>productId</code> | <code>[ProductIdModel](src/models/unions/product-id-model.ts)</code> | The id or handle of the product. When using the handle, it must be prefixed with `handle:` |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 10. The maximum allowed values is 200; any per_page value over 200 will be changed to 200. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 10. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>**Default**: 10 |
 | <code>currencyPrices?</code> | <code>boolean</code> | (Optional) If you have defined multiple currencies at the site level, you can pass ?currency_prices=true to include an array of currency price data in the response. If the product price point is set to use_site_exchange_rate: true, it will return pricing based on the current exchange rate. If the flag is set to false, it will return all of the defined prices for each currency. |
 | <code>filterType?</code> | <code>[PricePointType](src/models/price-point-type.ts)[]</code> | Use in query: `filter[type]=catalog,default`. |
 | <code>archived?</code> | <code>boolean</code> | Set to include archived price points in the response. |
@@ -9924,9 +15996,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListProductPricePointsResponse](src/models/list-product-price-points-response.ts)</code>
+**Direct**: `await client.productPricePoints.listProductPricePoints(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListProductPricePointsResponse](src/models/list-product-price-points-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.productPricePoints.listProductPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListProductPricePointsResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListProductPricePointsResponse](src/models/list-product-price-points-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -9937,7 +16017,7 @@ try {
 </details>
 
 <details>
-<summary><code>promoteProductPricePointToDefault(request: ProductPricePoints.PromoteProductPricePointToDefaultRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse, ResponseError&gt;</code></summary>
+<summary><code>promoteProductPricePointToDefault(request: ProductPricePoints.PromoteProductPricePointToDefaultRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9954,7 +16034,7 @@ Note: Custom product price points cannot be set as the default for a product.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -9962,12 +16042,33 @@ Note: Custom product price points cannot be set as the default for a product.
 ```ts
 try {
   const response = await client.productPricePoints.promoteProductPricePointToDefault({
-    productId,
-    pricePointId,
+    productId: 1,
+    pricePointId: 1,
   });
   // TODO: Handle 'response' of type ProductResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.promoteProductPricePointToDefault({
+  productId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -9992,9 +16093,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+**Direct**: `await client.productPricePoints.promoteProductPricePointToDefault(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.productPricePoints.promoteProductPricePointToDefault(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductResponse, ApiError&gt;</code>, with `result.value` of type <code>[ProductResponse](src/models/product-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10005,7 +16114,7 @@ try {
 </details>
 
 <details>
-<summary><code>readProductPricePoint(request: ProductPricePoints.ReadProductPricePointRequest, options?: RequestOptions): ApiPromise&lt;ProductPricePointResponse, ResponseError&gt;</code></summary>
+<summary><code>readProductPricePoint(request: ProductPricePoints.ReadProductPricePointRequest, options?: RequestOptions): ApiPromise&lt;ProductPricePointResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -10020,17 +16129,38 @@ Returns details for a specific product price point. You can achieve this by usin
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.readProductPricePoint({ productId, pricePointId });
+  const response = await client.productPricePoints.readProductPricePoint({ productId: 1, pricePointId: 1 });
   // TODO: Handle 'response' of type ProductPricePointResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.readProductPricePoint({
+  productId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductPricePointResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -10056,9 +16186,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+**Direct**: `await client.productPricePoints.readProductPricePoint(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.productPricePoints.readProductPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductPricePointResponse, ApiError&gt;</code>, with `result.value` of type <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10069,7 +16207,7 @@ try {
 </details>
 
 <details>
-<summary><code>unarchiveProductPricePoint(request: ProductPricePoints.UnarchiveProductPricePointRequest, options?: RequestOptions): ApiPromise&lt;ProductPricePointResponse, ResponseError&gt;</code></summary>
+<summary><code>unarchiveProductPricePoint(request: ProductPricePoints.UnarchiveProductPricePointRequest, options?: RequestOptions): ApiPromise&lt;ProductPricePointResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -10084,17 +16222,41 @@ Unarchives an archived product price point.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.unarchiveProductPricePoint({ productId, pricePointId });
+  const response = await client.productPricePoints.unarchiveProductPricePoint({
+    productId: 1,
+    pricePointId: 1,
+  });
   // TODO: Handle 'response' of type ProductPricePointResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.unarchiveProductPricePoint({
+  productId: 1,
+  pricePointId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductPricePointResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -10119,9 +16281,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+**Direct**: `await client.productPricePoints.unarchiveProductPricePoint(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.productPricePoints.unarchiveProductPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductPricePointResponse, ApiError&gt;</code>, with `result.value` of type <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10151,22 +16321,41 @@ Note: Currency Prices cannot be updated for custom product price points.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.updateProductCurrencyPrices({ productPricePointId });
+  const response = await client.productPricePoints.updateProductCurrencyPrices({
+    productPricePointId: 1,
+    body: { currencyPrices: [{ id: 200, price: 15 }, { id: 201, price: 5 }] },
+  });
   // TODO: Handle 'response' of type CurrencyPricesResponse
 } catch (err) {
-  if (
-    err instanceof ProductPricePoints.UpdateProductCurrencyPricesError &&
-      err.payload.kind === "errorArrayMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type ProductPricePoints.UpdateProductCurrencyPricesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.updateProductCurrencyPrices({
+  productPricePointId: 1,
+  body: { currencyPrices: [{ id: 200, price: 15 }, { id: 201, price: 5 }] },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CurrencyPricesResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10191,9 +16380,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CurrencyPricesResponse](src/models/currency-prices-response.ts)</code>
+**Direct**: `await client.productPricePoints.updateProductCurrencyPrices(request)`
 
-**OnError**: <code>[ProductPricePoints.UpdateProductCurrencyPricesError](src/resources/product-price-points.ts)</code>
+- **OnSuccess**: <code>[CurrencyPricesResponse](src/models/currency-prices-response.ts)</code>
+- **OnError**: throws <code>[ProductPricePoints.UpdateProductCurrencyPricesError](src/resources/product-price-points.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.productPricePoints.updateProductCurrencyPrices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CurrencyPricesResponse, ProductPricePoints.UpdateProductCurrencyPricesError&gt;</code>, with `result.value` of type <code>[CurrencyPricesResponse](src/models/currency-prices-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10204,7 +16401,7 @@ try {
 </details>
 
 <details>
-<summary><code>updateProductPricePoint(request: ProductPricePoints.UpdateProductPricePointRequestParams, options?: RequestOptions): ApiPromise&lt;ProductPricePointResponse, ResponseError&gt;</code></summary>
+<summary><code>updateProductPricePoint(request: ProductPricePoints.UpdateProductPricePointRequestParams, options?: RequestOptions): ApiPromise&lt;ProductPricePointResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -10221,17 +16418,43 @@ Note: Custom product price points cannot be updated.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.productPricePoints.updateProductPricePoint({ productId, pricePointId });
+  const response = await client.productPricePoints.updateProductPricePoint({
+    productId: 1,
+    pricePointId: 1,
+    body: { pricePoint: { handle: "educational", priceInCents: 1250 } },
+  });
   // TODO: Handle 'response' of type ProductPricePointResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.productPricePoints.updateProductPricePoint({
+  productId: 1,
+  pricePointId: 1,
+  body: { pricePoint: { handle: "educational", priceInCents: 1250 } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProductPricePointResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -10257,9 +16480,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+**Direct**: `await client.productPricePoints.updateProductPricePoint(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.productPricePoints.updateProductPricePoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProductPricePointResponse, ApiError&gt;</code>, with `result.value` of type <code>[ProductPricePointResponse](src/models/product-price-point-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10284,7 +16515,7 @@ try {
 <dl>
 <dd>
 
-Creates a consolidated proforma invoice asynchronously. It will return a 201 with no message, or a 422 with any errors. To find and view the new consolidated proforma invoice, you may poll the subscription group listing for proforma invoices; only one consolidated proforma invoice may be created per group at a time.
+Creates a consolidated proforma invoice asynchronously. To find and view the new consolidated proforma invoice, you can poll the subscription group listing for proforma invoices; only one consolidated proforma invoice can be created per group at a time.
 
 If the information becomes outdated, simply void the old consolidated proforma invoice and generate a new one.
 
@@ -10295,21 +16526,36 @@ Proforma invoices are only available on Relationship Invoicing sites. To create 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.proformaInvoices.createConsolidatedProformaInvoice({ uid });
+  await client.proformaInvoices.createConsolidatedProformaInvoice({ uid: "some example string" });
 } catch (err) {
-  if (
-    err instanceof ProformaInvoices.CreateConsolidatedProformaInvoiceError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.CreateConsolidatedProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.createConsolidatedProformaInvoice({
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10333,9 +16579,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.proformaInvoices.createConsolidatedProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.CreateConsolidatedProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ProformaInvoices.CreateConsolidatedProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.createConsolidatedProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ProformaInvoices.CreateConsolidatedProformaInvoiceError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10367,21 +16621,35 @@ Proforma invoices are only available on Relationship Invoicing sites. To create 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.createProformaInvoice({ subscriptionId });
+  const response = await client.proformaInvoices.createProformaInvoice({ subscriptionId: 1 });
   // TODO: Handle 'response' of type ProformaInvoice
 } catch (err) {
-  if (
-    err instanceof ProformaInvoices.CreateProformaInvoiceError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.CreateProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.createProformaInvoice({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProformaInvoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10405,9 +16673,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+**Direct**: `await client.proformaInvoices.createProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.CreateProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.CreateProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.createProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProformaInvoice, ProformaInvoices.CreateProformaInvoiceError&gt;</code>, with `result.value` of type <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10437,22 +16713,49 @@ A product and customer first name, last name, and email are the minimum requirem
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.createSignupProformaInvoice();
+  const response = await client.proformaInvoices.createSignupProformaInvoice({
+    body: {
+      subscription: {
+        productHandle: "gold-product",
+        customerAttributes: { firstName: "Myra", lastName: "Maisel", email: "mmaisel@example.com" },
+      },
+    },
+  });
   // TODO: Handle 'response' of type ProformaInvoice
 } catch (err) {
-  if (
-    err instanceof ProformaInvoices.CreateSignupProformaInvoiceError &&
-      err.payload.kind === "proformaBadRequestErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ProformaBadRequestErrorResponse1
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.CreateSignupProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.createSignupProformaInvoice({
+  body: {
+    subscription: {
+      productHandle: "gold-product",
+      customerAttributes: { firstName: "Myra", lastName: "Maisel", email: "mmaisel@example.com" },
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProformaInvoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10476,9 +16779,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+**Direct**: `await client.proformaInvoices.createSignupProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.CreateSignupProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.CreateSignupProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.createSignupProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProformaInvoice, ProformaInvoices.CreateSignupProformaInvoiceError&gt;</code>, with `result.value` of type <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10509,19 +16820,49 @@ empty body may still succeed when defaults are available.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.deliverProformaInvoice({ proformaInvoiceUid });
+  const response = await client.proformaInvoices.deliverProformaInvoice({
+    proformaInvoiceUid: "some example string",
+    body: {
+      recipientEmails: ["user0@example.com"],
+      ccRecipientEmails: ["user1@example.com"],
+      bccRecipientEmails: ["user2@example.com"],
+    },
+  });
   // TODO: Handle 'response' of type ProformaInvoice
 } catch (err) {
-  if (err instanceof ProformaInvoices.DeliverProformaInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.DeliverProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.deliverProformaInvoice({
+  proformaInvoiceUid: "some example string",
+  body: {
+    recipientEmails: ["user0@example.com"],
+    ccRecipientEmails: ["user1@example.com"],
+    bccRecipientEmails: ["user2@example.com"],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProformaInvoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10546,9 +16887,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+**Direct**: `await client.proformaInvoices.deliverProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.DeliverProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.DeliverProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.deliverProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProformaInvoice, ProformaInvoices.DeliverProformaInvoiceError&gt;</code>, with `result.value` of type <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10559,7 +16908,7 @@ try {
 </details>
 
 <details>
-<summary><code>listProformaInvoices(request: ProformaInvoices.ListProformaInvoicesRequest, options?: RequestOptions): ApiPromise&lt;ListProformaInvoicesResponse, ResponseError&gt;</code></summary>
+<summary><code>listProformaInvoices(request: ProformaInvoices.ListProformaInvoicesRequest, options?: RequestOptions): ApiPromise&lt;ListProformaInvoicesResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -10574,17 +16923,43 @@ Lists proforma invoices for a subscription. By default, results only include tot
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.listProformaInvoices({ subscriptionId });
+  const response = await client.proformaInvoices.listProformaInvoices({
+    subscriptionId: 1,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ListProformaInvoicesResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.listProformaInvoices({
+  subscriptionId: 1,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListProformaInvoicesResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -10602,15 +16977,15 @@ try {
 | <code>startDate?</code> | <code>string</code> | The beginning date range for the invoice's Due Date, in the YYYY-MM-DD format. |
 | <code>endDate?</code> | <code>string</code> | The ending date range for the invoice's Due Date, in the YYYY-MM-DD format. |
 | <code>status?</code> | <code>[ProformaInvoiceStatus](src/models/proforma-invoice-status.ts)</code> | The current status of the invoice.  Allowed Values: draft, open, paid, pending, voided |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
-| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned invoices. |
-| <code>lineItems?</code> | <code>boolean</code> | Include line items data. |
-| <code>discounts?</code> | <code>boolean</code> | Include discounts data. |
-| <code>taxes?</code> | <code>boolean</code> | Include taxes data. |
-| <code>credits?</code> | <code>boolean</code> | Include credits data. |
-| <code>payments?</code> | <code>boolean</code> | Include payments data. |
-| <code>customFields?</code> | <code>boolean</code> | Include custom fields data. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
+| <code>direction?</code> | <code>[Direction](src/models/direction.ts)</code> | The sort direction of the returned invoices.<br>**Default**: "desc" |
+| <code>lineItems?</code> | <code>boolean</code> | Include line items data.<br>**Default**: false |
+| <code>discounts?</code> | <code>boolean</code> | Include discounts data.<br>**Default**: false |
+| <code>taxes?</code> | <code>boolean</code> | Include taxes data.<br>**Default**: false |
+| <code>credits?</code> | <code>boolean</code> | Include credits data.<br>**Default**: false |
+| <code>payments?</code> | <code>boolean</code> | Include payments data.<br>**Default**: false |
+| <code>customFields?</code> | <code>boolean</code> | Include custom fields data.<br>**Default**: false |
 
 </dd>
 </dl>
@@ -10620,9 +16995,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListProformaInvoicesResponse](src/models/list-proforma-invoices-response.ts)</code>
+**Direct**: `await client.proformaInvoices.listProformaInvoices(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListProformaInvoicesResponse](src/models/list-proforma-invoices-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.proformaInvoices.listProformaInvoices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListProformaInvoicesResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListProformaInvoicesResponse](src/models/list-proforma-invoices-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10651,22 +17034,39 @@ By default, proforma invoices returned on the index will only include totals, no
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.listSubscriptionGroupProformaInvoices({ uid });
+  const response = await client.proformaInvoices.listSubscriptionGroupProformaInvoices({
+    uid: "some example string",
+  });
   // TODO: Handle 'response' of type ListProformaInvoicesResponse
 } catch (err) {
-  if (
-    err instanceof ProformaInvoices.ListSubscriptionGroupProformaInvoicesError &&
-      err.payload.kind === "error404"
-  ) {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.ListSubscriptionGroupProformaInvoicesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.listSubscriptionGroupProformaInvoices({
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListProformaInvoicesResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10681,12 +17081,12 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>uid</code> | <code>string</code> | The uid of the subscription group |
-| <code>lineItems?</code> | <code>boolean</code> | Include line items data. |
-| <code>discounts?</code> | <code>boolean</code> | Include discounts data. |
-| <code>taxes?</code> | <code>boolean</code> | Include taxes data. |
-| <code>credits?</code> | <code>boolean</code> | Include credits data. |
-| <code>payments?</code> | <code>boolean</code> | Include payments data. |
-| <code>customFields?</code> | <code>boolean</code> | Include custom fields data. |
+| <code>lineItems?</code> | <code>boolean</code> | Include line items data.<br>**Default**: false |
+| <code>discounts?</code> | <code>boolean</code> | Include discounts data.<br>**Default**: false |
+| <code>taxes?</code> | <code>boolean</code> | Include taxes data.<br>**Default**: false |
+| <code>credits?</code> | <code>boolean</code> | Include credits data.<br>**Default**: false |
+| <code>payments?</code> | <code>boolean</code> | Include payments data.<br>**Default**: false |
+| <code>customFields?</code> | <code>boolean</code> | Include custom fields data.<br>**Default**: false |
 
 </dd>
 </dl>
@@ -10696,9 +17096,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListProformaInvoicesResponse](src/models/list-proforma-invoices-response.ts)</code>
+**Direct**: `await client.proformaInvoices.listSubscriptionGroupProformaInvoices(request)`
 
-**OnError**: <code>[ProformaInvoices.ListSubscriptionGroupProformaInvoicesError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[ListProformaInvoicesResponse](src/models/list-proforma-invoices-response.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.ListSubscriptionGroupProformaInvoicesError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.listSubscriptionGroupProformaInvoices(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListProformaInvoicesResponse, ProformaInvoices.ListSubscriptionGroupProformaInvoicesError&gt;</code>, with `result.value` of type <code>[ListProformaInvoicesResponse](src/models/list-proforma-invoices-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10730,19 +17138,35 @@ Alternatively, if you have some proforma invoices already, you may make a previe
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.previewProformaInvoice({ subscriptionId });
+  const response = await client.proformaInvoices.previewProformaInvoice({ subscriptionId: 1 });
   // TODO: Handle 'response' of type ProformaInvoice
 } catch (err) {
-  if (err instanceof ProformaInvoices.PreviewProformaInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.PreviewProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.previewProformaInvoice({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProformaInvoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10766,9 +17190,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+**Direct**: `await client.proformaInvoices.previewProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.PreviewProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.PreviewProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.previewProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProformaInvoice, ProformaInvoices.PreviewProformaInvoiceError&gt;</code>, with `result.value` of type <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10798,22 +17230,51 @@ A product and customer first name, last name, and email are the minimum requirem
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.previewSignupProformaInvoice();
+  const response = await client.proformaInvoices.previewSignupProformaInvoice({
+    include: CreateSignupProformaPreviewInclude.NextProformaInvoice,
+    body: {
+      subscription: {
+        productHandle: "gold-plan",
+        customerAttributes: { firstName: "first", lastName: "last", email: "flast@example.com" },
+      },
+    },
+  });
   // TODO: Handle 'response' of type SignupProformaPreviewResponse
 } catch (err) {
-  if (
-    err instanceof ProformaInvoices.PreviewSignupProformaInvoiceError &&
-      err.payload.kind === "proformaBadRequestErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ProformaBadRequestErrorResponse1
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.PreviewSignupProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.previewSignupProformaInvoice({
+  include: CreateSignupProformaPreviewInclude.NextProformaInvoice,
+  body: {
+    subscription: {
+      productHandle: "gold-plan",
+      customerAttributes: { firstName: "first", lastName: "last", email: "flast@example.com" },
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SignupProformaPreviewResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10838,9 +17299,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SignupProformaPreviewResponse](src/models/signup-proforma-preview-response.ts)</code>
+**Direct**: `await client.proformaInvoices.previewSignupProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.PreviewSignupProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[SignupProformaPreviewResponse](src/models/signup-proforma-preview-response.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.PreviewSignupProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.previewSignupProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SignupProformaPreviewResponse, ProformaInvoices.PreviewSignupProformaInvoiceError&gt;</code>, with `result.value` of type <code>[SignupProformaPreviewResponse](src/models/signup-proforma-preview-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10870,19 +17339,39 @@ Proforma invoices are only available on Relationship Invoicing sites.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.readProformaInvoice({ proformaInvoiceUid });
+  const response = await client.proformaInvoices.readProformaInvoice({
+    proformaInvoiceUid: "some example string",
+  });
   // TODO: Handle 'response' of type ProformaInvoice
 } catch (err) {
-  if (err instanceof ProformaInvoices.ReadProformaInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.ReadProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.readProformaInvoice({
+  proformaInvoiceUid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProformaInvoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10906,9 +17395,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+**Direct**: `await client.proformaInvoices.readProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.ReadProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.ReadProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.readProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProformaInvoice, ProformaInvoices.ReadProformaInvoiceError&gt;</code>, with `result.value` of type <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -10942,19 +17439,39 @@ A reason for the void operation is required to be included in the request body. 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.proformaInvoices.voidProformaInvoice({ proformaInvoiceUid });
+  const response = await client.proformaInvoices.voidProformaInvoice({
+    proformaInvoiceUid: "some example string",
+  });
   // TODO: Handle 'response' of type ProformaInvoice
 } catch (err) {
-  if (err instanceof ProformaInvoices.VoidProformaInvoiceError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ProformaInvoices.VoidProformaInvoiceError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.proformaInvoices.voidProformaInvoice({
+  proformaInvoiceUid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ProformaInvoice
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -10979,9 +17496,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+**Direct**: `await client.proformaInvoices.voidProformaInvoice(request)`
 
-**OnError**: <code>[ProformaInvoices.VoidProformaInvoiceError](src/resources/proforma-invoices.ts)</code>
+- **OnSuccess**: <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: throws <code>[ProformaInvoices.VoidProformaInvoiceError](src/resources/proforma-invoices.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.proformaInvoices.voidProformaInvoice(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ProformaInvoice, ProformaInvoices.VoidProformaInvoiceError&gt;</code>, with `result.value` of type <code>[ProformaInvoice](src/models/proforma-invoice.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11008,38 +17533,48 @@ try {
 
 Creates a reason code for a given site.
 
-# Reason Codes Intro
-
 Reason Codes are a way to gain a high-level view of why your customers are cancelling the subscription to your product or service.
 
 Add a set of churn reason codes to be displayed in-app and/or the Maxio Billing Portal. As your subscribers decide to cancel their subscription, learn why they decided to cancel.
 
-## Reason Code Documentation
-
-Full documentation on how Reason Codes operate within Advanced Billing can be located under the following links.
-
-[Churn Reason Codes](https://maxio.zendesk.com/hc/en-us/articles/24286647554701-Churn-Reason-Codes)
-
-## Create Reason Code
-
-This method gives a merchant the option to create reason codes for a given site.
+For more information, see [Churn Reason Codes](https://maxio.zendesk.com/hc/en-us/articles/24286647554701-Churn-Reason-Codes).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.reasonCodes.createReasonCode();
+  const response = await client.reasonCodes.createReasonCode({
+    body: { reasonCode: { code: "NOTHANKYOU", description: "No thank you!", position: 5 } },
+  });
   // TODO: Handle 'response' of type ReasonCodeResponse
 } catch (err) {
-  if (err instanceof ReasonCodes.CreateReasonCodeError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ReasonCodes.CreateReasonCodeError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.reasonCodes.createReasonCode({
+  body: { reasonCode: { code: "NOTHANKYOU", description: "No thank you!", position: 5 } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ReasonCodeResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -11063,9 +17598,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+**Direct**: `await client.reasonCodes.createReasonCode(request)`
 
-**OnError**: <code>[ReasonCodes.CreateReasonCodeError](src/resources/reason-codes.ts)</code>
+- **OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+- **OnError**: throws <code>[ReasonCodes.CreateReasonCodeError](src/resources/reason-codes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.reasonCodes.createReasonCode(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ReasonCodeResponse, ReasonCodes.CreateReasonCodeError&gt;</code>, with `result.value` of type <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11091,19 +17634,35 @@ Deletes a reason code from the Churn Reason Codes. This code will be immediately
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.reasonCodes.deleteReasonCode({ reasonCodeId });
+  const response = await client.reasonCodes.deleteReasonCode({ reasonCodeId: 1 });
   // TODO: Handle 'response' of type OkResponse
 } catch (err) {
-  if (err instanceof ReasonCodes.DeleteReasonCodeError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ReasonCodes.DeleteReasonCodeError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.reasonCodes.deleteReasonCode({ reasonCodeId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type OkResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -11127,9 +17686,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[OkResponse](src/models/ok-response.ts)</code>
+**Direct**: `await client.reasonCodes.deleteReasonCode(request)`
 
-**OnError**: <code>[ReasonCodes.DeleteReasonCodeError](src/resources/reason-codes.ts)</code>
+- **OnSuccess**: <code>[OkResponse](src/models/ok-response.ts)</code>
+- **OnError**: throws <code>[ReasonCodes.DeleteReasonCodeError](src/resources/reason-codes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.reasonCodes.deleteReasonCode(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;OkResponse, ReasonCodes.DeleteReasonCodeError&gt;</code>, with `result.value` of type <code>[OkResponse](src/models/ok-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11155,19 +17722,35 @@ Lists all current churn codes for a given site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.reasonCodes.listReasonCodes();
+  const response = await client.reasonCodes.listReasonCodes({ page: 1, perPage: 50 });
   // TODO: Handle 'response' of type ReasonCodeResponse[]
 } catch (err) {
-  if (err instanceof ReasonCodes.ListReasonCodesError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type ReasonCodes.ListReasonCodesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.reasonCodes.listReasonCodes({ page: 1, perPage: 50 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ReasonCodeResponse[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -11181,8 +17764,8 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 
 </dd>
 </dl>
@@ -11192,9 +17775,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)[]</code>
+**Direct**: `await client.reasonCodes.listReasonCodes(request)`
 
-**OnError**: <code>[ReasonCodes.ListReasonCodesError](src/resources/reason-codes.ts)</code>
+- **OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)[]</code>
+- **OnError**: throws <code>[ReasonCodes.ListReasonCodesError](src/resources/reason-codes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.reasonCodes.listReasonCodes(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ReasonCodeResponse[], ReasonCodes.ListReasonCodesError&gt;</code>, with `result.value` of type <code>[ReasonCodeResponse](src/models/reason-code-response.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11220,19 +17811,35 @@ Returns a particular churn reason code for a given site by its unique ID.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.reasonCodes.readReasonCode({ reasonCodeId });
+  const response = await client.reasonCodes.readReasonCode({ reasonCodeId: 1 });
   // TODO: Handle 'response' of type ReasonCodeResponse
 } catch (err) {
-  if (err instanceof ReasonCodes.ReadReasonCodeError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ReasonCodes.ReadReasonCodeError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.reasonCodes.readReasonCode({ reasonCodeId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ReasonCodeResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -11256,9 +17863,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+**Direct**: `await client.reasonCodes.readReasonCode(request)`
 
-**OnError**: <code>[ReasonCodes.ReadReasonCodeError](src/resources/reason-codes.ts)</code>
+- **OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+- **OnError**: throws <code>[ReasonCodes.ReadReasonCodeError](src/resources/reason-codes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.reasonCodes.readReasonCode(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ReasonCodeResponse, ReasonCodes.ReadReasonCodeError&gt;</code>, with `result.value` of type <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11284,19 +17899,35 @@ Updates an existing reason code for a given site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.reasonCodes.updateReasonCode({ reasonCodeId });
+  const response = await client.reasonCodes.updateReasonCode({ reasonCodeId: 1 });
   // TODO: Handle 'response' of type ReasonCodeResponse
 } catch (err) {
-  if (err instanceof ReasonCodes.UpdateReasonCodeError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type ReasonCodes.UpdateReasonCodeError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.reasonCodes.updateReasonCode({ reasonCodeId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ReasonCodeResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -11321,9 +17952,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+**Direct**: `await client.reasonCodes.updateReasonCode(request)`
 
-**OnError**: <code>[ReasonCodes.UpdateReasonCodeError](src/resources/reason-codes.ts)</code>
+- **OnSuccess**: <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+- **OnError**: throws <code>[ReasonCodes.UpdateReasonCodeError](src/resources/reason-codes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.reasonCodes.updateReasonCode(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ReasonCodeResponse, ReasonCodes.UpdateReasonCodeError&gt;</code>, with `result.value` of type <code>[ReasonCodeResponse](src/models/reason-code-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11350,33 +17989,40 @@ try {
 
 Validates whether a referral code is valid and applicable within your site. This method is useful for validating referral codes that are entered by a customer.
 
-## Referrals Documentation
-
-Full documentation on how to use the referrals feature in the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/sections/24286965611405-Referrals).
-
-## Server Response
-
-If the referral code is valid the status code will be `200` and the referral code will be returned. If the referral code is invalid, a `404` response will be returned.
+For more information, see [Understanding Referrals](https://docs.maxio.com/hc/en-us/articles/24286981223693-Understanding-Referrals) in the product documentation.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.referralCodes.validateReferralCode({ code });
+  const response = await client.referralCodes.validateReferralCode({ code: "some example string" });
   // TODO: Handle 'response' of type ReferralValidationResponse
 } catch (err) {
-  if (
-    err instanceof ReferralCodes.ValidateReferralCodeError &&
-      err.payload.kind === "singleStringErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type SingleStringErrorResponse1
-  }
+  // TODO: Handle 'err' of type ReferralCodes.ValidateReferralCodeError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.referralCodes.validateReferralCode({ code: "some example string" }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ReferralValidationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -11400,9 +18046,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReferralValidationResponse](src/models/referral-validation-response.ts)</code>
+**Direct**: `await client.referralCodes.validateReferralCode(request)`
 
-**OnError**: <code>[ReferralCodes.ValidateReferralCodeError](src/resources/referral-codes.ts)</code>
+- **OnSuccess**: <code>[ReferralValidationResponse](src/models/referral-validation-response.ts)</code>
+- **OnError**: throws <code>[ReferralCodes.ValidateReferralCodeError](src/resources/referral-codes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.referralCodes.validateReferralCode(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ReferralValidationResponse, ReferralCodes.ValidateReferralCodeError&gt;</code>, with `result.value` of type <code>[ReferralValidationResponse](src/models/referral-validation-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11417,7 +18071,7 @@ try {
 > Source: [SalesCommissions](src/resources/sales-commissions.ts)
 
 <details>
-<summary><code>listSalesCommissionSettings(request: SalesCommissions.ListSalesCommissionSettingsRequest, options?: RequestOptions): ApiPromise&lt;SaleRepSettings[], ResponseError&gt;</code></summary>
+<summary><code>listSalesCommissionSettings(request: SalesCommissions.ListSalesCommissionSettingsRequest, options?: RequestOptions): ApiPromise&lt;SaleRepSettings[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -11440,17 +18094,41 @@ Access to the Sales Commission API endpoints is available to users with financia
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.salesCommissions.listSalesCommissionSettings({ sellerId });
+  const response = await client.salesCommissions.listSalesCommissionSettings({
+    sellerId: "some example string",
+    page: 1,
+  });
   // TODO: Handle 'response' of type SaleRepSettings[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.salesCommissions.listSalesCommissionSettings({
+  sellerId: "some example string",
+  page: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SaleRepSettings[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -11466,9 +18144,9 @@ try {
 | --- | --- | --- |
 | <code>sellerId</code> | <code>string</code> | The Chargify id of your seller account |
 | <code>liveMode?</code> | <code>boolean</code> | This parameter indicates if records should be fetched from live mode sites. Default value is true. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100. |
-| <code>authorization?</code> | <code>string</code> | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication). |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100.<br>**Default**: 100 |
+| <code>authorization?</code> | <code>string</code> | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication).<br>**Default**: "Bearer <<apiKey>>" |
 
 </dd>
 </dl>
@@ -11478,9 +18156,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SaleRepSettings](src/models/sale-rep-settings.ts)[]</code>
+**Direct**: `await client.salesCommissions.listSalesCommissionSettings(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SaleRepSettings](src/models/sale-rep-settings.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.salesCommissions.listSalesCommissionSettings(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SaleRepSettings[], ApiError&gt;</code>, with `result.value` of type <code>[SaleRepSettings](src/models/sale-rep-settings.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11491,7 +18177,7 @@ try {
 </details>
 
 <details>
-<summary><code>listSalesReps(request: SalesCommissions.ListSalesRepsRequest, options?: RequestOptions): ApiPromise&lt;ListSaleRepItem[], ResponseError&gt;</code></summary>
+<summary><code>listSalesReps(request: SalesCommissions.ListSalesRepsRequest, options?: RequestOptions): ApiPromise&lt;ListSaleRepItem[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -11514,17 +18200,38 @@ Access to the Sales Commission API endpoints is available to users with financia
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.salesCommissions.listSalesReps({ sellerId });
+  const response = await client.salesCommissions.listSalesReps({ sellerId: "some example string", page: 1 });
   // TODO: Handle 'response' of type ListSaleRepItem[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.salesCommissions.listSalesReps({
+  sellerId: "some example string",
+  page: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListSaleRepItem[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -11540,9 +18247,9 @@ try {
 | --- | --- | --- |
 | <code>sellerId</code> | <code>string</code> | The Chargify id of your seller account |
 | <code>liveMode?</code> | <code>boolean</code> | This parameter indicates if records should be fetched from live mode sites. Default value is true. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100. |
-| <code>authorization?</code> | <code>string</code> | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication). |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100.<br>**Default**: 100 |
+| <code>authorization?</code> | <code>string</code> | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication).<br>**Default**: "Bearer <<apiKey>>" |
 
 </dd>
 </dl>
@@ -11552,9 +18259,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListSaleRepItem](src/models/list-sale-rep-item.ts)[]</code>
+**Direct**: `await client.salesCommissions.listSalesReps(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListSaleRepItem](src/models/list-sale-rep-item.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.salesCommissions.listSalesReps(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListSaleRepItem[], ApiError&gt;</code>, with `result.value` of type <code>[ListSaleRepItem](src/models/list-sale-rep-item.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11565,7 +18280,7 @@ try {
 </details>
 
 <details>
-<summary><code>readSalesRep(request: SalesCommissions.ReadSalesRepRequest, options?: RequestOptions): ApiPromise&lt;SaleRep, ResponseError&gt;</code></summary>
+<summary><code>readSalesRep(request: SalesCommissions.ReadSalesRepRequest, options?: RequestOptions): ApiPromise&lt;SaleRep, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -11588,17 +18303,43 @@ Access to the Sales Commission API endpoints is available to users with financia
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.salesCommissions.readSalesRep({ sellerId, salesRepId });
+  const response = await client.salesCommissions.readSalesRep({
+    sellerId: "some example string",
+    salesRepId: "some example string",
+    page: 1,
+  });
   // TODO: Handle 'response' of type SaleRep
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.salesCommissions.readSalesRep({
+  sellerId: "some example string",
+  salesRepId: "some example string",
+  page: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SaleRep
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -11615,9 +18356,9 @@ try {
 | <code>sellerId</code> | <code>string</code> | The Chargify id of your seller account |
 | <code>salesRepId</code> | <code>string</code> | The Advanced Billing id of sales rep. |
 | <code>liveMode?</code> | <code>boolean</code> | This parameter indicates if records should be fetched from live mode sites. Default value is true. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100. |
-| <code>authorization?</code> | <code>string</code> | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication). |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 100.<br>**Default**: 100 |
+| <code>authorization?</code> | <code>string</code> | For authorization use user API key. See details [here](https://developers.chargify.com/docs/developer-docs/ZG9jOjMyNzk5NTg0-2020-04-20-new-api-authentication).<br>**Default**: "Bearer <<apiKey>>" |
 
 </dd>
 </dl>
@@ -11627,9 +18368,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SaleRep](src/models/sale-rep.ts)</code>
+**Direct**: `await client.salesCommissions.readSalesRep(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SaleRep](src/models/sale-rep.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.salesCommissions.readSalesRep(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SaleRep, ApiError&gt;</code>, with `result.value` of type <code>[SaleRep](src/models/sale-rep.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11644,7 +18393,7 @@ try {
 > Source: [Sites](src/resources/sites.ts)
 
 <details>
-<summary><code>clearSite(request: Sites.ClearSiteRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>clearSite(request: Sites.ClearSiteRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -11662,7 +18411,7 @@ Clears all data from a test site asynchronously. This call is asynchronous and t
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -11671,7 +18420,25 @@ Clears all data from a test site asynchronously. This call is asynchronous and t
 try {
   await client.sites.clearSite();
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.sites.clearSite().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -11685,7 +18452,7 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>cleanupScope?</code> | <code>[CleanupScope](src/models/cleanup-scope.ts)</code> | `all`: Will clear all products, customers, and related subscriptions from the site. <br>`customers`: Will clear only customers and related subscriptions (leaving the products untouched) for the site. <br>Revenue will also be reset to 0.<br>Use in query `cleanup_scope=all`. |
+| <code>cleanupScope?</code> | <code>[CleanupScope](src/models/cleanup-scope.ts)</code> | `all`: Will clear all products, customers, and related subscriptions from the site. <br>`customers`: Will clear only customers and related subscriptions (leaving the products untouched) for the site. <br>Revenue will also be reset to 0.<br>Use in query `cleanup_scope=all`.<br>**Default**: "all" |
 
 </dd>
 </dl>
@@ -11695,9 +18462,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.sites.clearSite(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.sites.clearSite(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11708,7 +18483,7 @@ try {
 </details>
 
 <details>
-<summary><code>listChargifyJsPublicKeys(request: Sites.ListChargifyJsPublicKeysRequest, options?: RequestOptions): ApiPromise&lt;ListPublicKeysResponse, ResponseError&gt;</code></summary>
+<summary><code>listChargifyJsPublicKeys(request: Sites.ListChargifyJsPublicKeysRequest, options?: RequestOptions): ApiPromise&lt;ListPublicKeysResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -11723,17 +18498,35 @@ Lists public keys used for Maxio.js (formerly Chargify.js).
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.sites.listChargifyJsPublicKeys();
+  const response = await client.sites.listChargifyJsPublicKeys({ page: 1, perPage: 50 });
   // TODO: Handle 'response' of type ListPublicKeysResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.sites.listChargifyJsPublicKeys({ page: 1, perPage: 50 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListPublicKeysResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -11747,8 +18540,8 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 
 </dd>
 </dl>
@@ -11758,9 +18551,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListPublicKeysResponse](src/models/list-public-keys-response.ts)</code>
+**Direct**: `await client.sites.listChargifyJsPublicKeys(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListPublicKeysResponse](src/models/list-public-keys-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.sites.listChargifyJsPublicKeys(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListPublicKeysResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListPublicKeysResponse](src/models/list-public-keys-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11771,7 +18572,7 @@ try {
 </details>
 
 <details>
-<summary><code>readSite(options?: RequestOptions): ApiPromise&lt;SiteResponse, ResponseError&gt;</code></summary>
+<summary><code>readSite(options?: RequestOptions): ApiPromise&lt;SiteResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -11783,23 +18584,23 @@ try {
 
 Retrieves site data.
 
-Full documentation on Sites in the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/sections/24250550707085-Sites).
-
-Specifically, the [Clearing Site Data](https://maxio.zendesk.com/hc/en-us/articles/24250617028365-Clearing-Site-Data) section is relevant to this endpoint documentation.
+For more information, see [Sites](https://maxio.zendesk.com/hc/en-us/sections/24250550707085-Sites) in the product documentation. Specifically, the [Clearing Site Data](https://maxio.zendesk.com/hc/en-us/articles/24250617028365-Clearing-Site-Data) section is relevant to this endpoint.
 
 #### Relationship invoicing enabled
-If the site has RI enabled then you will see more settings like:
+If the site has Relationship invoicing enabled, additional properties are returned in the response:
 
-    "customer_hierarchy_enabled": true,
-    "whopays_enabled": true,
-    "whopays_default_payer": "self"
-You can read more about these settings here:
- [Who Pays & Customer Hierarchy](https://maxio.zendesk.com/hc/en-us/articles/24252185211533-Customer-Hierarchies-WhoPays).
+```
+"customer_hierarchy_enabled": true,
+"whopays_enabled": true,
+"whopays_default_payer": "self"
+```
+
+For more information, see [Who Pays & Customer Hierarchy](https://maxio.zendesk.com/hc/en-us/articles/24252185211533-Customer-Hierarchies-WhoPays).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -11809,7 +18610,25 @@ try {
   const response = await client.sites.readSite();
   // TODO: Handle 'response' of type SiteResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.sites.readSite().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SiteResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -11821,9 +18640,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SiteResponse](src/models/site-response.ts)</code>
+**Direct**: `await client.sites.readSite()`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SiteResponse](src/models/site-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.sites.readSite().asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SiteResponse, ApiError&gt;</code>, with `result.value` of type <code>[SiteResponse](src/models/site-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11848,15 +18675,13 @@ try {
 <dl>
 <dd>
 
-Activates awaiting signup and trialing subscriptions. This feature is only available on the Relationship Invoicing architecture. Subscriptions in a group may not be activated immediately.
-
-For details on how the activation works, and how to activate subscriptions through the application, see [activation](#).
+Activates awaiting signup and trialing subscriptions. This feature is only available on the Relationship Invoicing architecture. Subscriptions in a group cannot be activated immediately.
 
 The `revert_on_failure` parameter controls the behavior upon activation failure.
-- If set to `true` and something goes wrong i.e. payment fails, then Advanced Billing will not change the subscription's state. The subscription’s billing period will also remain the same.
-- If set to `false` and something goes wrong i.e. payment fails, then Advanced Billing will continue through with the activation and enter an end of life state. For trialing subscriptions, that will either be trial ended (if the trial is no obligation), past due (if the trial has an obligation), or canceled (if the site has no dunning strategy, or has a strategy that says to cancel immediately). For awaiting signup subscriptions, that will always be canceled.
+- If set to `true` and something goes wrong i.e. payment fails, the subscription's state does not change. The subscription’s billing period also remains the same.
+- If set to `false` and something goes wrong i.e. payment fails, the activation continues and enters an end of life state. For trialing subscriptions, that is either trial ended (if the trial is no obligation), past due (if the trial has an obligation), or canceled (if the site has no dunning strategy, or has a strategy that says to cancel immediately). For awaiting signup subscriptions, that is always canceled.
 
-The default activation failure behavior can be configured per activation attempt, or you may set a default value under Config > Settings > Subscription Activation Settings.
+The default activation failure behavior can be configured per activation attempt, or you can set a default value under Config > Settings > Subscription Activation Settings.
 
 ## Activation Scenarios
 
@@ -11888,28 +18713,42 @@ The default activation failure behavior can be configured per activation attempt
 
 ### Activate Trialing subscription
 
-You can read more about the behavior of trialing subscriptions [here](https://maxio.zendesk.com/hc/en-us/articles/24252155721869-Trialing-Subscriptions).
-When the `revert_on_failure` parameter is set to `true`, the subscription's state will remain as Trialing, we will void the invoice from activation and return any prepayments and credits applied to the invoice back to the subscription.
+For more information about the behavior of trialing subscriptions, see [Trialing Subscriptions](https://maxio.zendesk.com/hc/en-us/articles/24252155721869-Trialing-Subscriptions).
+When the `revert_on_failure` parameter is set to `true`, the subscription's state remains Trialing; the invoice from activation is voided, and any prepayments and credits applied to the invoice are returned to the subscription.
 
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.activateSubscription({ subscriptionId });
+  const response = await client.subscriptions.activateSubscription({ subscriptionId: 1 });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (
-    err instanceof Subscriptions.ActivateSubscriptionError && err.payload.kind === "errorArrayMapResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorArrayMapResponse1
-  }
+  // TODO: Handle 'err' of type Subscriptions.ActivateSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.activateSubscription({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -11934,9 +18773,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptions.activateSubscription(request)`
 
-**OnError**: <code>[Subscriptions.ActivateSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[Subscriptions.ActivateSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.activateSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, Subscriptions.ActivateSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -11970,22 +18817,41 @@ For this reason, using this query parameter on this endpoint has been deprecated
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.applyCouponsToSubscription({ subscriptionId });
+  const response = await client.subscriptions.applyCouponsToSubscription({
+    subscriptionId: 1,
+    body: { codes: ["COUPON_1", "COUPON_2"] },
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (
-    err instanceof Subscriptions.ApplyCouponsToSubscriptionError &&
-      err.payload.kind === "subscriptionAddCouponError1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type SubscriptionAddCouponError1
-  }
+  // TODO: Handle 'err' of type Subscriptions.ApplyCouponsToSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.applyCouponsToSubscription({
+  subscriptionId: 1,
+  body: { codes: ["COUPON_1", "COUPON_2"] },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12011,9 +18877,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptions.applyCouponsToSubscription(request)`
 
-**OnError**: <code>[Subscriptions.ApplyCouponsToSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[Subscriptions.ApplyCouponsToSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.applyCouponsToSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, Subscriptions.ApplyCouponsToSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12103,19 +18977,77 @@ See the [3D Secure Post-Authentication Flow](https://docs.maxio.com/hc/en-us/art
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.createSubscription();
+  const response = await client.subscriptions.createSubscription({
+    body: {
+      subscription: {
+        productHandle: "basic",
+        paymentCollectionMethod: CollectionMethod.Remittance,
+        customerAttributes: {
+          firstName: "Joe",
+          lastName: "Smith",
+          email: "joe@example.com",
+          organization: "Acme",
+          reference: "XYZ",
+          address: "123 Mass Ave.",
+          address2: "some example string",
+          city: "Boston",
+          state: "MA",
+          zip: "02120",
+          country: "US",
+          phone: "(617) 111 - 0000",
+        },
+      },
+    },
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof Subscriptions.CreateSubscriptionError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Subscriptions.CreateSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.createSubscription({
+  body: {
+    subscription: {
+      productHandle: "basic",
+      paymentCollectionMethod: CollectionMethod.Remittance,
+      customerAttributes: {
+        firstName: "Joe",
+        lastName: "Smith",
+        email: "joe@example.com",
+        organization: "Acme",
+        reference: "XYZ",
+        address: "123 Mass Ave.",
+        address2: "some example string",
+        city: "Boston",
+        state: "MA",
+        zip: "02120",
+        country: "US",
+        phone: "(617) 111 - 0000",
+      },
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12139,9 +19071,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptions.createSubscription(request)`
 
-**OnError**: <code>[Subscriptions.CreateSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[Subscriptions.CreateSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.createSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, Subscriptions.CreateSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12167,7 +19107,7 @@ Finds a subscription by its reference.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -12177,9 +19117,25 @@ try {
   const response = await client.subscriptions.findSubscription();
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof Subscriptions.FindSubscriptionError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Subscriptions.FindSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.findSubscription().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12203,9 +19159,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptions.findSubscription(request)`
 
-**OnError**: <code>[Subscriptions.FindSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[Subscriptions.FindSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.findSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, Subscriptions.FindSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12216,7 +19180,7 @@ try {
 </details>
 
 <details>
-<summary><code>listSubscriptions(request: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse[], ResponseError&gt;</code></summary>
+<summary><code>listSubscriptions(request: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -12226,7 +19190,7 @@ try {
 <dl>
 <dd>
 
-Lists subscriptions for a site. Pay close attention to query string filters and pagination in order to control responses from the server.
+Lists subscriptions for a site. Use the query string filters and pagination to control responses from the server.
 
 If you have the new [Catalog experience](page:help/announcements/2026-announcements#new-catalog-experience-and-terminology) enabled, some subscriptions may not have an associated product. For subscriptions without an associated product, 'product', 'product_price_point_id', and 'product_price_point_type' are returned as 'null'.
 
@@ -12241,17 +19205,43 @@ Self-Service Page token for the subscriptions is not returned by default. If thi
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.listSubscriptions();
+  const response = await client.subscriptions.listSubscriptions({
+    page: 1,
+    perPage: 50,
+    include: [SubscriptionListInclude.SelfServicePageToken],
+  });
   // TODO: Handle 'response' of type SubscriptionResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.listSubscriptions({
+  page: 1,
+  perPage: 50,
+  include: [SubscriptionListInclude.SelfServicePageToken],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -12265,13 +19255,19 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
+| <code>sort?</code> | <code>[SubscriptionSort](src/models/subscription-sort.ts)</code> | The attribute by which to sort<br>**Default**: "signup_date" |
+| <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
 | <code>state?</code> | <code>[SubscriptionStateFilter](src/models/subscription-state-filter.ts)</code> | The current state of the subscription |
-| <code>product?</code> | <code>number</code> | The product id of the subscription. (Note that the product handle cannot be used.) |
+| <code>product?</code> | <code>[Product1](src/models/unions/product1.ts)</code> | Filter subscriptions by product. Accepts product ID or exact product name. Product handle is not supported. |
+| <code>q?</code> | <code>string</code> | Search string. |
+| <code>qScope?</code> | <code>[QScope](src/models/qscope.ts)</code> | Scope of fields used by the q search. |
+| <code>customerId?</code> | <code>number</code> | The Advanced Billing id of the customer. |
 | <code>productPricePointId?</code> | <code>number</code> | The ID of the product price point. If supplied, product is required. |
 | <code>coupon?</code> | <code>number</code> | The numeric id of the coupon currently applied to the subscription. (This can be found in the URL when editing a coupon. Note that the coupon code cannot be used.) |
 | <code>couponCode?</code> | <code>string</code> | The coupon code currently applied to the subscription |
+| <code>collectionMethod?</code> | <code>[CollectionMethod1](src/models/collection-method1.ts)</code> | The collection method for the subscription. |
 | <code>brandingThemeId?</code> | <code>number</code> | Filter subscriptions by the ID of an assigned Branding Theme. Branding Themes is a beta feature. See [Understand Branding Themes](https://docs.maxio.com/hc/en-us/articles/43796895662093-Understand-Branding-Themes#understand-branding-themes-0-0) for more information. |
 | <code>dateField?</code> | <code>[SubscriptionDateField](src/models/subscription-date-field.ts)</code> | The type of filter you'd like to apply to your search.  Allowed Values: , current_period_ends_at, current_period_starts_at, created_at, activated_at, canceled_at, expires_at, trial_started_at, trial_ended_at, updated_at |
 | <code>startDate?</code> | <code>string</code> (date) | The start date (format YYYY-MM-DD) with which to filter the date_field. Returns subscriptions with a timestamp at or after midnight (12:00:00 AM) in your site’s time zone on the date specified. Use in query `start_date=2022-07-01`. |
@@ -12279,8 +19275,10 @@ try {
 | <code>startDatetime?</code> | <code>Date</code> (date-time) | The start date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns subscriptions with a timestamp at or after exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of start_date. Use in query `start_datetime=2022-07-01 09:00:05`. |
 | <code>endDatetime?</code> | <code>Date</code> (date-time) | The end date and time (format YYYY-MM-DD HH:MM:SS) with which to filter the date_field. Returns subscriptions with a timestamp at or before exact time provided in query. You can specify timezone in query - otherwise your site's time zone will be used. If provided, this parameter will be used instead of end_date. Use in query `end_datetime=2022-08-01 10:00:05`. |
 | <code>metadata?</code> | <code>Record&lt;string, string&gt;</code> | The value of the metadata field specified in the parameter. Use in query `metadata[my-field]=value&metadata[other-field]=another_value`. |
-| <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
-| <code>sort?</code> | <code>[SubscriptionSort](src/models/subscription-sort.ts)</code> | The attribute by which to sort |
+| <code>groupStatus?</code> | <code>[GroupStatus](src/models/group-status.ts)</code> | Filter by whether a subscription is in a group. |
+| <code>dunningExemption?</code> | <code>boolean</code> | Filter by dunning exemption status. |
+| <code>paymentGateways?</code> | <code>string</code> | Comma-separated payment gateway identifiers. |
+| <code>currencies?</code> | <code>string</code> | Comma-separated currency codes. |
 | <code>include?</code> | <code>[SubscriptionListInclude](src/models/subscription-list-include.ts)[]</code> | Allows including additional data in the response. Use in query: `include[]=self_service_page_token`. |
 
 </dd>
@@ -12291,9 +19289,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)[]</code>
+**Direct**: `await client.subscriptions.listSubscriptions(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptions.listSubscriptions(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse[], ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12337,18 +19343,54 @@ If unpermitted parameters are sent, a 400 HTTP response is sent along with a str
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptions.overrideSubscription({ subscriptionId });
+  await client.subscriptions.overrideSubscription({
+    subscriptionId: 1,
+    body: {
+      subscription: {
+        activatedAt: new Date(Date.UTC(1999, 11, 1, 15, 28, 34)),
+        canceledAt: new Date(Date.UTC(2000, 11, 31, 15, 28, 34)),
+        cancellationMessage: "Original cancellation in 2000",
+        expiresAt: new Date(Date.UTC(2001, 6, 15, 15, 28, 34)),
+      },
+    },
+  });
 } catch (err) {
-  if (err instanceof Subscriptions.OverrideSubscriptionError && err.payload.kind === "singleErrorResponse1") {
-    // TODO: Handle 'err.payload.body' of type SingleErrorResponse1
-  }
+  // TODO: Handle 'err' of type Subscriptions.OverrideSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.overrideSubscription({
+  subscriptionId: 1,
+  body: {
+    subscription: {
+      activatedAt: new Date(Date.UTC(1999, 11, 1, 15, 28, 34)),
+      canceledAt: new Date(Date.UTC(2000, 11, 31, 15, 28, 34)),
+      cancellationMessage: "Original cancellation in 2000",
+      expiresAt: new Date(Date.UTC(2001, 6, 15, 15, 28, 34)),
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12373,9 +19415,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptions.overrideSubscription(request)`
 
-**OnError**: <code>[Subscriptions.OverrideSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[Subscriptions.OverrideSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.overrideSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, Subscriptions.OverrideSubscriptionError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12386,7 +19436,7 @@ try {
 </details>
 
 <details>
-<summary><code>previewSubscription(request: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionPreviewResponse, ResponseError&gt;</code></summary>
+<summary><code>previewSubscription(request: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionPreviewResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -12400,9 +19450,9 @@ Previews a subscription by POSTing the same JSON or XML as for a subscription cr
 
 The "Next Billing" amount and "Next Billing" date are represented in each Subscriber's Summary.
 
-A subscription will not be created by utilizing this endpoint; it is meant to serve as a prediction.
+This endpoint does not create a subscription; it is meant to serve as a prediction.
 
-For more information, see our documentation [here](https://maxio.zendesk.com/hc/en-us/articles/24252493695757-Subscriber-Interface-Overview).
+For more information, see [Subscriber Interface Overview](https://maxio.zendesk.com/hc/en-us/articles/24252493695757-Subscriber-Interface-Overview).
 
 ## Subscriptions can now work independently from the catalog
 
@@ -12421,36 +19471,58 @@ This functionality is supported in the API, but is not currently supported in SD
 
 ## Taxable Subscriptions
 
-This endpoint will preview taxes applicable to a purchase. In order for taxes to be previewed, the following conditions must be met:
+This endpoint previews taxes applicable to a purchase. For taxes to be previewed, the following conditions must be met:
 
 + Taxes must be configured on the subscription
 + The preview must be for the purchase of a taxable product or component, or combination of the two.
-+ The subscription payload must contain a full billing or shipping address in order to calculate tax
++ The subscription payload must contain a full billing or shipping address to calculate tax
 
-For more information about creating taxable previews, see our documentation guide on how to create [taxable subscriptions.](https://maxio.zendesk.com/hc/en-us/sections/24287012349325-Taxes)
+For more information about creating taxable previews, see [Taxes](https://maxio.zendesk.com/hc/en-us/sections/24287012349325-Taxes).
 
-You do **not** need to include a card number to generate tax information when you are previewing a subscription. However, when you actually want to create the subscription, you must include the credit card information if you want the billing address to be stored in Advanced Billing. The billing address and the credit card information are stored together within the payment profile object. Also, you may not send a billing address to Advanced Billing without payment profile information, as the address is stored on the card.
+You do **not** need to include a card number to generate tax information when you are previewing a subscription. However, when you actually want to create the subscription, you must include the credit card information if you want the billing address to be stored. The billing address and the credit card information are stored together within the payment profile object. Also, you cannot send a billing address without payment profile information, as the address is stored on the card.
 
 You can pass shipping and billing addresses and still decide not to calculate taxes. To do that, pass `skip_billing_manifest_taxes: true` attribute.
 
 ## Non-taxable Subscriptions
 
-If you'd like to calculate subscriptions that do not include tax you may leave off the billing information.
+If you'd like to calculate subscriptions that do not include tax, you can leave off the billing information.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.previewSubscription();
+  const response = await client.subscriptions.previewSubscription({
+    body: { subscription: { productHandle: "gold-product" } },
+  });
   // TODO: Handle 'response' of type SubscriptionPreviewResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.previewSubscription({
+  body: { subscription: { productHandle: "gold-product" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionPreviewResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -12474,9 +19546,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionPreviewResponse](src/models/subscription-preview-response.ts)</code>
+**Direct**: `await client.subscriptions.previewSubscription(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionPreviewResponse](src/models/subscription-preview-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptions.previewSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionPreviewResponse, ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionPreviewResponse](src/models/subscription-preview-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12499,7 +19579,7 @@ try {
 
 Purges an individual subscription for sites in test mode.
 
-Provide the subscription ID in the url.  To confirm, supply the customer ID in the query string `ack` parameter. You may also delete the customer record and/or payment profiles by passing `cascade` parameters. For example, to delete just the customer record, the query params would be: `?ack={customer_id}&cascade[]=customer`
+Provide the subscription ID in the URL.  To confirm, supply the customer ID in the query string `ack` parameter. You may also delete the customer record and/or payment profiles by passing `cascade` parameters. For example, to delete just the customer record, the query params would be: `?ack={customer_id}&cascade[]=customer`
 
 If you need to remove subscriptions from a live site, contact support to discuss your use case.
 
@@ -12510,19 +19590,43 @@ The query params will be: `?ack={customer_id}&cascade[]=customer&cascade[]=payme
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.purgeSubscription({ subscriptionId, ack });
+  const response = await client.subscriptions.purgeSubscription({
+    subscriptionId: 1,
+    ack: 1,
+    cascade: [SubscriptionPurgeType.Customer, SubscriptionPurgeType.PaymentProfile],
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof Subscriptions.PurgeSubscriptionError && err.payload.kind === "subscriptionResponse") {
-    // TODO: Handle 'err.payload.body' of type SubscriptionResponse
-  }
+  // TODO: Handle 'err' of type Subscriptions.PurgeSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.purgeSubscription({
+  subscriptionId: 1,
+  ack: 1,
+  cascade: [SubscriptionPurgeType.Customer, SubscriptionPurgeType.PaymentProfile],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12548,9 +19652,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptions.purgeSubscription(request)`
 
-**OnError**: <code>[Subscriptions.PurgeSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[Subscriptions.PurgeSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.purgeSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, Subscriptions.PurgeSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12561,7 +19673,7 @@ try {
 </details>
 
 <details>
-<summary><code>readSubscription(request: Subscriptions.ReadSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, ResponseError&gt;</code></summary>
+<summary><code>readSubscription(request: Subscriptions.ReadSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -12582,17 +19694,41 @@ Self-Service Page token for the subscription is not returned by default. If this
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.readSubscription({ subscriptionId });
+  const response = await client.subscriptions.readSubscription({
+    subscriptionId: 1,
+    include: [SubscriptionInclude.Coupons, SubscriptionInclude.SelfServicePageToken],
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.readSubscription({
+  subscriptionId: 1,
+  include: [SubscriptionInclude.Coupons, SubscriptionInclude.SelfServicePageToken],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -12617,9 +19753,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptions.readSubscription(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptions.readSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12642,27 +19786,40 @@ try {
 
 Removes a coupon from an existing subscription.
 
-For more information on the expected behavior of removing a coupon from a subscription, see our documentation [here.](https://maxio.zendesk.com/hc/en-us/articles/24261259337101-Coupons-and-Subscriptions#removing-a-coupon)
+For more information on the expected behavior of removing a coupon from a subscription, see [Coupons and Subscriptions](https://maxio.zendesk.com/hc/en-us/articles/24261259337101-Coupons-and-Subscriptions#removing-a-coupon).
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.removeCouponFromSubscription({ subscriptionId });
+  const response = await client.subscriptions.removeCouponFromSubscription({ subscriptionId: 1 });
   // TODO: Handle 'response' of type string
 } catch (err) {
-  if (
-    err instanceof Subscriptions.RemoveCouponFromSubscriptionError &&
-      err.payload.kind === "subscriptionRemoveCouponErrors1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type SubscriptionRemoveCouponErrors1
-  }
+  // TODO: Handle 'err' of type Subscriptions.RemoveCouponFromSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.removeCouponFromSubscription({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type string
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12687,9 +19844,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>string</code>
+**Direct**: `await client.subscriptions.removeCouponFromSubscription(request)`
 
-**OnError**: <code>[Subscriptions.RemoveCouponFromSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>string</code>
+- **OnError**: throws <code>[Subscriptions.RemoveCouponFromSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.removeCouponFromSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;string, Subscriptions.RemoveCouponFromSubscriptionError&gt;</code>, with `result.value` of type <code>string</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12715,22 +19880,55 @@ Updates a subscription's prepaid configuration.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.updatePrepaidSubscriptionConfiguration({ subscriptionId });
+  const response = await client.subscriptions.updatePrepaidSubscriptionConfiguration({
+    subscriptionId: 1,
+    body: {
+      prepaidConfiguration: {
+        initialFundingAmountInCents: 50000,
+        replenishToAmountInCents: 50000,
+        autoReplenish: true,
+        replenishThresholdAmountInCents: 10000,
+      },
+    },
+  });
   // TODO: Handle 'response' of type PrepaidConfigurationResponse
 } catch (err) {
-  if (
-    err instanceof Subscriptions.UpdatePrepaidSubscriptionConfigurationError &&
-      err.payload.kind === "prepaidConfigurationErrorResponse"
-  ) {
-    // TODO: Handle 'err.payload.body' of type PrepaidConfigurationErrorResponse
-  }
+  // TODO: Handle 'err' of type Subscriptions.UpdatePrepaidSubscriptionConfigurationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.updatePrepaidSubscriptionConfiguration({
+  subscriptionId: 1,
+  body: {
+    prepaidConfiguration: {
+      initialFundingAmountInCents: 50000,
+      replenishToAmountInCents: 50000,
+      autoReplenish: true,
+      replenishThresholdAmountInCents: 10000,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PrepaidConfigurationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12755,9 +19953,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PrepaidConfigurationResponse](src/models/prepaid-configuration-response.ts)</code>
+**Direct**: `await client.subscriptions.updatePrepaidSubscriptionConfiguration(request)`
 
-**OnError**: <code>[Subscriptions.UpdatePrepaidSubscriptionConfigurationError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>[PrepaidConfigurationResponse](src/models/prepaid-configuration-response.ts)</code>
+- **OnError**: throws <code>[Subscriptions.UpdatePrepaidSubscriptionConfigurationError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.updatePrepaidSubscriptionConfiguration(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PrepaidConfigurationResponse, Subscriptions.UpdatePrepaidSubscriptionConfigurationError&gt;</code>, with `result.value` of type <code>[PrepaidConfigurationResponse](src/models/prepaid-configuration-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12833,19 +20039,51 @@ If you have the new [Catalog experience](page:help/announcements/2026-announceme
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptions.updateSubscription({ subscriptionId });
+  const response = await client.subscriptions.updateSubscription({
+    subscriptionId: 1,
+    body: {
+      subscription: {
+        nextBillingAt: new Date(Date.UTC(2010, 7, 6, 15, 34, 0)),
+        paymentCollectionMethod: "remittance",
+      },
+    },
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof Subscriptions.UpdateSubscriptionError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Subscriptions.UpdateSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptions.updateSubscription({
+  subscriptionId: 1,
+  body: {
+    subscription: {
+      nextBillingAt: new Date(Date.UTC(2010, 7, 6, 15, 34, 0)),
+      paymentCollectionMethod: "remittance",
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -12870,9 +20108,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptions.updateSubscription(request)`
 
-**OnError**: <code>[Subscriptions.UpdateSubscriptionError](src/resources/subscriptions.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[Subscriptions.UpdateSubscriptionError](src/resources/subscriptions.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptions.updateSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, Subscriptions.UpdateSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12887,7 +20133,7 @@ try {
 > Source: [SubscriptionComponents](src/resources/subscription-components.ts)
 
 <details>
-<summary><code>activateEventBasedComponent(request: SubscriptionComponents.ActivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>activateEventBasedComponent(request: SubscriptionComponents.ActivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -12899,27 +20145,73 @@ try {
 
 Activates an event-based component for a single subscription.
 
-In order to bill your subscribers on your Events data under the Events-Based Billing feature, the components must be activated for the subscriber.
+To bill your subscribers on your Events data under the Events-Based Billing feature, the components must be activated for the subscriber.
 
-Learn more about the role of activation in the [Events-Based Billing docs](https://maxio.zendesk.com/hc/en-us/articles/24260323329805-Events-Based-Billing-Overview).
+For more information, see [Design Your Catalog](https://docs.maxio.com/hc/en-us/articles/24181036583053-Design-Your-Catalog?method=componenttypes).
 
-Use this endpoint to activate an event-based component for a single subscription. Activating an event-based component causes Advanced Billing to bill for events when the subscription is renewed.
+Use this endpoint to activate an event-based component for a single subscription. Activating an event-based component causes billing for events when the subscription is renewed.
 
-*Note: it is possible to stream events for a subscription at any time, regardless of component activation status. The activation status only determines if the subscription should be billed for event-based component usage at renewal.*
+Note: it is possible to stream events for a subscription at any time, regardless of component activation status. The activation status only determines if the subscription should be billed for event-based component usage at renewal.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionComponents.activateEventBasedComponent({ subscriptionId, componentId });
+  await client.subscriptionComponents.activateEventBasedComponent({
+    subscriptionId: 1,
+    componentId: 1,
+    body: {
+      pricePointId: 1,
+      billingSchedule: { initialBillingAt: "2022-01-01" },
+      customPrice: {
+        taxIncluded: false,
+        pricingScheme: PricingScheme.PerUnit,
+        interval: 30,
+        intervalUnit: IntervalUnit.Day,
+        prices: [{ startingQuantity: 1, endingQuantity: 1, unitPrice: "5.0" }],
+      },
+    },
+  });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.activateEventBasedComponent({
+  subscriptionId: 1,
+  componentId: 1,
+  body: {
+    pricePointId: 1,
+    billingSchedule: { initialBillingAt: "2022-01-01" },
+    customPrice: {
+      taxIncluded: false,
+      pricingScheme: PricingScheme.PerUnit,
+      interval: 30,
+      intervalUnit: IntervalUnit.Day,
+      prices: [{ startingQuantity: 1, endingQuantity: 1, unitPrice: "5.0" }],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -12945,9 +20237,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionComponents.activateEventBasedComponent(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.activateEventBasedComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -12995,21 +20295,99 @@ For more information, see the [Component Allocations](https://maxio.zendesk.com/
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionComponents.allocateComponent({ subscriptionId, componentId });
+  const response = await client.subscriptionComponents.allocateComponent({
+    subscriptionId: 1,
+    componentId: 1,
+    body: {
+      allocation: {
+        quantity: 10,
+        decimalQuantity: "10.0",
+        previousQuantity: 5,
+        decimalPreviousQuantity: "5.0",
+        memo: "Increase seats to 10",
+        prorationDowngradeScheme: "prorate",
+        prorationUpgradeScheme: "full-price-attempt-capture",
+        downgradeCredit: DowngradeCreditCreditType.Prorated,
+        upgradeCharge: UpgradeChargeCreditType.Full,
+        accrueCharge: false,
+        pricePointId: 789,
+        billingSchedule: { initialBillingAt: "2025-02-28" },
+        customPrice: {
+          taxIncluded: false,
+          pricingScheme: PricingScheme.PerUnit,
+          interval: 1,
+          intervalUnit: IntervalUnit.Month,
+          listPricePointId: 4321,
+          useDefaultListPrice: false,
+          prices: [{}, {}],
+          renewPrepaidAllocation: false,
+          rolloverPrepaidRemainder: false,
+          expirationInterval: 1,
+          expirationIntervalUnit: ExpirationIntervalUnit.Never,
+        },
+      },
+    },
+  });
   // TODO: Handle 'response' of type AllocationResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionComponents.AllocateComponentError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.AllocateComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.allocateComponent({
+  subscriptionId: 1,
+  componentId: 1,
+  body: {
+    allocation: {
+      quantity: 10,
+      decimalQuantity: "10.0",
+      previousQuantity: 5,
+      decimalPreviousQuantity: "5.0",
+      memo: "Increase seats to 10",
+      prorationDowngradeScheme: "prorate",
+      prorationUpgradeScheme: "full-price-attempt-capture",
+      downgradeCredit: DowngradeCreditCreditType.Prorated,
+      upgradeCharge: UpgradeChargeCreditType.Full,
+      accrueCharge: false,
+      pricePointId: 789,
+      billingSchedule: { initialBillingAt: "2025-02-28" },
+      customPrice: {
+        taxIncluded: false,
+        pricingScheme: PricingScheme.PerUnit,
+        interval: 1,
+        intervalUnit: IntervalUnit.Month,
+        listPricePointId: 4321,
+        useDefaultListPrice: false,
+        prices: [{}, {}],
+        renewPrepaidAllocation: false,
+        rolloverPrepaidRemainder: false,
+        expirationInterval: 1,
+        expirationIntervalUnit: ExpirationIntervalUnit.Never,
+      },
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type AllocationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -13035,9 +20413,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[AllocationResponse](src/models/allocation-response.ts)</code>
+**Direct**: `await client.subscriptionComponents.allocateComponent(request)`
 
-**OnError**: <code>[SubscriptionComponents.AllocateComponentError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>[AllocationResponse](src/models/allocation-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionComponents.AllocateComponentError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.allocateComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;AllocationResponse, SubscriptionComponents.AllocateComponentError&gt;</code>, with `result.value` of type <code>[AllocationResponse](src/models/allocation-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13081,19 +20467,55 @@ For more information, see the [Component Allocations](https://maxio.zendesk.com/
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionComponents.allocateComponents({ subscriptionId });
+  const response = await client.subscriptionComponents.allocateComponents({
+    subscriptionId: 1,
+    body: {
+      prorationUpgradeScheme: "prorate-attempt-capture",
+      prorationDowngradeScheme: "no-prorate",
+      allocations: [
+        { quantity: 10, componentId: 123, memo: "foo" },
+        { quantity: 5, componentId: 456, memo: "bar" },
+      ],
+    },
+  });
   // TODO: Handle 'response' of type AllocationResponse[]
 } catch (err) {
-  if (err instanceof SubscriptionComponents.AllocateComponentsError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.AllocateComponentsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.allocateComponents({
+  subscriptionId: 1,
+  body: {
+    prorationUpgradeScheme: "prorate-attempt-capture",
+    prorationDowngradeScheme: "no-prorate",
+    allocations: [
+      { quantity: 10, componentId: 123, memo: "foo" },
+      { quantity: 5, componentId: 456, memo: "bar" },
+    ],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type AllocationResponse[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -13118,9 +20540,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[AllocationResponse](src/models/allocation-response.ts)[]</code>
+**Direct**: `await client.subscriptionComponents.allocateComponents(request)`
 
-**OnError**: <code>[SubscriptionComponents.AllocateComponentsError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>[AllocationResponse](src/models/allocation-response.ts)[]</code>
+- **OnError**: throws <code>[SubscriptionComponents.AllocateComponentsError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.allocateComponents(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;AllocationResponse[], SubscriptionComponents.AllocateComponentsError&gt;</code>, with `result.value` of type <code>[AllocationResponse](src/models/allocation-response.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13131,7 +20561,7 @@ try {
 </details>
 
 <details>
-<summary><code>bulkRecordEvents(request: SubscriptionComponents.BulkRecordEventsRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>bulkRecordEvents(request: SubscriptionComponents.BulkRecordEventsRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13143,23 +20573,43 @@ try {
 
 Records a collection of events.
 
-*Note: this endpoint differs from the standard Chargify API endpoints in that the subdomain will be `events` and your site subdomain will be included in the URL path.*
+Note: this endpoint differs from the standard URL for this API in that `events` and your site subdomain are included in the path.
 
 A maximum of 1000 events can be published in a single request. A 422 will be returned if this limit is exceeded.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionComponents.bulkRecordEvents({ apiHandle });
+  await client.subscriptionComponents.bulkRecordEvents({ apiHandle: "some example string" });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.bulkRecordEvents({
+  apiHandle: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -13174,7 +20624,7 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>apiHandle</code> | <code>string</code> | Identifies the Stream for which the events should be published. |
-| <code>storeUid?</code> | <code>string</code> | If you've attached your own Keen project as an Advanced Billing event data-store, use this parameter to indicate the data-store. |
+| <code>storeUid?</code> | <code>string</code> | If you've attached your own Keen project as an Advanced Billing event data-store, use this parameter to indicate the data-store. This applies to Legacy Metering sites only — it has no effect on Maxio Metering sites. |
 | <code>body?</code> | <code>[EbbEvent](src/models/ebb-event.ts)[]</code> | - |
 
 </dd>
@@ -13185,9 +20635,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionComponents.bulkRecordEvents(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.bulkRecordEvents(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13198,7 +20656,7 @@ try {
 </details>
 
 <details>
-<summary><code>bulkResetSubscriptionComponentsPricePoints(request: SubscriptionComponents.BulkResetSubscriptionComponentsPricePointsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, ResponseError&gt;</code></summary>
+<summary><code>bulkResetSubscriptionComponentsPricePoints(request: SubscriptionComponents.BulkResetSubscriptionComponentsPricePointsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13215,7 +20673,7 @@ Resets all of a subscription's components to use the current default.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -13223,11 +20681,31 @@ Resets all of a subscription's components to use the current default.
 ```ts
 try {
   const response = await client.subscriptionComponents.bulkResetSubscriptionComponentsPricePoints({
-    subscriptionId,
+    subscriptionId: 1,
   });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.bulkResetSubscriptionComponentsPricePoints({
+  subscriptionId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -13251,9 +20729,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionComponents.bulkResetSubscriptionComponentsPricePoints(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.bulkResetSubscriptionComponentsPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13284,7 +20770,7 @@ The `price_point` key can take either a:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -13292,16 +20778,45 @@ The `price_point` key can take either a:
 ```ts
 try {
   const response = await client.subscriptionComponents.bulkUpdateSubscriptionComponentsPricePoints({
-    subscriptionId,
+    subscriptionId: 1,
+    body: {
+      components: [
+        { componentId: 997, pricePoint: 1022 },
+        { componentId: 998, pricePoint: "wholesale-handle" },
+        { componentId: 999, pricePoint: "_default" },
+      ],
+    },
   });
   // TODO: Handle 'response' of type BulkComponentsPricePointAssignment
 } catch (err) {
-  if (
-    err instanceof SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError &&
-      err.payload.kind === "componentPricePointError1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ComponentPricePointError1
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.bulkUpdateSubscriptionComponentsPricePoints({
+  subscriptionId: 1,
+  body: {
+    components: [
+      { componentId: 997, pricePoint: 1022 },
+      { componentId: 998, pricePoint: "wholesale-handle" },
+      { componentId: 999, pricePoint: "_default" },
+    ],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type BulkComponentsPricePointAssignment
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -13326,9 +20841,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[BulkComponentsPricePointAssignment](src/models/bulk-components-price-point-assignment.ts)</code>
+**Direct**: `await client.subscriptionComponents.bulkUpdateSubscriptionComponentsPricePoints(request)`
 
-**OnError**: <code>[SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>[BulkComponentsPricePointAssignment](src/models/bulk-components-price-point-assignment.ts)</code>
+- **OnError**: throws <code>[SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.bulkUpdateSubscriptionComponentsPricePoints(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;BulkComponentsPricePointAssignment, SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError&gt;</code>, with `result.value` of type <code>[BulkComponentsPricePointAssignment](src/models/bulk-components-price-point-assignment.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13403,7 +20926,7 @@ The `unit_balance` has a floor of `0`; negative unit balances are never allowed.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -13411,14 +20934,35 @@ The `unit_balance` has a floor of `0`; negative unit balances are never allowed.
 ```ts
 try {
   const response = await client.subscriptionComponents.createUsage({
-    subscriptionIdOrReference,
-    componentId,
+    subscriptionIdOrReference: 1,
+    componentId: 1,
+    body: { usage: { quantity: 1000, pricePointId: "149416", memo: "My memo" } },
   });
   // TODO: Handle 'response' of type UsageResponse
 } catch (err) {
-  if (err instanceof SubscriptionComponents.CreateUsageError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.CreateUsageError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.createUsage({
+  subscriptionIdOrReference: 1,
+  componentId: 1,
+  body: { usage: { quantity: 1000, pricePointId: "149416", memo: "My memo" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type UsageResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -13444,9 +20988,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[UsageResponse](src/models/usage-response.ts)</code>
+**Direct**: `await client.subscriptionComponents.createUsage(request)`
 
-**OnError**: <code>[SubscriptionComponents.CreateUsageError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>[UsageResponse](src/models/usage-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionComponents.CreateUsageError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.createUsage(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;UsageResponse, SubscriptionComponents.CreateUsageError&gt;</code>, with `result.value` of type <code>[UsageResponse](src/models/usage-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13457,7 +21009,7 @@ try {
 </details>
 
 <details>
-<summary><code>deactivateEventBasedComponent(request: SubscriptionComponents.DeactivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>deactivateEventBasedComponent(request: SubscriptionComponents.DeactivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13472,16 +21024,37 @@ Deactivates an event-based component for a single subscription. Deactivating the
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionComponents.deactivateEventBasedComponent({ subscriptionId, componentId });
+  await client.subscriptionComponents.deactivateEventBasedComponent({ subscriptionId: 1, componentId: 1 });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.deactivateEventBasedComponent({
+  subscriptionId: 1,
+  componentId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -13506,9 +21079,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionComponents.deactivateEventBasedComponent(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.deactivateEventBasedComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13544,7 +21125,7 @@ By default, destroying an allocation will generate a service credit on the subsc
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -13552,16 +21133,36 @@ By default, destroying an allocation will generate a service credit on the subsc
 ```ts
 try {
   await client.subscriptionComponents.deletePrepaidUsageAllocation({
-    subscriptionId,
-    componentId,
-    allocationId,
+    subscriptionId: 1,
+    componentId: 1,
+    allocationId: 1,
+    body: { creditScheme: CreditScheme.None },
   });
 } catch (err) {
-  if (
-    err instanceof SubscriptionComponents.DeletePrepaidUsageAllocationError && err.payload.kind === "error404"
-  ) {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.DeletePrepaidUsageAllocationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.deletePrepaidUsageAllocation({
+  subscriptionId: 1,
+  componentId: 1,
+  allocationId: 1,
+  body: { creditScheme: CreditScheme.None },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -13588,9 +21189,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionComponents.deletePrepaidUsageAllocation(request)`
 
-**OnError**: <code>[SubscriptionComponents.DeletePrepaidUsageAllocationError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionComponents.DeletePrepaidUsageAllocationError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.deletePrepaidUsageAllocation(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionComponents.DeletePrepaidUsageAllocationError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13620,19 +21229,43 @@ When a subscription's on/off component has been toggled to on (`1`) or off (`0`)
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionComponents.listAllocations({ subscriptionId, componentId });
+  const response = await client.subscriptionComponents.listAllocations({
+    subscriptionId: 1,
+    componentId: 1,
+    page: 1,
+  });
   // TODO: Handle 'response' of type AllocationResponse[]
 } catch (err) {
-  if (err instanceof SubscriptionComponents.ListAllocationsError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.ListAllocationsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.listAllocations({
+  subscriptionId: 1,
+  componentId: 1,
+  page: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type AllocationResponse[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -13648,7 +21281,7 @@ try {
 | --- | --- | --- |
 | <code>subscriptionId</code> | <code>number</code> | The Chargify id of the subscription. |
 | <code>componentId</code> | <code>number</code> | The Advanced Billing id of the component |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
 
 </dd>
 </dl>
@@ -13658,9 +21291,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[AllocationResponse](src/models/allocation-response.ts)[]</code>
+**Direct**: `await client.subscriptionComponents.listAllocations(request)`
 
-**OnError**: <code>[SubscriptionComponents.ListAllocationsError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>[AllocationResponse](src/models/allocation-response.ts)[]</code>
+- **OnError**: throws <code>[SubscriptionComponents.ListAllocationsError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.listAllocations(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;AllocationResponse[], SubscriptionComponents.ListAllocationsError&gt;</code>, with `result.value` of type <code>[AllocationResponse](src/models/allocation-response.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13671,7 +21312,7 @@ try {
 </details>
 
 <details>
-<summary><code>listSubscriptionComponents(request: SubscriptionComponents.ListSubscriptionComponentsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionComponentResponse[], ResponseError&gt;</code></summary>
+<summary><code>listSubscriptionComponents(request: SubscriptionComponents.ListSubscriptionComponentsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionComponentResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13690,17 +21331,54 @@ When requesting to list components for a given subscription, if the subscription
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionComponents.listSubscriptionComponents({ subscriptionId });
+  const response = await client.subscriptionComponents.listSubscriptionComponents({
+    subscriptionId: 1,
+    dateField: SubscriptionListDateField.UpdatedAt,
+    pricePointIds: IncludeNotNull.NotNull,
+    productFamilyIds: [1, 2, 3],
+    sort: ListSubscriptionComponentsSort.UpdatedAt,
+    include: [
+      ListSubscriptionComponentsInclude.Subscription,
+      ListSubscriptionComponentsInclude.HistoricUsages,
+    ],
+    inUse: true,
+  });
   // TODO: Handle 'response' of type SubscriptionComponentResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.listSubscriptionComponents({
+  subscriptionId: 1,
+  dateField: SubscriptionListDateField.UpdatedAt,
+  pricePointIds: IncludeNotNull.NotNull,
+  productFamilyIds: [1, 2, 3],
+  sort: ListSubscriptionComponentsSort.UpdatedAt,
+  include: [ListSubscriptionComponentsInclude.Subscription, ListSubscriptionComponentsInclude.HistoricUsages],
+  inUse: true,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionComponentResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -13736,9 +21414,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionComponentResponse](src/models/subscription-component-response.ts)[]</code>
+**Direct**: `await client.subscriptionComponents.listSubscriptionComponents(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionComponentResponse](src/models/subscription-component-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.listSubscriptionComponents(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionComponentResponse[], ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionComponentResponse](src/models/subscription-component-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13749,7 +21435,7 @@ try {
 </details>
 
 <details>
-<summary><code>listSubscriptionComponentsForSite(request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionComponentsResponse, ResponseError&gt;</code></summary>
+<summary><code>listSubscriptionComponentsForSite(request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionComponentsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13764,17 +21450,53 @@ Lists components applied to each subscription.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionComponents.listSubscriptionComponentsForSite();
+  const response = await client.subscriptionComponents.listSubscriptionComponentsForSite({
+    page: 1,
+    perPage: 50,
+    sort: ListSubscriptionComponentsSort.UpdatedAt,
+    dateField: SubscriptionListDateField.UpdatedAt,
+    subscriptionIds: [1, 2, 3],
+    pricePointIds: IncludeNotNull.NotNull,
+    productFamilyIds: [1, 2, 3],
+    include: ListSubscriptionComponentsInclude.Subscription,
+  });
   // TODO: Handle 'response' of type ListSubscriptionComponentsResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.listSubscriptionComponentsForSite({
+  page: 1,
+  perPage: 50,
+  sort: ListSubscriptionComponentsSort.UpdatedAt,
+  dateField: SubscriptionListDateField.UpdatedAt,
+  subscriptionIds: [1, 2, 3],
+  pricePointIds: IncludeNotNull.NotNull,
+  productFamilyIds: [1, 2, 3],
+  include: ListSubscriptionComponentsInclude.Subscription,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListSubscriptionComponentsResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -13788,8 +21510,8 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>sort?</code> | <code>[ListSubscriptionComponentsSort](src/models/list-subscription-components-sort.ts)</code> | The attribute by which to sort. Use in query: `sort=updated_at`. |
 | <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
 | <code>filter?</code> | <code>[ListSubscriptionComponentsForSiteFilter](src/models/list-subscription-components-for-site-filter.ts)</code> | Filter to use for List Subscription Components For Site operation |
@@ -13811,9 +21533,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListSubscriptionComponentsResponse](src/models/list-subscription-components-response.ts)</code>
+**Direct**: `await client.subscriptionComponents.listSubscriptionComponentsForSite(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListSubscriptionComponentsResponse](src/models/list-subscription-components-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.listSubscriptionComponentsForSite(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListSubscriptionComponentsResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListSubscriptionComponentsResponse](src/models/list-subscription-components-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13824,7 +21554,7 @@ try {
 </details>
 
 <details>
-<summary><code>listUsages(request: SubscriptionComponents.ListUsagesRequest, options?: RequestOptions): ApiPromise&lt;UsageResponse[], ResponseError&gt;</code></summary>
+<summary><code>listUsages(request: SubscriptionComponents.ListUsagesRequest, options?: RequestOptions): ApiPromise&lt;UsageResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13853,17 +21583,45 @@ Use this endpoint to read the previously recorded components for a subscription.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionComponents.listUsages({ subscriptionIdOrReference, componentId });
+  const response = await client.subscriptionComponents.listUsages({
+    subscriptionIdOrReference: 1,
+    componentId: 1,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type UsageResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.listUsages({
+  subscriptionIdOrReference: 1,
+  componentId: 1,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type UsageResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -13883,8 +21641,8 @@ try {
 | <code>maxId?</code> | <code>number</code> | Returns usages with an id less than or equal to the one specified. |
 | <code>sinceDate?</code> | <code>string</code> (date) | Returns usages with a created_at date greater than or equal to midnight (12:00 AM) on the date specified. |
 | <code>untilDate?</code> | <code>string</code> (date) | Returns usages with a created_at date less than or equal to midnight (12:00 AM) on the date specified. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 
 </dd>
 </dl>
@@ -13894,9 +21652,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[UsageResponse](src/models/usage-response.ts)[]</code>
+**Direct**: `await client.subscriptionComponents.listUsages(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[UsageResponse](src/models/usage-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.listUsages(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;UsageResponse[], ApiError&gt;</code>, with `result.value` of type <code>[UsageResponse](src/models/usage-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13928,22 +21694,65 @@ See example below for Fine-Grained Component Control response.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionComponents.previewAllocations({ subscriptionId });
+  const response = await client.subscriptionComponents.previewAllocations({
+    subscriptionId: 1,
+    body: {
+      allocations: [
+        {
+          quantity: 10,
+          componentId: 554108,
+          memo: "NOW",
+          prorationDowngradeScheme: "prorate",
+          prorationUpgradeScheme: "prorate-attempt-capture",
+          pricePointId: 325826,
+        },
+      ],
+      effectiveProrationDate: "2023-11-01",
+    },
+  });
   // TODO: Handle 'response' of type AllocationPreviewResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionComponents.PreviewAllocationsError &&
-      err.payload.kind === "componentAllocationError1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ComponentAllocationError1
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.PreviewAllocationsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.previewAllocations({
+  subscriptionId: 1,
+  body: {
+    allocations: [
+      {
+        quantity: 10,
+        componentId: 554108,
+        memo: "NOW",
+        prorationDowngradeScheme: "prorate",
+        prorationUpgradeScheme: "prorate-attempt-capture",
+        pricePointId: 325826,
+      },
+    ],
+    effectiveProrationDate: "2023-11-01",
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type AllocationPreviewResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -13968,9 +21777,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[AllocationPreviewResponse](src/models/allocation-preview-response.ts)</code>
+**Direct**: `await client.subscriptionComponents.previewAllocations(request)`
 
-**OnError**: <code>[SubscriptionComponents.PreviewAllocationsError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>[AllocationPreviewResponse](src/models/allocation-preview-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionComponents.PreviewAllocationsError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.previewAllocations(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;AllocationPreviewResponse, SubscriptionComponents.PreviewAllocationsError&gt;</code>, with `result.value` of type <code>[AllocationPreviewResponse](src/models/allocation-preview-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -13996,7 +21813,7 @@ Returns information for a specific component on a subscription.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -14004,16 +21821,33 @@ Returns information for a specific component on a subscription.
 ```ts
 try {
   const response = await client.subscriptionComponents.readSubscriptionComponent({
-    subscriptionId,
-    componentId,
+    subscriptionId: 1,
+    componentId: 1,
   });
   // TODO: Handle 'response' of type SubscriptionComponentResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionComponents.ReadSubscriptionComponentError && err.payload.kind === "error404"
-  ) {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.ReadSubscriptionComponentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.readSubscriptionComponent({
+  subscriptionId: 1,
+  componentId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionComponentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14038,9 +21872,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionComponentResponse](src/models/subscription-component-response.ts)</code>
+**Direct**: `await client.subscriptionComponents.readSubscriptionComponent(request)`
 
-**OnError**: <code>[SubscriptionComponents.ReadSubscriptionComponentError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>[SubscriptionComponentResponse](src/models/subscription-component-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionComponents.ReadSubscriptionComponentError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.readSubscriptionComponent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionComponentResponse, SubscriptionComponents.ReadSubscriptionComponentError&gt;</code>, with `result.value` of type <code>[SubscriptionComponentResponse](src/models/subscription-component-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14051,7 +21893,7 @@ try {
 </details>
 
 <details>
-<summary><code>recordEvent(request: SubscriptionComponents.RecordEventRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>recordEvent(request: SubscriptionComponents.RecordEventRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -14063,21 +21905,15 @@ try {
 
 Records a single event for Events-Based Billing.
 
-## Documentation
-
 Events-Based Billing is an evolved form of metered billing that is based on data-rich events streamed in real-time from your system to Advanced Billing.
 
 These events can then be transformed, enriched, or analyzed to form the computed totals of usage charges billed to your customers.
 
 This API allows you to stream events into the Advanced Billing data ingestion engine.
 
-Learn more about the feature in general in the [Events-Based Billing help docs](https://maxio.zendesk.com/hc/en-us/articles/24260323329805-Events-Based-Billing-Overview).
+For more information, see [Design Your Catalog](https://docs.maxio.com/hc/en-us/articles/24181036583053-Design-Your-Catalog?method=componenttypes).
 
-## Record Event
-
-Use this endpoint to record a single event.
-
-*Note: this endpoint differs from the standard Chargify API endpoints in that the URL subdomain will be `events` and your site subdomain will be included in the URL path. For example:*
+Note: this endpoint differs from the standard URL for this API in that `events` and your site subdomain are included in the path. For example:
 
 ```
 https://events.chargify.com/my-site-subdomain/events/my-stream-api-handle
@@ -14086,16 +21922,40 @@ https://events.chargify.com/my-site-subdomain/events/my-stream-api-handle
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionComponents.recordEvent({ apiHandle });
+  await client.subscriptionComponents.recordEvent({
+    apiHandle: "some example string",
+    body: { chargify: { timestamp: new Date(Date.UTC(2020, 1, 27, 22, 45, 50)), subscriptionId: 1 } },
+  });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.recordEvent({
+  apiHandle: "some example string",
+  body: { chargify: { timestamp: new Date(Date.UTC(2020, 1, 27, 22, 45, 50)), subscriptionId: 1 } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -14110,7 +21970,7 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>apiHandle</code> | <code>string</code> | Identifies the Stream for which the event should be published. |
-| <code>storeUid?</code> | <code>string</code> | If you've attached your own Keen project as an Advanced Billing event data-store, use this parameter to indicate the data-store. |
+| <code>storeUid?</code> | <code>string</code> | If you've attached your own Keen project as an Advanced Billing event data-store, use this parameter to indicate the data-store. This applies to Legacy Metering sites only — it has no effect on Maxio Metering sites. |
 | <code>body?</code> | <code>[EbbEvent](src/models/ebb-event.ts)</code> | - |
 
 </dd>
@@ -14121,9 +21981,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionComponents.recordEvent(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionComponents.recordEvent(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14159,7 +22027,7 @@ A few limitations exist when changing an allocation's expiration date:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -14167,17 +22035,36 @@ A few limitations exist when changing an allocation's expiration date:
 ```ts
 try {
   await client.subscriptionComponents.updatePrepaidUsageAllocationExpirationDate({
-    subscriptionId,
-    componentId,
-    allocationId,
+    subscriptionId: 1,
+    componentId: 1,
+    allocationId: 1,
+    body: { allocation: { expiresAt: new Date(Date.UTC(2021, 4, 5, 16, 0, 0)) } },
   });
 } catch (err) {
-  if (
-    err instanceof SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError &&
-      err.payload.kind === "error404"
-  ) {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionComponents.updatePrepaidUsageAllocationExpirationDate({
+  subscriptionId: 1,
+  componentId: 1,
+  allocationId: 1,
+  body: { allocation: { expiresAt: new Date(Date.UTC(2021, 4, 5, 16, 0, 0)) } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14204,9 +22091,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionComponents.updatePrepaidUsageAllocationExpirationDate(request)`
 
-**OnError**: <code>[SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError](src/resources/subscription-components.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError](src/resources/subscription-components.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionComponents.updatePrepaidUsageAllocationExpirationDate(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14221,7 +22116,7 @@ try {
 > Source: [SubscriptionGroups](src/resources/subscription-groups.ts)
 
 <details>
-<summary><code>addSubscriptionToGroup(request: SubscriptionGroups.AddSubscriptionToGroupRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionGroupResponse, ResponseError&gt;</code></summary>
+<summary><code>addSubscriptionToGroup(request: SubscriptionGroups.AddSubscriptionToGroupRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionGroupResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -14249,17 +22144,51 @@ To create a new subscription into a subscription group, reference the following:
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.addSubscriptionToGroup({ subscriptionId });
+  const response = await client.subscriptionGroups.addSubscriptionToGroup({
+    subscriptionId: 1,
+    body: {
+      group: {
+        target: { type: GroupTargetType.Subscription, id: 32987 },
+        billing: { accrue: true, alignDate: true, prorate: true },
+      },
+    },
+  });
   // TODO: Handle 'response' of type SubscriptionGroupResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.addSubscriptionToGroup({
+  subscriptionId: 1,
+  body: {
+    group: {
+      target: { type: GroupTargetType.Subscription, id: 32987 },
+      billing: { accrue: true, alignDate: true, prorate: true },
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionGroupResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -14284,9 +22213,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.addSubscriptionToGroup(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionGroups.addSubscriptionToGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionGroupResponse, ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14312,22 +22249,39 @@ Creates a subscription group with given members.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.createSubscriptionGroup();
+  const response = await client.subscriptionGroups.createSubscriptionGroup({
+    body: { subscriptionGroup: { subscriptionId: 1, memberIds: [2, 3, 4] } },
+  });
   // TODO: Handle 'response' of type SubscriptionGroupResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroups.CreateSubscriptionGroupError &&
-      err.payload.kind === "subscriptionGroupCreateErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type SubscriptionGroupCreateErrorResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroups.CreateSubscriptionGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.createSubscriptionGroup({
+  body: { subscriptionGroup: { subscriptionId: 1, memberIds: [2, 3, 4] } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionGroupResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14351,9 +22305,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.createSubscriptionGroup(request)`
 
-**OnError**: <code>[SubscriptionGroups.CreateSubscriptionGroupError](src/resources/subscription-groups.ts)</code>
+- **OnSuccess**: <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroups.CreateSubscriptionGroupError](src/resources/subscription-groups.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroups.createSubscriptionGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionGroupResponse, SubscriptionGroups.CreateSubscriptionGroupError&gt;</code>, with `result.value` of type <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14380,19 +22342,37 @@ Deletes a subscription group.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.deleteSubscriptionGroup({ uid });
+  const response = await client.subscriptionGroups.deleteSubscriptionGroup({ uid: "some example string" });
   // TODO: Handle 'response' of type DeleteSubscriptionGroupResponse
 } catch (err) {
-  if (err instanceof SubscriptionGroups.DeleteSubscriptionGroupError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionGroups.DeleteSubscriptionGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.deleteSubscriptionGroup({
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type DeleteSubscriptionGroupResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14416,9 +22396,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[DeleteSubscriptionGroupResponse](src/models/delete-subscription-group-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.deleteSubscriptionGroup(request)`
 
-**OnError**: <code>[SubscriptionGroups.DeleteSubscriptionGroupError](src/resources/subscription-groups.ts)</code>
+- **OnSuccess**: <code>[DeleteSubscriptionGroupResponse](src/models/delete-subscription-group-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroups.DeleteSubscriptionGroupError](src/resources/subscription-groups.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroups.deleteSubscriptionGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;DeleteSubscriptionGroupResponse, SubscriptionGroups.DeleteSubscriptionGroupError&gt;</code>, with `result.value` of type <code>[DeleteSubscriptionGroupResponse](src/models/delete-subscription-group-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14441,24 +22429,44 @@ try {
 
 Finds the subscription group associated with a subscription.
 
-If the subscription is not in a group, the endpoint will return a 404 code.
+If the subscription is not in a group, this endpoint returns an error.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.findSubscriptionGroup({ subscriptionId });
+  const response = await client.subscriptionGroups.findSubscriptionGroup({
+    subscriptionId: "some example string",
+  });
   // TODO: Handle 'response' of type FullSubscriptionGroupResponse
 } catch (err) {
-  if (err instanceof SubscriptionGroups.FindSubscriptionGroupError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionGroups.FindSubscriptionGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.findSubscriptionGroup({
+  subscriptionId: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FullSubscriptionGroupResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14482,9 +22490,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[FullSubscriptionGroupResponse](src/models/full-subscription-group-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.findSubscriptionGroup(request)`
 
-**OnError**: <code>[SubscriptionGroups.FindSubscriptionGroupError](src/resources/subscription-groups.ts)</code>
+- **OnSuccess**: <code>[FullSubscriptionGroupResponse](src/models/full-subscription-group-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroups.FindSubscriptionGroupError](src/resources/subscription-groups.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroups.findSubscriptionGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FullSubscriptionGroupResponse, SubscriptionGroups.FindSubscriptionGroupError&gt;</code>, with `result.value` of type <code>[FullSubscriptionGroupResponse](src/models/full-subscription-group-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14495,7 +22511,7 @@ try {
 </details>
 
 <details>
-<summary><code>listSubscriptionGroups(request: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionGroupsResponse, ResponseError&gt;</code></summary>
+<summary><code>listSubscriptionGroups(request: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionGroupsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -14514,17 +22530,43 @@ Account balance information for the subscription groups is not returned by defau
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.listSubscriptionGroups();
+  const response = await client.subscriptionGroups.listSubscriptionGroups({
+    page: 1,
+    perPage: 50,
+    include: [SubscriptionGroupsListInclude.AccountBalances],
+  });
   // TODO: Handle 'response' of type ListSubscriptionGroupsResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.listSubscriptionGroups({
+  page: 1,
+  perPage: 50,
+  include: [SubscriptionGroupsListInclude.AccountBalances],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListSubscriptionGroupsResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -14538,8 +22580,8 @@ try {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>include?</code> | <code>[SubscriptionGroupsListInclude](src/models/subscription-groups-list-include.ts)[]</code> | A list of additional information to include in the response. The following values are supported:<br><br>- `account_balances`: Account balance information for the subscription groups. Use in query: `include[]=account_balances` |
 
 </dd>
@@ -14550,9 +22592,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListSubscriptionGroupsResponse](src/models/list-subscription-groups-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.listSubscriptionGroups(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ListSubscriptionGroupsResponse](src/models/list-subscription-groups-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionGroups.listSubscriptionGroups(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListSubscriptionGroupsResponse, ApiError&gt;</code>, with `result.value` of type <code>[ListSubscriptionGroupsResponse](src/models/list-subscription-groups-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14563,7 +22613,7 @@ try {
 </details>
 
 <details>
-<summary><code>readSubscriptionGroup(request: SubscriptionGroups.ReadSubscriptionGroupRequest, options?: RequestOptions): ApiPromise&lt;FullSubscriptionGroupResponse, ResponseError&gt;</code></summary>
+<summary><code>readSubscriptionGroup(request: SubscriptionGroups.ReadSubscriptionGroupRequest, options?: RequestOptions): ApiPromise&lt;FullSubscriptionGroupResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -14582,17 +22632,41 @@ Current billing amount for the subscription group is not returned by default. If
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.readSubscriptionGroup({ uid });
+  const response = await client.subscriptionGroups.readSubscriptionGroup({
+    uid: "some example string",
+    include: [SubscriptionGroupInclude.CurrentBillingAmountInCents],
+  });
   // TODO: Handle 'response' of type FullSubscriptionGroupResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.readSubscriptionGroup({
+  uid: "some example string",
+  include: [SubscriptionGroupInclude.CurrentBillingAmountInCents],
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type FullSubscriptionGroupResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -14617,9 +22691,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[FullSubscriptionGroupResponse](src/models/full-subscription-group-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.readSubscriptionGroup(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[FullSubscriptionGroupResponse](src/models/full-subscription-group-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionGroups.readSubscriptionGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;FullSubscriptionGroupResponse, ApiError&gt;</code>, with `result.value` of type <code>[FullSubscriptionGroupResponse](src/models/full-subscription-group-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14645,18 +22727,36 @@ Removes an existing subscription from a subscription group. For sites making use
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionGroups.removeSubscriptionFromGroup({ subscriptionId });
+  await client.subscriptionGroups.removeSubscriptionFromGroup({ subscriptionId: 1 });
 } catch (err) {
-  if (err instanceof SubscriptionGroups.RemoveSubscriptionFromGroupError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionGroups.RemoveSubscriptionFromGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.removeSubscriptionFromGroup({
+  subscriptionId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14680,9 +22780,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionGroups.removeSubscriptionFromGroup(request)`
 
-**OnError**: <code>[SubscriptionGroups.RemoveSubscriptionFromGroupError](src/resources/subscription-groups.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionGroups.RemoveSubscriptionFromGroupError](src/resources/subscription-groups.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroups.removeSubscriptionFromGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionGroups.RemoveSubscriptionFromGroupError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14718,22 +22826,51 @@ The first section, "Subscription Customization", will focus on passing different
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.signupWithSubscriptionGroup();
+  const response = await client.subscriptionGroups.signupWithSubscriptionGroup({
+    body: {
+      subscriptionGroup: {
+        paymentProfileId: 123,
+        payerId: 123,
+        subscriptions: [{ productId: 11, primary: true }, { productId: 12 }, { productId: 13 }],
+      },
+    },
+  });
   // TODO: Handle 'response' of type SubscriptionGroupSignupResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroups.SignupWithSubscriptionGroupError &&
-      err.payload.kind === "subscriptionGroupSignupErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type SubscriptionGroupSignupErrorResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroups.SignupWithSubscriptionGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.signupWithSubscriptionGroup({
+  body: {
+    subscriptionGroup: {
+      paymentProfileId: 123,
+      payerId: 123,
+      subscriptions: [{ productId: 11, primary: true }, { productId: 12 }, { productId: 13 }],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionGroupSignupResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14757,9 +22894,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionGroupSignupResponse](src/models/subscription-group-signup-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.signupWithSubscriptionGroup(request)`
 
-**OnError**: <code>[SubscriptionGroups.SignupWithSubscriptionGroupError](src/resources/subscription-groups.ts)</code>
+- **OnSuccess**: <code>[SubscriptionGroupSignupResponse](src/models/subscription-group-signup-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroups.SignupWithSubscriptionGroupError](src/resources/subscription-groups.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroups.signupWithSubscriptionGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionGroupSignupResponse, SubscriptionGroups.SignupWithSubscriptionGroupError&gt;</code>, with `result.value` of type <code>[SubscriptionGroupSignupResponse](src/models/subscription-group-signup-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14786,22 +22931,41 @@ Updates subscription group members.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroups.updateSubscriptionGroupMembers({ uid });
+  const response = await client.subscriptionGroups.updateSubscriptionGroupMembers({
+    uid: "some example string",
+    body: { subscriptionGroup: { memberIds: [1, 2, 3] } },
+  });
   // TODO: Handle 'response' of type SubscriptionGroupResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroups.UpdateSubscriptionGroupMembersError &&
-      err.payload.kind === "subscriptionGroupUpdateErrorResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type SubscriptionGroupUpdateErrorResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroups.UpdateSubscriptionGroupMembersError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroups.updateSubscriptionGroupMembers({
+  uid: "some example string",
+  body: { subscriptionGroup: { memberIds: [1, 2, 3] } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionGroupResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14826,9 +22990,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+**Direct**: `await client.subscriptionGroups.updateSubscriptionGroupMembers(request)`
 
-**OnError**: <code>[SubscriptionGroups.UpdateSubscriptionGroupMembersError](src/resources/subscription-groups.ts)</code>
+- **OnSuccess**: <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroups.UpdateSubscriptionGroupMembersError](src/resources/subscription-groups.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroups.updateSubscriptionGroupMembers(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionGroupResponse, SubscriptionGroups.UpdateSubscriptionGroupMembersError&gt;</code>, with `result.value` of type <code>[SubscriptionGroupResponse](src/models/subscription-group-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14858,22 +23030,39 @@ Adds a prepayment for a subscription group. This endpoint requires an `amount`, 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroupInvoiceAccount.createSubscriptionGroupPrepayment({ uid });
+  const response = await client.subscriptionGroupInvoiceAccount.createSubscriptionGroupPrepayment({
+    uid: "some example string",
+  });
   // TODO: Handle 'response' of type SubscriptionGroupPrepaymentResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupInvoiceAccount.createSubscriptionGroupPrepayment({
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionGroupPrepaymentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14898,9 +23087,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionGroupPrepaymentResponse](src/models/subscription-group-prepayment-response.ts)</code>
+**Direct**: `await client.subscriptionGroupInvoiceAccount.createSubscriptionGroupPrepayment(request)`
 
-**OnError**: <code>[SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError](src/resources/subscription-group-invoice-account.ts)</code>
+- **OnSuccess**: <code>[SubscriptionGroupPrepaymentResponse](src/models/subscription-group-prepayment-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError](src/resources/subscription-group-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupInvoiceAccount.createSubscriptionGroupPrepayment(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionGroupPrepaymentResponse, SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepaymentError&gt;</code>, with `result.value` of type <code>[SubscriptionGroupPrepaymentResponse](src/models/subscription-group-prepayment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14926,22 +23123,41 @@ Deducts service credit for a subscription group. Credit will be deducted from th
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroupInvoiceAccount.deductSubscriptionGroupServiceCredit({ uid });
+  const response = await client.subscriptionGroupInvoiceAccount.deductSubscriptionGroupServiceCredit({
+    uid: "some example string",
+    body: { deduction: { amount: 10, memo: "Deduct from group account" } },
+  });
   // TODO: Handle 'response' of type ServiceCredit
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupInvoiceAccount.deductSubscriptionGroupServiceCredit({
+  uid: "some example string",
+  body: { deduction: { amount: 10, memo: "Deduct from group account" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ServiceCredit
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -14966,9 +23182,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ServiceCredit](src/models/service-credit.ts)</code>
+**Direct**: `await client.subscriptionGroupInvoiceAccount.deductSubscriptionGroupServiceCredit(request)`
 
-**OnError**: <code>[SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError](src/resources/subscription-group-invoice-account.ts)</code>
+- **OnSuccess**: <code>[ServiceCredit](src/models/service-credit.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError](src/resources/subscription-group-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupInvoiceAccount.deductSubscriptionGroupServiceCredit(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ServiceCredit, SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCreditError&gt;</code>, with `result.value` of type <code>[ServiceCredit](src/models/service-credit.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -14994,22 +23218,41 @@ Issues service credit for a subscription group. Credit will be added to the grou
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroupInvoiceAccount.issueSubscriptionGroupServiceCredit({ uid });
+  const response = await client.subscriptionGroupInvoiceAccount.issueSubscriptionGroupServiceCredit({
+    uid: "some example string",
+    body: { serviceCredit: { amount: 10, memo: "Credit the group account" } },
+  });
   // TODO: Handle 'response' of type ServiceCreditResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupInvoiceAccount.issueSubscriptionGroupServiceCredit({
+  uid: "some example string",
+  body: { serviceCredit: { amount: 10, memo: "Credit the group account" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ServiceCreditResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15034,9 +23277,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ServiceCreditResponse](src/models/service-credit-response.ts)</code>
+**Direct**: `await client.subscriptionGroupInvoiceAccount.issueSubscriptionGroupServiceCredit(request)`
 
-**OnError**: <code>[SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError](src/resources/subscription-group-invoice-account.ts)</code>
+- **OnSuccess**: <code>[ServiceCreditResponse](src/models/service-credit-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError](src/resources/subscription-group-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupInvoiceAccount.issueSubscriptionGroupServiceCredit(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ServiceCreditResponse, SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCreditError&gt;</code>, with `result.value` of type <code>[ServiceCreditResponse](src/models/service-credit-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15062,22 +23313,43 @@ Lists a subscription group's prepayments.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroupInvoiceAccount.listPrepaymentsForSubscriptionGroup({ uid });
+  const response = await client.subscriptionGroupInvoiceAccount.listPrepaymentsForSubscriptionGroup({
+    uid: "some example string",
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ListSubscriptionGroupPrepaymentResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError &&
-      err.payload.kind === "error404"
-  ) {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupInvoiceAccount.listPrepaymentsForSubscriptionGroup({
+  uid: "some example string",
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListSubscriptionGroupPrepaymentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15092,8 +23364,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>uid</code> | <code>string</code> | The uid of the subscription group |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>filter?</code> | <code>[ListPrepaymentsFilter](src/models/list-prepayments-filter.ts)</code> | Filter to use for List Prepayments operations |
 
 </dd>
@@ -15104,9 +23376,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListSubscriptionGroupPrepaymentResponse](src/models/list-subscription-group-prepayment-response.ts)</code>
+**Direct**: `await client.subscriptionGroupInvoiceAccount.listPrepaymentsForSubscriptionGroup(request)`
 
-**OnError**: <code>[SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError](src/resources/subscription-group-invoice-account.ts)</code>
+- **OnSuccess**: <code>[ListSubscriptionGroupPrepaymentResponse](src/models/list-subscription-group-prepayment-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError](src/resources/subscription-group-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupInvoiceAccount.listPrepaymentsForSubscriptionGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListSubscriptionGroupPrepaymentResponse, SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroupError&gt;</code>, with `result.value` of type <code>[ListSubscriptionGroupPrepaymentResponse](src/models/list-subscription-group-prepayment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15138,21 +23418,36 @@ Removing the delayed cancellation on a subscription group will ensure that the s
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionGroupStatus.cancelDelayedCancellationForGroup({ uid });
+  await client.subscriptionGroupStatus.cancelDelayedCancellationForGroup({ uid: "some example string" });
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupStatus.CancelDelayedCancellationForGroupError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupStatus.CancelDelayedCancellationForGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupStatus.cancelDelayedCancellationForGroup({
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15176,9 +23471,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionGroupStatus.cancelDelayedCancellationForGroup(request)`
 
-**OnError**: <code>[SubscriptionGroupStatus.CancelDelayedCancellationForGroupError](src/resources/subscription-group-status.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionGroupStatus.CancelDelayedCancellationForGroupError](src/resources/subscription-group-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupStatus.cancelDelayedCancellationForGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionGroupStatus.CancelDelayedCancellationForGroupError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15206,21 +23509,40 @@ To cancel a subscription group while also charging for any unbilled usage on met
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionGroupStatus.cancelSubscriptionsInGroup({ uid });
+  await client.subscriptionGroupStatus.cancelSubscriptionsInGroup({
+    uid: "some example string",
+    body: { chargeUnbilledUsage: true },
+  });
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupStatus.CancelSubscriptionsInGroupError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupStatus.CancelSubscriptionsInGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupStatus.cancelSubscriptionsInGroup({
+  uid: "some example string",
+  body: { chargeUnbilledUsage: true },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15245,9 +23567,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionGroupStatus.cancelSubscriptionsInGroup(request)`
 
-**OnError**: <code>[SubscriptionGroupStatus.CancelSubscriptionsInGroupError](src/resources/subscription-group-status.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionGroupStatus.CancelSubscriptionsInGroupError](src/resources/subscription-group-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupStatus.cancelSubscriptionsInGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionGroupStatus.CancelSubscriptionsInGroupError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15275,21 +23605,36 @@ All subscriptions in the group must be on automatic billing in order to successf
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionGroupStatus.initiateDelayedCancellationForGroup({ uid });
+  await client.subscriptionGroupStatus.initiateDelayedCancellationForGroup({ uid: "some example string" });
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupStatus.initiateDelayedCancellationForGroup({
+  uid: "some example string",
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15313,9 +23658,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionGroupStatus.initiateDelayedCancellationForGroup(request)`
 
-**OnError**: <code>[SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError](src/resources/subscription-group-status.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError](src/resources/subscription-group-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupStatus.initiateDelayedCancellationForGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionGroupStatus.InitiateDelayedCancellationForGroupError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15366,22 +23719,41 @@ See the [3D Secure Post-Authentication Flow](https://docs.maxio.com/hc/en-us/art
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionGroupStatus.reactivateSubscriptionGroup({ uid });
+  const response = await client.subscriptionGroupStatus.reactivateSubscriptionGroup({
+    uid: "some example string",
+    body: { resume: true },
+  });
   // TODO: Handle 'response' of type ReactivateSubscriptionGroupResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionGroupStatus.ReactivateSubscriptionGroupError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionGroupStatus.ReactivateSubscriptionGroupError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionGroupStatus.reactivateSubscriptionGroup({
+  uid: "some example string",
+  body: { resume: true },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ReactivateSubscriptionGroupResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15406,9 +23778,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReactivateSubscriptionGroupResponse](src/models/reactivate-subscription-group-response.ts)</code>
+**Direct**: `await client.subscriptionGroupStatus.reactivateSubscriptionGroup(request)`
 
-**OnError**: <code>[SubscriptionGroupStatus.ReactivateSubscriptionGroupError](src/resources/subscription-group-status.ts)</code>
+- **OnSuccess**: <code>[ReactivateSubscriptionGroupResponse](src/models/reactivate-subscription-group-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionGroupStatus.ReactivateSubscriptionGroupError](src/resources/subscription-group-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionGroupStatus.reactivateSubscriptionGroup(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ReactivateSubscriptionGroupResponse, SubscriptionGroupStatus.ReactivateSubscriptionGroupError&gt;</code>, with `result.value` of type <code>[ReactivateSubscriptionGroupResponse](src/models/reactivate-subscription-group-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15451,22 +23831,55 @@ See the [3D Secure Post-Authentication Flow](https://docs.maxio.com/hc/en-us/art
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionInvoiceAccount.createPrepayment({ subscriptionId });
+  const response = await client.subscriptionInvoiceAccount.createPrepayment({
+    subscriptionId: 1,
+    body: {
+      prepayment: {
+        amount: 100,
+        details: "John Doe signup for $100",
+        memo: "Signup for $100",
+        method: CreatePrepaymentMethod.Check,
+      },
+    },
+  });
   // TODO: Handle 'response' of type CreatePrepaymentResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionInvoiceAccount.CreatePrepaymentError &&
-      err.payload.kind === "createPrepaymentErrorResponse"
-  ) {
-    // TODO: Handle 'err.payload.body' of type CreatePrepaymentErrorResponse
-  }
+  // TODO: Handle 'err' of type SubscriptionInvoiceAccount.CreatePrepaymentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionInvoiceAccount.createPrepayment({
+  subscriptionId: 1,
+  body: {
+    prepayment: {
+      amount: 100,
+      details: "John Doe signup for $100",
+      memo: "Signup for $100",
+      method: CreatePrepaymentMethod.Check,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type CreatePrepaymentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15491,9 +23904,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[CreatePrepaymentResponse](src/models/create-prepayment-response.ts)</code>
+**Direct**: `await client.subscriptionInvoiceAccount.createPrepayment(request)`
 
-**OnError**: <code>[SubscriptionInvoiceAccount.CreatePrepaymentError](src/resources/subscription-invoice-account.ts)</code>
+- **OnSuccess**: <code>[CreatePrepaymentResponse](src/models/create-prepayment-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionInvoiceAccount.CreatePrepaymentError](src/resources/subscription-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionInvoiceAccount.createPrepayment(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;CreatePrepaymentResponse, SubscriptionInvoiceAccount.CreatePrepaymentError&gt;</code>, with `result.value` of type <code>[CreatePrepaymentResponse](src/models/create-prepayment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15519,21 +23940,40 @@ Deducts a service credit from the subscription in the specified amount. The cred
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionInvoiceAccount.deductServiceCredit({ subscriptionId });
+  await client.subscriptionInvoiceAccount.deductServiceCredit({
+    subscriptionId: 1,
+    body: { deduction: { amount: "1", memo: "Deduction" } },
+  });
 } catch (err) {
-  if (
-    err instanceof SubscriptionInvoiceAccount.DeductServiceCreditError &&
-      err.payload.kind === "deductServiceCreditErrorResponse"
-  ) {
-    // TODO: Handle 'err.payload.body' of type DeductServiceCreditErrorResponse
-  }
+  // TODO: Handle 'err' of type SubscriptionInvoiceAccount.DeductServiceCreditError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionInvoiceAccount.deductServiceCredit({
+  subscriptionId: 1,
+  body: { deduction: { amount: "1", memo: "Deduction" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15558,9 +23998,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionInvoiceAccount.deductServiceCredit(request)`
 
-**OnError**: <code>[SubscriptionInvoiceAccount.DeductServiceCreditError](src/resources/subscription-invoice-account.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionInvoiceAccount.DeductServiceCreditError](src/resources/subscription-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionInvoiceAccount.deductServiceCredit(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionInvoiceAccount.DeductServiceCreditError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15586,22 +24034,41 @@ Adds a service credit to the subscription in the specified amount. The credit is
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionInvoiceAccount.issueServiceCredit({ subscriptionId });
+  const response = await client.subscriptionInvoiceAccount.issueServiceCredit({
+    subscriptionId: 1,
+    body: { serviceCredit: { amount: "1" } },
+  });
   // TODO: Handle 'response' of type ServiceCredit
 } catch (err) {
-  if (
-    err instanceof SubscriptionInvoiceAccount.IssueServiceCreditError &&
-      err.payload.kind === "issueServiceCreditErrorResponse"
-  ) {
-    // TODO: Handle 'err.payload.body' of type IssueServiceCreditErrorResponse
-  }
+  // TODO: Handle 'err' of type SubscriptionInvoiceAccount.IssueServiceCreditError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionInvoiceAccount.issueServiceCredit({
+  subscriptionId: 1,
+  body: { serviceCredit: { amount: "1" } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ServiceCredit
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15626,9 +24093,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ServiceCredit](src/models/service-credit.ts)</code>
+**Direct**: `await client.subscriptionInvoiceAccount.issueServiceCredit(request)`
 
-**OnError**: <code>[SubscriptionInvoiceAccount.IssueServiceCreditError](src/resources/subscription-invoice-account.ts)</code>
+- **OnSuccess**: <code>[ServiceCredit](src/models/service-credit.ts)</code>
+- **OnError**: throws <code>[SubscriptionInvoiceAccount.IssueServiceCreditError](src/resources/subscription-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionInvoiceAccount.issueServiceCredit(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ServiceCredit, SubscriptionInvoiceAccount.IssueServiceCreditError&gt;</code>, with `result.value` of type <code>[ServiceCredit](src/models/service-credit.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15654,19 +24129,43 @@ Lists a subscription's prepayments.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionInvoiceAccount.listPrepayments({ subscriptionId });
+  const response = await client.subscriptionInvoiceAccount.listPrepayments({
+    subscriptionId: 1,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type PrepaymentsResponse
 } catch (err) {
-  if (err instanceof SubscriptionInvoiceAccount.ListPrepaymentsError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionInvoiceAccount.ListPrepaymentsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionInvoiceAccount.listPrepayments({
+  subscriptionId: 1,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PrepaymentsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15681,8 +24180,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>subscriptionId</code> | <code>number</code> | The Chargify id of the subscription. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>filter?</code> | <code>[ListPrepaymentsFilter](src/models/list-prepayments-filter.ts)</code> | Filter to use for List Prepayments operations |
 
 </dd>
@@ -15693,9 +24192,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PrepaymentsResponse](src/models/prepayments-response.ts)</code>
+**Direct**: `await client.subscriptionInvoiceAccount.listPrepayments(request)`
 
-**OnError**: <code>[SubscriptionInvoiceAccount.ListPrepaymentsError](src/resources/subscription-invoice-account.ts)</code>
+- **OnSuccess**: <code>[PrepaymentsResponse](src/models/prepayments-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionInvoiceAccount.ListPrepaymentsError](src/resources/subscription-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionInvoiceAccount.listPrepayments(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PrepaymentsResponse, SubscriptionInvoiceAccount.ListPrepaymentsError&gt;</code>, with `result.value` of type <code>[PrepaymentsResponse](src/models/prepayments-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15721,19 +24228,43 @@ Lists a subscription's service credits.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionInvoiceAccount.listServiceCredits({ subscriptionId });
+  const response = await client.subscriptionInvoiceAccount.listServiceCredits({
+    subscriptionId: 1,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type ListServiceCreditsResponse
 } catch (err) {
-  if (err instanceof SubscriptionInvoiceAccount.ListServiceCreditsError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionInvoiceAccount.ListServiceCreditsError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionInvoiceAccount.listServiceCredits({
+  subscriptionId: 1,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ListServiceCreditsResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15748,8 +24279,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>subscriptionId</code> | <code>number</code> | The Chargify id of the subscription. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>direction?</code> | <code>[SortingDirection](src/models/sorting-direction.ts)</code> | Controls the order in which results are returned.<br>Use in query `direction=asc`. |
 
 </dd>
@@ -15760,9 +24291,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ListServiceCreditsResponse](src/models/list-service-credits-response.ts)</code>
+**Direct**: `await client.subscriptionInvoiceAccount.listServiceCredits(request)`
 
-**OnError**: <code>[SubscriptionInvoiceAccount.ListServiceCreditsError](src/resources/subscription-invoice-account.ts)</code>
+- **OnSuccess**: <code>[ListServiceCreditsResponse](src/models/list-service-credits-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionInvoiceAccount.ListServiceCreditsError](src/resources/subscription-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionInvoiceAccount.listServiceCredits(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ListServiceCreditsResponse, SubscriptionInvoiceAccount.ListServiceCreditsError&gt;</code>, with `result.value` of type <code>[ListServiceCreditsResponse](src/models/list-service-credits-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15773,7 +24312,7 @@ try {
 </details>
 
 <details>
-<summary><code>readAccountBalances(request: SubscriptionInvoiceAccount.ReadAccountBalancesRequest, options?: RequestOptions): ApiPromise&lt;AccountBalances, ResponseError&gt;</code></summary>
+<summary><code>readAccountBalances(request: SubscriptionInvoiceAccount.ReadAccountBalancesRequest, options?: RequestOptions): ApiPromise&lt;AccountBalances, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -15788,17 +24327,37 @@ Returns the `balance_in_cents` of the Subscription's Pending Discount, Service C
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionInvoiceAccount.readAccountBalances({ subscriptionId });
+  const response = await client.subscriptionInvoiceAccount.readAccountBalances({ subscriptionId: 1 });
   // TODO: Handle 'response' of type AccountBalances
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionInvoiceAccount.readAccountBalances({
+  subscriptionId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type AccountBalances
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -15822,9 +24381,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[AccountBalances](src/models/account-balances.ts)</code>
+**Direct**: `await client.subscriptionInvoiceAccount.readAccountBalances(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[AccountBalances](src/models/account-balances.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionInvoiceAccount.readAccountBalances(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;AccountBalances, ApiError&gt;</code>, with `result.value` of type <code>[AccountBalances](src/models/account-balances.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15852,22 +24419,41 @@ The amount may be passed either as a decimal, with `amount`, or an integer in ce
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionInvoiceAccount.refundPrepayment({ subscriptionId, prepaymentId });
+  const response = await client.subscriptionInvoiceAccount.refundPrepayment({
+    subscriptionId: 1,
+    prepaymentId: 1,
+  });
   // TODO: Handle 'response' of type PrepaymentResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionInvoiceAccount.RefundPrepaymentError &&
-      err.payload.kind === "refundPrepaymentBaseErrorsResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type RefundPrepaymentBaseErrorsResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionInvoiceAccount.RefundPrepaymentError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionInvoiceAccount.refundPrepayment({
+  subscriptionId: 1,
+  prepaymentId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type PrepaymentResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15893,9 +24479,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[PrepaymentResponse](src/models/prepayment-response.ts)</code>
+**Direct**: `await client.subscriptionInvoiceAccount.refundPrepayment(request)`
 
-**OnError**: <code>[SubscriptionInvoiceAccount.RefundPrepaymentError](src/resources/subscription-invoice-account.ts)</code>
+- **OnSuccess**: <code>[PrepaymentResponse](src/models/prepayment-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionInvoiceAccount.RefundPrepaymentError](src/resources/subscription-invoice-account.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionInvoiceAccount.refundPrepayment(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;PrepaymentResponse, SubscriptionInvoiceAccount.RefundPrepaymentError&gt;</code>, with `result.value` of type <code>[PrepaymentResponse](src/models/prepayment-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15922,32 +24516,50 @@ try {
 
 Creates a note for a subscription.
 
-## How to Use Subscription Notes
-
 Notes allow you to record information about a particular Subscription in a free text format.
 
-If you have structured data such as birth date, color, etc., consider using Metadata instead.
+If you have structured data such as birth date, color, etc., consider using [Metadata]($e/Custom%20Fields/createMetadata) instead.
 
-Full documentation on how to use Notes in the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/articles/24251712214413-Subscription-Summary-Overview).
+For more information, see [Adding Notes](https://docs.maxio.com/hc/en-us/articles/24251654953997-Understanding-the-Subscription-Summary-Page#billing-portal-status:~:text=documentation%20for%20more.-,Adding%20Notes,-Notes%20are%20optional) in the product documentation.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionNotes.createSubscriptionNote({ subscriptionId });
+  const response = await client.subscriptionNotes.createSubscriptionNote({
+    subscriptionId: 1,
+    body: { note: { body: "New test note.", sticky: true } },
+  });
   // TODO: Handle 'response' of type SubscriptionNoteResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionNotes.CreateSubscriptionNoteError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionNotes.CreateSubscriptionNoteError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionNotes.createSubscriptionNote({
+  subscriptionId: 1,
+  body: { note: { body: "New test note.", sticky: true } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionNoteResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -15972,9 +24584,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+**Direct**: `await client.subscriptionNotes.createSubscriptionNote(request)`
 
-**OnError**: <code>[SubscriptionNotes.CreateSubscriptionNoteError](src/resources/subscription-notes.ts)</code>
+- **OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionNotes.CreateSubscriptionNoteError](src/resources/subscription-notes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionNotes.createSubscriptionNote(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionNoteResponse, SubscriptionNotes.CreateSubscriptionNoteError&gt;</code>, with `result.value` of type <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -15985,7 +24605,7 @@ try {
 </details>
 
 <details>
-<summary><code>deleteSubscriptionNote(request: SubscriptionNotes.DeleteSubscriptionNoteRequest, options?: RequestOptions): ApiPromise&lt;undefined, ResponseError&gt;</code></summary>
+<summary><code>deleteSubscriptionNote(request: SubscriptionNotes.DeleteSubscriptionNoteRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -16000,16 +24620,37 @@ Deletes a note for a Subscription.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  await client.subscriptionNotes.deleteSubscriptionNote({ subscriptionId, noteId });
+  await client.subscriptionNotes.deleteSubscriptionNote({ subscriptionId: 1, noteId: 1 });
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionNotes.deleteSubscriptionNote({
+  subscriptionId: 1,
+  noteId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -16034,9 +24675,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionNotes.deleteSubscriptionNote(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionNotes.deleteSubscriptionNote(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, ApiError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16062,21 +24711,43 @@ Retrieves a list of notes associated with a subscription. The response will be a
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionNotes.listSubscriptionNotes({ subscriptionId });
+  const response = await client.subscriptionNotes.listSubscriptionNotes({
+    subscriptionId: 1,
+    page: 1,
+    perPage: 50,
+  });
   // TODO: Handle 'response' of type SubscriptionNoteResponse[]
 } catch (err) {
-  if (
-    err instanceof SubscriptionNotes.ListSubscriptionNotesError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionNotes.ListSubscriptionNotesError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionNotes.listSubscriptionNotes({
+  subscriptionId: 1,
+  page: 1,
+  perPage: 50,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionNoteResponse[]
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16091,8 +24762,8 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>subscriptionId</code> | <code>number</code> | The Chargify id of the subscription. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 
 </dd>
 </dl>
@@ -16102,9 +24773,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)[]</code>
+**Direct**: `await client.subscriptionNotes.listSubscriptionNotes(request)`
 
-**OnError**: <code>[SubscriptionNotes.ListSubscriptionNotesError](src/resources/subscription-notes.ts)</code>
+- **OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)[]</code>
+- **OnError**: throws <code>[SubscriptionNotes.ListSubscriptionNotesError](src/resources/subscription-notes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionNotes.listSubscriptionNotes(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionNoteResponse[], SubscriptionNotes.ListSubscriptionNotesError&gt;</code>, with `result.value` of type <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)[]</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16115,7 +24794,7 @@ try {
 </details>
 
 <details>
-<summary><code>readSubscriptionNote(request: SubscriptionNotes.ReadSubscriptionNoteRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionNoteResponse, ResponseError&gt;</code></summary>
+<summary><code>readSubscriptionNote(request: SubscriptionNotes.ReadSubscriptionNoteRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionNoteResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -16130,17 +24809,38 @@ Retrieves a specific note attached to a subscription.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionNotes.readSubscriptionNote({ subscriptionId, noteId });
+  const response = await client.subscriptionNotes.readSubscriptionNote({ subscriptionId: 1, noteId: 1 });
   // TODO: Handle 'response' of type SubscriptionNoteResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionNotes.readSubscriptionNote({
+  subscriptionId: 1,
+  noteId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionNoteResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -16165,9 +24865,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+**Direct**: `await client.subscriptionNotes.readSubscriptionNote(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionNotes.readSubscriptionNote(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionNoteResponse, ApiError&gt;</code>, with `result.value` of type <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16193,21 +24901,43 @@ Updates a note for a subscription.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionNotes.updateSubscriptionNote({ subscriptionId, noteId });
+  const response = await client.subscriptionNotes.updateSubscriptionNote({
+    subscriptionId: 1,
+    noteId: 1,
+    body: { note: { body: "Modified test note.", sticky: true } },
+  });
   // TODO: Handle 'response' of type SubscriptionNoteResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionNotes.UpdateSubscriptionNoteError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionNotes.UpdateSubscriptionNoteError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionNotes.updateSubscriptionNote({
+  subscriptionId: 1,
+  noteId: 1,
+  body: { note: { body: "Modified test note.", sticky: true } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionNoteResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16233,9 +24963,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+**Direct**: `await client.subscriptionNotes.updateSubscriptionNote(request)`
 
-**OnError**: <code>[SubscriptionNotes.UpdateSubscriptionNoteError](src/resources/subscription-notes.ts)</code>
+- **OnSuccess**: <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionNotes.UpdateSubscriptionNoteError](src/resources/subscription-notes.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionNotes.updateSubscriptionNote(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionNoteResponse, SubscriptionNotes.UpdateSubscriptionNoteError&gt;</code>, with `result.value` of type <code>[SubscriptionNoteResponse](src/models/subscription-note-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16262,17 +25000,15 @@ try {
 
 Migrates a subscription to a different product.
 
-In order to create a migration, you must pass the `product_id` or `product_handle` in the object when you send a POST request. You may also pass either a `product_price_point_id` or `product_price_point_handle` to choose which price point the subscription is moved to. If no price point identifier is passed the subscription will be moved to the products default price point. The response will be the updated subscription.
+To create a migration, you must pass the `product_id` or `product_handle` in the object when you send a POST request. You can also pass either a `product_price_point_id` or `product_price_point_handle` to choose which price point the subscription is moved to. If no price point identifier is passed, the subscription is moved to the product's default price point. The response is the updated subscription.
 
 ## Valid Subscriptions
 
-Subscriptions should be in the `active` or `trialing` state in order to be migrated.
+Subscriptions should be in the `active` or `trialing` state to be migrated.
 
 (For backwards compatibility reasons, it is possible to migrate a subscription that is in the `trial_ended` state via the API, however this is not recommended.  Since `trial_ended` is an end-of-life state, the subscription should be canceled, the product changed, and then the subscription can be reactivated.)
 
-## Migrations Documentation
-
-Full documentation on how to record Migrations in the Advanced Billing UI can be located [here](https://maxio.zendesk.com/hc/en-us/articles/24181589372429-Data-Migration-to-Advanced-Billing).
+For more information, see [Product Changes and Migrations](https://docs.maxio.com/hc/en-us/articles/24252069837581-Product-Changes-and-Migrations).
 
 ## Failed Migrations
 
@@ -16287,22 +25023,57 @@ See the [3D Secure Post-Authentication Flow](https://docs.maxio.com/hc/en-us/art
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionProducts.migrateSubscriptionProduct({ subscriptionId });
+  const response = await client.subscriptionProducts.migrateSubscriptionProduct({
+    subscriptionId: 1,
+    body: {
+      migration: {
+        productId: 3801242,
+        includeTrial: false,
+        includeInitialCharge: false,
+        includeCoupons: true,
+        preservePeriod: true,
+      },
+    },
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionProducts.MigrateSubscriptionProductError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionProducts.MigrateSubscriptionProductError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionProducts.migrateSubscriptionProduct({
+  subscriptionId: 1,
+  body: {
+    migration: {
+      productId: 3801242,
+      includeTrial: false,
+      includeInitialCharge: false,
+      includeCoupons: true,
+      preservePeriod: true,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16327,9 +25098,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionProducts.migrateSubscriptionProduct(request)`
 
-**OnError**: <code>[SubscriptionProducts.MigrateSubscriptionProductError](src/resources/subscription-products.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionProducts.MigrateSubscriptionProductError](src/resources/subscription-products.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionProducts.migrateSubscriptionProduct(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionProducts.MigrateSubscriptionProductError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16360,22 +25139,39 @@ This will calculate the prorated adjustment, charge, payment and credit applied 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionProducts.previewSubscriptionProductMigration({ subscriptionId });
+  const response = await client.subscriptionProducts.previewSubscriptionProductMigration({
+    subscriptionId: 1,
+  });
   // TODO: Handle 'response' of type SubscriptionMigrationPreviewResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionProducts.PreviewSubscriptionProductMigrationError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionProducts.PreviewSubscriptionProductMigrationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionProducts.previewSubscriptionProductMigration({
+  subscriptionId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionMigrationPreviewResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16400,9 +25196,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionMigrationPreviewResponse](src/models/subscription-migration-preview-response.ts)</code>
+**Direct**: `await client.subscriptionProducts.previewSubscriptionProductMigration(request)`
 
-**OnError**: <code>[SubscriptionProducts.PreviewSubscriptionProductMigrationError](src/resources/subscription-products.ts)</code>
+- **OnSuccess**: <code>[SubscriptionMigrationPreviewResponse](src/models/subscription-migration-preview-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionProducts.PreviewSubscriptionProductMigrationError](src/resources/subscription-products.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionProducts.previewSubscriptionProductMigration(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionMigrationPreviewResponse, SubscriptionProducts.PreviewSubscriptionProductMigrationError&gt;</code>, with `result.value` of type <code>[SubscriptionMigrationPreviewResponse](src/models/subscription-migration-preview-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16432,7 +25236,7 @@ Cancels a scheduled renewal configuration.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -16440,17 +25244,33 @@ Cancels a scheduled renewal configuration.
 ```ts
 try {
   const response = await client.subscriptionRenewals.cancelScheduledRenewalConfiguration({
-    subscriptionId,
-    id,
+    subscriptionId: 1,
+    id: 1,
   });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.CancelScheduledRenewalConfigurationError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.CancelScheduledRenewalConfigurationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.cancelScheduledRenewalConfiguration({
+  subscriptionId: 1,
+  id: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16475,9 +25295,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.cancelScheduledRenewalConfiguration(request)`
 
-**OnError**: <code>[SubscriptionRenewals.CancelScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.CancelScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.cancelScheduledRenewalConfiguration(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationResponse, SubscriptionRenewals.CancelScheduledRenewalConfigurationError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16503,22 +25331,55 @@ Creates a scheduled renewal configuration for a subscription. The scheduled rene
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionRenewals.createScheduledRenewalConfiguration({ subscriptionId });
+  const response = await client.subscriptionRenewals.createScheduledRenewalConfiguration({
+    subscriptionId: 1,
+    body: {
+      renewalConfiguration: {
+        startsAt: new Date(Date.UTC(2024, 11, 1, 0, 0, 0)),
+        endsAt: new Date(Date.UTC(2025, 11, 1, 0, 0, 0)),
+        lockInAt: new Date(Date.UTC(2024, 10, 15, 0, 0, 0)),
+        contractId: 222,
+      },
+    },
+  });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.CreateScheduledRenewalConfigurationError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.CreateScheduledRenewalConfigurationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.createScheduledRenewalConfiguration({
+  subscriptionId: 1,
+  body: {
+    renewalConfiguration: {
+      startsAt: new Date(Date.UTC(2024, 11, 1, 0, 0, 0)),
+      endsAt: new Date(Date.UTC(2025, 11, 1, 0, 0, 0)),
+      lockInAt: new Date(Date.UTC(2024, 10, 15, 0, 0, 0)),
+      contractId: 222,
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16543,9 +25404,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.createScheduledRenewalConfiguration(request)`
 
-**OnError**: <code>[SubscriptionRenewals.CreateScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.CreateScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.createScheduledRenewalConfiguration(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationResponse, SubscriptionRenewals.CreateScheduledRenewalConfigurationError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16573,7 +25442,7 @@ If your site has list vs sales pricing enabled, accepts renewal_configuration_it
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -16581,17 +25450,49 @@ If your site has list vs sales pricing enabled, accepts renewal_configuration_it
 ```ts
 try {
   const response = await client.subscriptionRenewals.createScheduledRenewalConfigurationItem({
-    subscriptionId,
-    scheduledRenewalsConfigurationId,
+    subscriptionId: 1,
+    scheduledRenewalsConfigurationId: 1,
+    body: {
+      renewalConfigurationItem: {
+        itemType: "Component",
+        itemId: 57,
+        quantity: 1,
+        customPrice: { pricingScheme: PricingScheme.Stairstep, prices: [{}] },
+      },
+    },
   });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationItemResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.CreateScheduledRenewalConfigurationItemError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.CreateScheduledRenewalConfigurationItemError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.createScheduledRenewalConfigurationItem({
+  subscriptionId: 1,
+  scheduledRenewalsConfigurationId: 1,
+  body: {
+    renewalConfigurationItem: {
+      itemType: "Component",
+      itemId: 57,
+      quantity: 1,
+      customPrice: { pricingScheme: PricingScheme.Stairstep, prices: [{}] },
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16617,9 +25518,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationItemResponse](src/models/scheduled-renewal-configuration-item-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.createScheduledRenewalConfigurationItem(request)`
 
-**OnError**: <code>[SubscriptionRenewals.CreateScheduledRenewalConfigurationItemError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationItemResponse](src/models/scheduled-renewal-configuration-item-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.CreateScheduledRenewalConfigurationItemError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.createScheduledRenewalConfigurationItem(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationItemResponse, SubscriptionRenewals.CreateScheduledRenewalConfigurationItemError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationItemResponse](src/models/scheduled-renewal-configuration-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16645,7 +25554,7 @@ Removes an item from the pending renewal configuration.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -16653,17 +25562,34 @@ Removes an item from the pending renewal configuration.
 ```ts
 try {
   await client.subscriptionRenewals.deleteScheduledRenewalConfigurationItem({
-    subscriptionId,
-    scheduledRenewalsConfigurationId,
-    id,
+    subscriptionId: 1,
+    scheduledRenewalsConfigurationId: 1,
+    id: 1,
   });
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.DeleteScheduledRenewalConfigurationItemError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.DeleteScheduledRenewalConfigurationItemError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.deleteScheduledRenewalConfigurationItem({
+  subscriptionId: 1,
+  scheduledRenewalsConfigurationId: 1,
+  id: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: The call succeeded and resolves to no body
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16689,9 +25615,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>undefined</code>
+**Direct**: `await client.subscriptionRenewals.deleteScheduledRenewalConfigurationItem(request)`
 
-**OnError**: <code>[SubscriptionRenewals.DeleteScheduledRenewalConfigurationItemError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>undefined</code>
+- **OnError**: throws <code>[SubscriptionRenewals.DeleteScheduledRenewalConfigurationItemError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.deleteScheduledRenewalConfigurationItem(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;undefined, SubscriptionRenewals.DeleteScheduledRenewalConfigurationItemError&gt;</code>, with `result.value` of type <code>undefined</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16702,7 +25636,7 @@ try {
 </details>
 
 <details>
-<summary><code>listScheduledRenewalConfigurations(request: SubscriptionRenewals.ListScheduledRenewalConfigurationsRequest, options?: RequestOptions): ApiPromise&lt;ScheduledRenewalConfigurationsResponse, ResponseError&gt;</code></summary>
+<summary><code>listScheduledRenewalConfigurations(request: SubscriptionRenewals.ListScheduledRenewalConfigurationsRequest, options?: RequestOptions): ApiPromise&lt;ScheduledRenewalConfigurationsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -16717,17 +25651,39 @@ Lists scheduled renewal configurations for the subscription and permits an optio
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionRenewals.listScheduledRenewalConfigurations({ subscriptionId });
+  const response = await client.subscriptionRenewals.listScheduledRenewalConfigurations({
+    subscriptionId: 1,
+  });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationsResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.listScheduledRenewalConfigurations({
+  subscriptionId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationsResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -16752,9 +25708,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationsResponse](src/models/scheduled-renewal-configurations-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.listScheduledRenewalConfigurations(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationsResponse](src/models/scheduled-renewal-configurations-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionRenewals.listScheduledRenewalConfigurations(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationsResponse, ApiError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationsResponse](src/models/scheduled-renewal-configurations-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16780,7 +25744,7 @@ Locks in the renewal immediately.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -16788,17 +25752,33 @@ Locks in the renewal immediately.
 ```ts
 try {
   const response = await client.subscriptionRenewals.lockInScheduledRenewalImmediately({
-    subscriptionId,
-    id,
+    subscriptionId: 1,
+    id: 1,
   });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.LockInScheduledRenewalImmediatelyError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.LockInScheduledRenewalImmediatelyError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.lockInScheduledRenewalImmediately({
+  subscriptionId: 1,
+  id: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16823,9 +25803,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.lockInScheduledRenewalImmediately(request)`
 
-**OnError**: <code>[SubscriptionRenewals.LockInScheduledRenewalImmediatelyError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.LockInScheduledRenewalImmediatelyError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.lockInScheduledRenewalImmediately(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationResponse, SubscriptionRenewals.LockInScheduledRenewalImmediatelyError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16836,7 +25824,7 @@ try {
 </details>
 
 <details>
-<summary><code>readScheduledRenewalConfiguration(request: SubscriptionRenewals.ReadScheduledRenewalConfigurationRequest, options?: RequestOptions): ApiPromise&lt;ScheduledRenewalConfigurationResponse, ResponseError&gt;</code></summary>
+<summary><code>readScheduledRenewalConfiguration(request: SubscriptionRenewals.ReadScheduledRenewalConfigurationRequest, options?: RequestOptions): ApiPromise&lt;ScheduledRenewalConfigurationResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -16851,7 +25839,7 @@ Retrieves the configuration settings for the scheduled renewal.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -16859,12 +25847,33 @@ Retrieves the configuration settings for the scheduled renewal.
 ```ts
 try {
   const response = await client.subscriptionRenewals.readScheduledRenewalConfiguration({
-    subscriptionId,
-    id,
+    subscriptionId: 1,
+    id: 1,
   });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.readScheduledRenewalConfiguration({
+  subscriptionId: 1,
+  id: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -16889,9 +25898,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.readScheduledRenewalConfiguration(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.subscriptionRenewals.readScheduledRenewalConfiguration(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationResponse, ApiError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16917,22 +25934,43 @@ Schedules a future lock-in date for the renewal.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionRenewals.scheduleScheduledRenewalLockIn({ subscriptionId, id });
+  const response = await client.subscriptionRenewals.scheduleScheduledRenewalLockIn({
+    subscriptionId: 1,
+    id: 1,
+    body: { lockInAt: "2025-11-15" },
+  });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.ScheduleScheduledRenewalLockInError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.ScheduleScheduledRenewalLockInError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.scheduleScheduledRenewalLockIn({
+  subscriptionId: 1,
+  id: 1,
+  body: { lockInAt: "2025-11-15" },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -16958,9 +25996,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.scheduleScheduledRenewalLockIn(request)`
 
-**OnError**: <code>[SubscriptionRenewals.ScheduleScheduledRenewalLockInError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.ScheduleScheduledRenewalLockInError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.scheduleScheduledRenewalLockIn(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationResponse, SubscriptionRenewals.ScheduleScheduledRenewalLockInError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -16986,7 +26032,7 @@ Restores a scheduled renewal configuration to an editable state.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -16994,17 +26040,33 @@ Restores a scheduled renewal configuration to an editable state.
 ```ts
 try {
   const response = await client.subscriptionRenewals.unpublishScheduledRenewalConfiguration({
-    subscriptionId,
-    id,
+    subscriptionId: 1,
+    id: 1,
   });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.UnpublishScheduledRenewalConfigurationError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.UnpublishScheduledRenewalConfigurationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.unpublishScheduledRenewalConfiguration({
+  subscriptionId: 1,
+  id: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17029,9 +26091,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.unpublishScheduledRenewalConfiguration(request)`
 
-**OnError**: <code>[SubscriptionRenewals.UnpublishScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.UnpublishScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.unpublishScheduledRenewalConfiguration(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationResponse, SubscriptionRenewals.UnpublishScheduledRenewalConfigurationError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17057,7 +26127,7 @@ Updates an existing configuration.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -17065,17 +26135,47 @@ Updates an existing configuration.
 ```ts
 try {
   const response = await client.subscriptionRenewals.updateScheduledRenewalConfiguration({
-    subscriptionId,
-    id,
+    subscriptionId: 1,
+    id: 1,
+    body: {
+      renewalConfiguration: {
+        startsAt: new Date(Date.UTC(2025, 11, 1, 0, 0, 0)),
+        endsAt: new Date(Date.UTC(2026, 11, 1, 0, 0, 0)),
+        lockInAt: new Date(Date.UTC(2025, 10, 15, 0, 0, 0)),
+      },
+    },
   });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.UpdateScheduledRenewalConfigurationError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.UpdateScheduledRenewalConfigurationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.updateScheduledRenewalConfiguration({
+  subscriptionId: 1,
+  id: 1,
+  body: {
+    renewalConfiguration: {
+      startsAt: new Date(Date.UTC(2025, 11, 1, 0, 0, 0)),
+      endsAt: new Date(Date.UTC(2026, 11, 1, 0, 0, 0)),
+      lockInAt: new Date(Date.UTC(2025, 10, 15, 0, 0, 0)),
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17101,9 +26201,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.updateScheduledRenewalConfiguration(request)`
 
-**OnError**: <code>[SubscriptionRenewals.UpdateScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.UpdateScheduledRenewalConfigurationError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.updateScheduledRenewalConfiguration(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationResponse, SubscriptionRenewals.UpdateScheduledRenewalConfigurationError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationResponse](src/models/scheduled-renewal-configuration-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17131,7 +26239,7 @@ If you site has list vs sales pricing enabled, accepts renewal_configuration_ite
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -17139,18 +26247,51 @@ If you site has list vs sales pricing enabled, accepts renewal_configuration_ite
 ```ts
 try {
   const response = await client.subscriptionRenewals.updateScheduledRenewalConfigurationItem({
-    subscriptionId,
-    scheduledRenewalsConfigurationId,
-    id,
+    subscriptionId: 1,
+    scheduledRenewalsConfigurationId: 1,
+    id: 1,
+    body: {
+      renewalConfigurationItem: {
+        itemType: "Component",
+        itemId: 57,
+        quantity: 2,
+        customPrice: { pricingScheme: PricingScheme.Stairstep, prices: [{}] },
+      },
+    },
   });
   // TODO: Handle 'response' of type ScheduledRenewalConfigurationItemResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionRenewals.UpdateScheduledRenewalConfigurationItemError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionRenewals.UpdateScheduledRenewalConfigurationItemError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionRenewals.updateScheduledRenewalConfigurationItem({
+  subscriptionId: 1,
+  scheduledRenewalsConfigurationId: 1,
+  id: 1,
+  body: {
+    renewalConfigurationItem: {
+      itemType: "Component",
+      itemId: 57,
+      quantity: 2,
+      customPrice: { pricingScheme: PricingScheme.Stairstep, prices: [{}] },
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ScheduledRenewalConfigurationItemResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17177,9 +26318,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ScheduledRenewalConfigurationItemResponse](src/models/scheduled-renewal-configuration-item-response.ts)</code>
+**Direct**: `await client.subscriptionRenewals.updateScheduledRenewalConfigurationItem(request)`
 
-**OnError**: <code>[SubscriptionRenewals.UpdateScheduledRenewalConfigurationItemError](src/resources/subscription-renewals.ts)</code>
+- **OnSuccess**: <code>[ScheduledRenewalConfigurationItemResponse](src/models/scheduled-renewal-configuration-item-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionRenewals.UpdateScheduledRenewalConfigurationItemError](src/resources/subscription-renewals.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionRenewals.updateScheduledRenewalConfigurationItem(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ScheduledRenewalConfigurationItemResponse, SubscriptionRenewals.UpdateScheduledRenewalConfigurationItemError&gt;</code>, with `result.value` of type <code>[ScheduledRenewalConfigurationItemResponse](src/models/scheduled-renewal-configuration-item-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17211,19 +26360,35 @@ This endpoint is idempotent. If the subscription was not set to cancel in the fu
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.cancelDelayedCancellation({ subscriptionId });
+  const response = await client.subscriptionStatus.cancelDelayedCancellation({ subscriptionId: 1 });
   // TODO: Handle 'response' of type DelayedCancellationResponse
 } catch (err) {
-  if (err instanceof SubscriptionStatus.CancelDelayedCancellationError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.CancelDelayedCancellationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.cancelDelayedCancellation({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type DelayedCancellationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17247,9 +26412,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[DelayedCancellationResponse](src/models/delayed-cancellation-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.cancelDelayedCancellation(request)`
 
-**OnError**: <code>[SubscriptionStatus.CancelDelayedCancellationError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[DelayedCancellationResponse](src/models/delayed-cancellation-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.CancelDelayedCancellationError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.cancelDelayedCancellation(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;DelayedCancellationResponse, SubscriptionStatus.CancelDelayedCancellationError&gt;</code>, with `result.value` of type <code>[DelayedCancellationResponse](src/models/delayed-cancellation-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17275,19 +26448,35 @@ Cancels the active dunning process for a subscription and sets it to active.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.cancelDunning({ subscriptionId });
+  const response = await client.subscriptionStatus.cancelDunning({ subscriptionId: 1 });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof SubscriptionStatus.CancelDunningError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.CancelDunningError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.cancelDunning({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17311,9 +26500,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.cancelDunning(request)`
 
-**OnError**: <code>[SubscriptionStatus.CancelDunningError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.CancelDunningError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.cancelDunning(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionStatus.CancelDunningError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17340,19 +26537,35 @@ To cancel the subscription immediately, omit any schedule parameters from the re
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.cancelSubscription({ subscriptionId });
+  const response = await client.subscriptionStatus.cancelSubscription({ subscriptionId: 1 });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof SubscriptionStatus.CancelSubscriptionError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.CancelSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.cancelSubscription({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17377,9 +26590,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.cancelSubscription(request)`
 
-**OnError**: <code>[SubscriptionStatus.CancelSubscriptionError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.CancelSubscriptionError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.cancelSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionStatus.CancelSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17405,19 +26626,37 @@ Cancels a subscription at the end of the current billing period based on the sub
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.initiateDelayedCancellation({ subscriptionId });
+  const response = await client.subscriptionStatus.initiateDelayedCancellation({ subscriptionId: 1 });
   // TODO: Handle 'response' of type DelayedCancellationResponse
 } catch (err) {
-  if (err instanceof SubscriptionStatus.InitiateDelayedCancellationError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.InitiateDelayedCancellationError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.initiateDelayedCancellation({
+  subscriptionId: 1,
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type DelayedCancellationResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17442,9 +26681,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[DelayedCancellationResponse](src/models/delayed-cancellation-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.initiateDelayedCancellation(request)`
 
-**OnError**: <code>[SubscriptionStatus.InitiateDelayedCancellationError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[DelayedCancellationResponse](src/models/delayed-cancellation-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.InitiateDelayedCancellationError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.initiateDelayedCancellation(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;DelayedCancellationResponse, SubscriptionStatus.InitiateDelayedCancellationError&gt;</code>, with `result.value` of type <code>[DelayedCancellationResponse](src/models/delayed-cancellation-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17474,19 +26721,41 @@ You may not place a subscription on hold if the `next_billing_at` date is within
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.pauseSubscription({ subscriptionId });
+  const response = await client.subscriptionStatus.pauseSubscription({
+    subscriptionId: 1,
+    body: { hold: { automaticallyResumeAt: new Date(Date.UTC(2017, 4, 25, 11, 25, 0)) } },
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof SubscriptionStatus.PauseSubscriptionError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.PauseSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.pauseSubscription({
+  subscriptionId: 1,
+  body: { hold: { automaticallyResumeAt: new Date(Date.UTC(2017, 4, 25, 11, 25, 0)) } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17511,9 +26780,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.pauseSubscription(request)`
 
-**OnError**: <code>[SubscriptionStatus.PauseSubscriptionError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.PauseSubscriptionError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.pauseSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionStatus.PauseSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17536,43 +26813,77 @@ try {
 
 Previews a subscription’s next renewal assessment. Renewal Preview is an object representing a subscription’s next assessment. You can retrieve it to see a snapshot of how much your customer will be charged on their next renewal.
 
-The "Next Billing" amount and "Next Billing" date are already represented in the UI on each Subscriber's Summary. For more information, see our documentation [here](https://maxio.zendesk.com/hc/en-us/articles/24252493695757-Subscriber-Interface-Overview).
+The "Next Billing" amount and "Next Billing" date are already represented in the UI on each Subscriber's Summary. For more information, see [Subscriber Interface Overview](https://maxio.zendesk.com/hc/en-us/articles/24252493695757-Subscriber-Interface-Overview).
 
 ## Optional Component Fields
 
-This endpoint is particularly useful due to the fact that it will return the computed billing amount for the base product and the components which are in use by a subscriber.
+This endpoint is particularly useful because it returns the computed billing amount for the base product and the components which are in use by a subscriber.
 
-By default, the preview will include billing details for all components _at their **current** quantities_. This means:
+By default, the preview includes billing details for all components _at their **current** quantities_. This means:
 
 * Current `allocated_quantity` for quantity-based components
 * Current enabled/disabled status for on/off components
 * Current metered usage `unit_balance` for metered components
 * Current metric quantity value for events recorded thus far for events-based components
 
-In the above statements, "current" means the quantity or value as of the call to the renewal preview endpoint. We do not predict end-of-period values for components, so metered or events-based usage may be less than it will eventually be at the end of the period.
+In the above statements, "current" means the quantity or value as of the call to the renewal preview endpoint. End-of-period values for components are not predicted, so metered or events-based usage may be less than it will eventually be at the end of the period.
 
-Optionally, **you may provide your own custom quantities** for any component to see a billing preview for non-current quantities. This is accomplished by sending a request body with data under the `components` key. See the request body documentation below.
+Optionally, **you can provide your own custom quantities** for any component to see a billing preview for non-current quantities. This is accomplished by sending a request body with data under the `components` key. See the request body documentation below.
 
-## Subscription Side Effects
+## Preview Behavior
 
-You can request a `POST` to obtain this data from the endpoint without any side effects. This method allows you to preview data, but does not log any changes against a subscription.
+Sending a `POST` request to this endpoint returns preview data without modifying the subscription. This method previews data, but does not log any changes against a subscription.
 
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.previewRenewal({ subscriptionId });
+  const response = await client.subscriptionStatus.previewRenewal({
+    subscriptionId: 1,
+    body: {
+      components: [
+        { componentId: 10708, quantity: 10000 },
+        { componentId: "handle:small-instance-hours", quantity: 10000, pricePointId: 8712 },
+        { componentId: "handle:large-instance-hours", quantity: 100, pricePointId: "handle:startup-pricing" },
+      ],
+    },
+  });
   // TODO: Handle 'response' of type RenewalPreviewResponse
 } catch (err) {
-  if (err instanceof SubscriptionStatus.PreviewRenewalError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.PreviewRenewalError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.previewRenewal({
+  subscriptionId: 1,
+  body: {
+    components: [
+      { componentId: 10708, quantity: 10000 },
+      { componentId: "handle:small-instance-hours", quantity: 10000, pricePointId: 8712 },
+      { componentId: "handle:large-instance-hours", quantity: 100, pricePointId: "handle:startup-pricing" },
+    ],
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type RenewalPreviewResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17597,9 +26908,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[RenewalPreviewResponse](src/models/renewal-preview-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.previewRenewal(request)`
 
-**OnError**: <code>[SubscriptionStatus.PreviewRenewalError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[RenewalPreviewResponse](src/models/renewal-preview-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.PreviewRenewalError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.previewRenewal(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;RenewalPreviewResponse, SubscriptionStatus.PreviewRenewalError&gt;</code>, with `result.value` of type <code>[RenewalPreviewResponse](src/models/renewal-preview-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17784,21 +27103,55 @@ See the [3D Secure Post-Authentication Flow](https://docs.maxio.com/hc/en-us/art
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.reactivateSubscription({ subscriptionId });
+  const response = await client.subscriptionStatus.reactivateSubscription({
+    subscriptionId: 1,
+    body: {
+      calendarBilling: { reactivationCharge: ReactivationCharge.Prorated },
+      includeTrial: true,
+      preserveBalance: true,
+      couponCode: "10OFF",
+      useCreditsAndPrepayments: true,
+      resume: true,
+    },
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionStatus.ReactivateSubscriptionError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.ReactivateSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.reactivateSubscription({
+  subscriptionId: 1,
+  body: {
+    calendarBilling: { reactivationCharge: ReactivationCharge.Prorated },
+    includeTrial: true,
+    preserveBalance: true,
+    couponCode: "10OFF",
+    useCreditsAndPrepayments: true,
+    resume: true,
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17823,9 +27176,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.reactivateSubscription(request)`
 
-**OnError**: <code>[SubscriptionStatus.ReactivateSubscriptionError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.ReactivateSubscriptionError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.reactivateSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionStatus.ReactivateSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17851,21 +27212,35 @@ Resumes a paused (on-hold) subscription. If the normal next renewal date has not
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.resumeSubscription({ subscriptionId });
+  const response = await client.subscriptionStatus.resumeSubscription({ subscriptionId: 1 });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionStatus.ResumeSubscriptionError && err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.ResumeSubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.resumeSubscription({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17880,7 +27255,7 @@ try {
 | Name | Type | Description |
 | --- | --- | --- |
 | <code>subscriptionId</code> | <code>number</code> | The Chargify id of the subscription. |
-| <code>calendarBillingResumptionCharge?</code> | <code>[ResumptionCharge](src/models/resumption-charge.ts)</code> | (For calendar billing subscriptions only) The way that the resumed subscription's charge should be handled. |
+| <code>calendarBillingResumptionCharge?</code> | <code>[ResumptionCharge](src/models/resumption-charge.ts)</code> | (For calendar billing subscriptions only) The way that the resumed subscription's charge should be handled.<br>**Default**: "prorated" |
 
 </dd>
 </dl>
@@ -17890,9 +27265,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.resumeSubscription(request)`
 
-**OnError**: <code>[SubscriptionStatus.ResumeSubscriptionError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.ResumeSubscriptionError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.resumeSubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionStatus.ResumeSubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17924,19 +27307,35 @@ See the [3D Secure Post-Authentication Flow](https://docs.maxio.com/hc/en-us/art
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.retrySubscription({ subscriptionId });
+  const response = await client.subscriptionStatus.retrySubscription({ subscriptionId: 1 });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (err instanceof SubscriptionStatus.RetrySubscriptionError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.RetrySubscriptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.retrySubscription({ subscriptionId: 1 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -17960,9 +27359,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.retrySubscription(request)`
 
-**OnError**: <code>[SubscriptionStatus.RetrySubscriptionError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.RetrySubscriptionError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.retrySubscription(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionStatus.RetrySubscriptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -17994,22 +27401,41 @@ Alternatively, you can change the `automatically_resume_at` to `null` if you wou
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.subscriptionStatus.updateAutomaticSubscriptionResumption({ subscriptionId });
+  const response = await client.subscriptionStatus.updateAutomaticSubscriptionResumption({
+    subscriptionId: 1,
+    body: { hold: { automaticallyResumeAt: new Date(Date.UTC(2019, 0, 20, 0, 0, 0)) } },
+  });
   // TODO: Handle 'response' of type SubscriptionResponse
 } catch (err) {
-  if (
-    err instanceof SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError &&
-      err.payload.kind === "errorListResponse1"
-  ) {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.subscriptionStatus.updateAutomaticSubscriptionResumption({
+  subscriptionId: 1,
+  body: { hold: { automaticallyResumeAt: new Date(Date.UTC(2019, 0, 20, 0, 0, 0)) } },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type SubscriptionResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -18034,9 +27460,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+**Direct**: `await client.subscriptionStatus.updateAutomaticSubscriptionResumption(request)`
 
-**OnError**: <code>[SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError](src/resources/subscription-status.ts)</code>
+- **OnSuccess**: <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: throws <code>[SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError](src/resources/subscription-status.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.subscriptionStatus.updateAutomaticSubscriptionResumption(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;SubscriptionResponse, SubscriptionStatus.UpdateAutomaticSubscriptionResumptionError&gt;</code>, with `result.value` of type <code>[SubscriptionResponse](src/models/subscription-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -18067,19 +27501,57 @@ See the [Webhooks Reference](page:introduction/webhooks/webhooks-reference#event
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.webhooks.createEndpoint();
+  const response = await client.webhooks.createEndpoint({
+    body: {
+      endpoint: {
+        url: "https://your.site/webhooks",
+        webhookSubscriptions: [
+          WebhookSubscription.PaymentSuccess,
+          WebhookSubscription.PaymentFailure,
+          WebhookSubscription.InvoicePending,
+        ],
+      },
+    },
+  });
   // TODO: Handle 'response' of type EndpointResponse
 } catch (err) {
-  if (err instanceof Webhooks.CreateEndpointError && err.payload.kind === "errorListResponse1") {
-    // TODO: Handle 'err.payload.body' of type ErrorListResponse1
-  }
+  // TODO: Handle 'err' of type Webhooks.CreateEndpointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.webhooks.createEndpoint({
+  body: {
+    endpoint: {
+      url: "https://your.site/webhooks",
+      webhookSubscriptions: [
+        WebhookSubscription.PaymentSuccess,
+        WebhookSubscription.PaymentFailure,
+        WebhookSubscription.InvoicePending,
+      ],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type EndpointResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -18103,9 +27575,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[EndpointResponse](src/models/endpoint-response.ts)</code>
+**Direct**: `await client.webhooks.createEndpoint(request)`
 
-**OnError**: <code>[Webhooks.CreateEndpointError](src/resources/webhooks.ts)</code>
+- **OnSuccess**: <code>[EndpointResponse](src/models/endpoint-response.ts)</code>
+- **OnError**: throws <code>[Webhooks.CreateEndpointError](src/resources/webhooks.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.webhooks.createEndpoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;EndpointResponse, Webhooks.CreateEndpointError&gt;</code>, with `result.value` of type <code>[EndpointResponse](src/models/endpoint-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -18116,7 +27596,7 @@ try {
 </details>
 
 <details>
-<summary><code>enableWebhooks(request: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;EnableWebhooksResponse, ResponseError&gt;</code></summary>
+<summary><code>enableWebhooks(request: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;EnableWebhooksResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -18131,17 +27611,35 @@ Enables webhooks for your site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.webhooks.enableWebhooks();
+  const response = await client.webhooks.enableWebhooks({ body: { webhooksEnabled: true } });
   // TODO: Handle 'response' of type EnableWebhooksResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.webhooks.enableWebhooks({ body: { webhooksEnabled: true } }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type EnableWebhooksResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -18165,9 +27663,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[EnableWebhooksResponse](src/models/enable-webhooks-response.ts)</code>
+**Direct**: `await client.webhooks.enableWebhooks(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[EnableWebhooksResponse](src/models/enable-webhooks-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.webhooks.enableWebhooks(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;EnableWebhooksResponse, ApiError&gt;</code>, with `result.value` of type <code>[EnableWebhooksResponse](src/models/enable-webhooks-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -18178,7 +27684,7 @@ try {
 </details>
 
 <details>
-<summary><code>listEndpoints(options?: RequestOptions): ApiPromise&lt;Endpoint[], ResponseError&gt;</code></summary>
+<summary><code>listEndpoints(options?: RequestOptions): ApiPromise&lt;Endpoint[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -18193,7 +27699,7 @@ Lists endpoints configured for a site.
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
@@ -18203,7 +27709,25 @@ try {
   const response = await client.webhooks.listEndpoints();
   // TODO: Handle 'response' of type Endpoint[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.webhooks.listEndpoints().asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type Endpoint[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -18215,9 +27739,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[Endpoint](src/models/endpoint.ts)[]</code>
+**Direct**: `await client.webhooks.listEndpoints()`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[Endpoint](src/models/endpoint.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.webhooks.listEndpoints().asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;Endpoint[], ApiError&gt;</code>, with `result.value` of type <code>[Endpoint](src/models/endpoint.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -18228,7 +27760,7 @@ try {
 </details>
 
 <details>
-<summary><code>listWebhooks(request: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise&lt;WebhookResponse[], ResponseError&gt;</code></summary>
+<summary><code>listWebhooks(request: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise&lt;WebhookResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -18243,17 +27775,35 @@ Retrieves a list of webhooks.  You can pass query parameters if you want to filt
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.webhooks.listWebhooks();
+  const response = await client.webhooks.listWebhooks({ page: 1, perPage: 50 });
   // TODO: Handle 'response' of type WebhookResponse[]
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.webhooks.listWebhooks({ page: 1, perPage: 50 }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type WebhookResponse[]
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -18270,8 +27820,8 @@ try {
 | <code>status?</code> | <code>[WebhookStatus](src/models/webhook-status.ts)</code> | Webhooks with matching status would be returned. |
 | <code>sinceDate?</code> | <code>string</code> | Format YYYY-MM-DD. Returns Webhooks with the created_at date greater than or equal to the one specified. |
 | <code>untilDate?</code> | <code>string</code> | Format YYYY-MM-DD. Returns Webhooks with the created_at date less than or equal to the one specified. |
-| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`. |
-| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`. |
+| <code>page?</code> | <code>number</code> | Result records are organized in pages. By default, the first page of results is displayed. The page parameter specifies a page number of results to fetch. You can start navigating through the pages to consume the results. You do this by passing in a page parameter. Retrieve the next page by adding ?page=2 to the query string. If there are no results to return, then an empty result set will be returned.<br>Use in query `page=1`.<br>**Default**: 1 |
+| <code>perPage?</code> | <code>number</code> | This parameter indicates how many records to fetch in each request. Default value is 20. The maximum allowed values is 200; any per_page value over 200 will be changed to 200.<br>Use in query `per_page=200`.<br>**Default**: 20 |
 | <code>order?</code> | <code>[WebhookOrder](src/models/webhook-order.ts)</code> | The order in which the Webhooks are returned. |
 | <code>subscription?</code> | <code>number</code> | The Advanced Billing id of a subscription you'd like to filter for |
 
@@ -18283,9 +27833,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[WebhookResponse](src/models/webhook-response.ts)[]</code>
+**Direct**: `await client.webhooks.listWebhooks(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[WebhookResponse](src/models/webhook-response.ts)[]</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.webhooks.listWebhooks(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;WebhookResponse[], ApiError&gt;</code>, with `result.value` of type <code>[WebhookResponse](src/models/webhook-response.ts)[]</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -18296,7 +27854,7 @@ try {
 </details>
 
 <details>
-<summary><code>replayWebhooks(request: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;ReplayWebhooksResponse, ResponseError&gt;</code></summary>
+<summary><code>replayWebhooks(request: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;ReplayWebhooksResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -18311,17 +27869,35 @@ Replays webhooks. Posting to this endpoint does not immediately resend the webho
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.webhooks.replayWebhooks();
+  const response = await client.webhooks.replayWebhooks({ body: { ids: [123456789, 123456788] } });
   // TODO: Handle 'response' of type ReplayWebhooksResponse
 } catch (err) {
-  // TODO: Handle 'err' of type ResponseError
+  // TODO: Handle 'err' of type ApiError, where 'err.payload' is always the Undeclared arm
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.webhooks.replayWebhooks({ body: { ids: [123456789, 123456788] } }).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type ReplayWebhooksResponse
+} else {
+  // TODO: Handle 'result', where 'result.payload' is always the Undeclared arm
 }
 ```
 
@@ -18345,9 +27921,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[ReplayWebhooksResponse](src/models/replay-webhooks-response.ts)</code>
+**Direct**: `await client.webhooks.replayWebhooks(request)`
 
-**OnError**: <code>[ResponseError](src/core/response-error.ts)</code>
+- **OnSuccess**: <code>[ReplayWebhooksResponse](src/models/replay-webhooks-response.ts)</code>
+- **OnError**: throws <code>[ApiError](src/core/api-error.ts)</code>, with `err.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm
+
+**As ApiResult**: `await client.webhooks.replayWebhooks(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;ReplayWebhooksResponse, ApiError&gt;</code>, with `result.value` of type <code>[ReplayWebhooksResponse](src/models/replay-webhooks-response.ts)</code>
+- **OnError**: `result.payload` always the <code>[Undeclared](src/core/api-error.ts)</code> arm, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>
@@ -18377,19 +27961,61 @@ If you want to unsubscribe from a specific event, send a list of `webhook_subscr
 </dd>
 </dl>
 
-### Usage
+### Direct Usage
 
 <dl>
 <dd>
 
 ```ts
 try {
-  const response = await client.webhooks.updateEndpoint({ endpointId });
+  const response = await client.webhooks.updateEndpoint({
+    endpointId: 1,
+    body: {
+      endpoint: {
+        url: "https://your.site/webhooks/1/json.",
+        webhookSubscriptions: [
+          WebhookSubscription.PaymentFailure,
+          WebhookSubscription.PaymentSuccess,
+          WebhookSubscription.RefundFailure,
+          WebhookSubscription.InvoicePending,
+        ],
+      },
+    },
+  });
   // TODO: Handle 'response' of type EndpointResponse
 } catch (err) {
-  if (err instanceof Webhooks.UpdateEndpointError && err.payload.kind === "error404") {
-    // TODO: Handle 'err.payload' — the "error404" arm declares no body
-  }
+  // TODO: Handle 'err' of type Webhooks.UpdateEndpointError, discriminated with 'err.payload.kind'
+}
+```
+
+</dd>
+</dl>
+
+### Usage as ApiResult
+
+<dl>
+<dd>
+
+```ts
+const result = await client.webhooks.updateEndpoint({
+  endpointId: 1,
+  body: {
+    endpoint: {
+      url: "https://your.site/webhooks/1/json.",
+      webhookSubscriptions: [
+        WebhookSubscription.PaymentFailure,
+        WebhookSubscription.PaymentSuccess,
+        WebhookSubscription.RefundFailure,
+        WebhookSubscription.InvoicePending,
+      ],
+    },
+  },
+}).asApiResult();
+// TODO: Use 'result.status' and 'result.headers' to read the raw response status and headers
+if (result.ok) {
+  // TODO: Use 'result.value' of type EndpointResponse
+} else {
+  // TODO: Handle 'result', discriminated with 'result.payload.kind'
 }
 ```
 
@@ -18414,9 +28040,17 @@ try {
 <dl>
 <dd>
 
-**OnSuccess**: <code>[EndpointResponse](src/models/endpoint-response.ts)</code>
+**Direct**: `await client.webhooks.updateEndpoint(request)`
 
-**OnError**: <code>[Webhooks.UpdateEndpointError](src/resources/webhooks.ts)</code>
+- **OnSuccess**: <code>[EndpointResponse](src/models/endpoint-response.ts)</code>
+- **OnError**: throws <code>[Webhooks.UpdateEndpointError](src/resources/webhooks.ts)</code>, with `err.payload` discriminated on `kind`
+
+**As ApiResult**: `await client.webhooks.updateEndpoint(request).asApiResult()`
+
+- **OnSuccess**: <code>[ApiResult](src/core/api-promise.ts)&lt;EndpointResponse, Webhooks.UpdateEndpointError&gt;</code>, with `result.value` of type <code>[EndpointResponse](src/models/endpoint-response.ts)</code>
+- **OnError**: `result.payload` discriminated on `kind`, with `result.message`
+
+**Thrown**: <code>[MaxioAdvancedBillingError](src/core/errors.ts)</code> on any operational failure — a caller abort and a programmer error stay outside the family and reach you raw
 
 </dd>
 </dl>

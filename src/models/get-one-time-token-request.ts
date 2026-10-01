@@ -1,16 +1,13 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
-import {
-  getOneTimeTokenPaymentProfileSchema,
-  type GetOneTimeTokenPaymentProfile,
-} from "./get-one-time-token-payment-profile.js";
+import { paymentProfileModelSchema, type PaymentProfileModel } from "./unions/payment-profile-model.js";
 
 export type GetOneTimeTokenRequest = {
-  paymentProfile: GetOneTimeTokenPaymentProfile;
+  paymentProfile: PaymentProfileModel;
 };
 
 export const getOneTimeTokenRequestSchema: Schema<GetOneTimeTokenRequest> = s.object<GetOneTimeTokenRequest>({
-  paymentProfile: getOneTimeTokenPaymentProfileSchema,
+  paymentProfile: paymentProfileModelSchema,
   _keysMap: {
     paymentProfile: "payment_profile",
   },

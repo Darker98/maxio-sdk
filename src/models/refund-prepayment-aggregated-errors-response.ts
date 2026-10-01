@@ -5,6 +5,7 @@ import {
   type RefundPrepaymentAggregatedError,
 } from "./refund-prepayment-aggregated-error.js";
 
+/** Errors returned on creating a refund prepayment, grouped by field, as arrays of strings. */
 export type RefundPrepaymentAggregatedErrorsResponse = {
   errors?: RefundPrepaymentAggregatedError;
 };

@@ -5,8 +5,20 @@ import { creditTypeSchema, type CreditType } from "./credit-type.js";
 
 export type PreviewAllocationsRequest = {
   allocations: CreateAllocation[];
+  /**
+   * To calculate proration amounts for a future time. Only within a current subscription period.
+   * Only ISO8601 format is supported.
+   */
   effectiveProrationDate?: string;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   upgradeCharge?: CreditType | null;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   downgradeCredit?: CreditType | null;
 };
 

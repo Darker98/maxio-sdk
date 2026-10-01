@@ -4,16 +4,17 @@
 
 Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operations · Request and error types: namespace `Invoices`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### createInvoice
 
 - **Signature**: `createInvoice(request: Invoices.CreateInvoiceRequestParams, options?: RequestOptions): ApiPromise<InvoiceResponse, Invoices.CreateInvoiceError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `InvoiceResponse`
-- **Error**: `Invoices.CreateInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.CreateInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.CreateInvoiceRequestParams` (2):
@@ -33,10 +34,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `deleteInvoice(request: Invoices.DeleteInvoiceRequest, options?: RequestOptions): ApiPromise<undefined, Invoices.DeleteInvoiceError>`
 - **Wire**: `DELETE /subscriptions/{subscription_id}/invoices/{uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `Invoices.DeleteInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.DeleteInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [404] `ErrorListResponse1` · `"errorListResponse12"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.DeleteInvoiceRequest` (2):
@@ -54,10 +56,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `issueInvoice(request: Invoices.IssueInvoiceRequestParams, options?: RequestOptions): ApiPromise<Invoice, Invoices.IssueInvoiceError>`
 - **Wire**: `POST /invoices/{uid}/issue.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Invoice`
-- **Error**: `Invoices.IssueInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.IssueInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.IssueInvoiceRequestParams` (2):
@@ -75,12 +78,12 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 ### listConsolidatedInvoiceSegments
 
-- **Signature**: `listConsolidatedInvoiceSegments(request: Invoices.ListConsolidatedInvoiceSegmentsRequest, options?: RequestOptions): ApiPromise<ConsolidatedInvoice, ResponseError>`
+- **Signature**: `listConsolidatedInvoiceSegments(request: Invoices.ListConsolidatedInvoiceSegmentsRequest, options?: RequestOptions): ApiPromise<ConsolidatedInvoice, ApiError>`
 - **Wire**: `GET /invoices/{invoice_uid}/segments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ConsolidatedInvoice`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Invoices.ListConsolidatedInvoiceSegmentsRequest` (4):
 
@@ -98,20 +101,26 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 ### listCreditNotes
 
-- **Signature**: `listCreditNotes(request: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise<ListCreditNotesResponse, ResponseError>`
+- **Signature**: `listCreditNotes(request: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise<ListCreditNotesResponse, ApiError>`
 - **Wire**: `GET /credit_notes.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListCreditNotesResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
-**Fields** — `Invoices.ListCreditNotesRequest` (8):
+**Fields** — `Invoices.ListCreditNotesRequest` (14):
 
 | Field | Channel | Wire | Type | Req | Default |
 | --- | --- | --- | --- | --- | --- |
 | `subscriptionId` | `query` | `subscription_id` | `number` | no | — |
+| `dateField` | `query` | `date_field` | `CreditNoteDateField` | no | `CreditNoteDateField.IssueDate` |
+| `startDate` | `query` | `start_date` | `string` | no | — |
+| `endDate` | `query` | `end_date` | `string` | no | — |
+| `startDatetime` | `query` | `start_datetime` | `string` | no | — |
+| `endDatetime` | `query` | `end_datetime` | `string` | no | — |
 | `page` | `query` | — | `number` | no | `1` |
 | `perPage` | `query` | `per_page` | `number` | no | `20` |
+| `direction` | `query` | — | `Direction` | no | `Direction.Desc` |
 | `lineItems` | `query` | `line_items` | `boolean` | no | `false` |
 | `discounts` | `query` | — | `boolean` | no | `false` |
 | `taxes` | `query` | — | `boolean` | no | `false` |
@@ -120,16 +129,18 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 | Type | Schema value | Source |
 | --- | --- | --- |
+| `CreditNoteDateField` | `creditNoteDateFieldSchema` | `src/models/credit-note-date-field.ts` |
+| `Direction` | `directionSchema` | `src/models/direction.ts` |
 | `ListCreditNotesResponse` | `listCreditNotesResponseSchema` | `src/models/list-credit-notes-response.ts` |
 
 ### listInvoiceEvents
 
-- **Signature**: `listInvoiceEvents(request: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise<ListInvoiceEventsResponse, ResponseError>`
+- **Signature**: `listInvoiceEvents(request: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise<ListInvoiceEventsResponse, ApiError>`
 - **Wire**: `GET /invoices/events.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListInvoiceEventsResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Invoices.ListInvoiceEventsRequest` (7):
 
@@ -150,12 +161,12 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 ### listInvoices
 
-- **Signature**: `listInvoices(request: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise<ListInvoicesResponse, ResponseError>`
+- **Signature**: `listInvoices(request: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise<ListInvoicesResponse, ApiError>`
 - **Wire**: `GET /invoices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListInvoicesResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Invoices.ListInvoicesRequest` (23):
 
@@ -197,10 +208,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `previewCustomerInformationChanges(request: Invoices.PreviewCustomerInformationChangesRequest, options?: RequestOptions): ApiPromise<CustomerChangesPreviewResponse, Invoices.PreviewCustomerInformationChangesError>`
 - **Wire**: `POST /invoices/{uid}/customer_information/preview.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CustomerChangesPreviewResponse`
-- **Error**: `Invoices.PreviewCustomerInformationChangesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.PreviewCustomerInformationChangesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [404] `ErrorListResponse1` · `"errorListResponse12"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.PreviewCustomerInformationChangesRequest` (1):
@@ -216,12 +228,12 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 ### readCreditNote
 
-- **Signature**: `readCreditNote(request: Invoices.ReadCreditNoteRequest, options?: RequestOptions): ApiPromise<CreditNote, ResponseError>`
+- **Signature**: `readCreditNote(request: Invoices.ReadCreditNoteRequest, options?: RequestOptions): ApiPromise<CreditNote, ApiError>`
 - **Wire**: `GET /credit_notes/{uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CreditNote`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Invoices.ReadCreditNoteRequest` (1):
 
@@ -235,12 +247,12 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 ### readInvoice
 
-- **Signature**: `readInvoice(request: Invoices.ReadInvoiceRequest, options?: RequestOptions): ApiPromise<Invoice, ResponseError>`
+- **Signature**: `readInvoice(request: Invoices.ReadInvoiceRequest, options?: RequestOptions): ApiPromise<Invoice, ApiError>`
 - **Wire**: `GET /invoices/{uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `Invoice`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Invoices.ReadInvoiceRequest` (1):
 
@@ -256,10 +268,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `recordPaymentForInvoice(request: Invoices.RecordPaymentForInvoiceRequest, options?: RequestOptions): ApiPromise<Invoice, Invoices.RecordPaymentForInvoiceError>`
 - **Wire**: `POST /invoices/{uid}/payments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Invoice`
-- **Error**: `Invoices.RecordPaymentForInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.RecordPaymentForInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.RecordPaymentForInvoiceRequest` (2):
@@ -279,10 +292,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `recordPaymentForMultipleInvoices(request: Invoices.RecordPaymentForMultipleInvoicesRequest, options?: RequestOptions): ApiPromise<MultiInvoicePaymentResponse, Invoices.RecordPaymentForMultipleInvoicesError>`
 - **Wire**: `POST /invoices/payments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `MultiInvoicePaymentResponse`
-- **Error**: `Invoices.RecordPaymentForMultipleInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.RecordPaymentForMultipleInvoicesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.RecordPaymentForMultipleInvoicesRequest` (1):
@@ -301,10 +315,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `recordPaymentForSubscription(request: Invoices.RecordPaymentForSubscriptionRequest, options?: RequestOptions): ApiPromise<RecordPaymentResponse, Invoices.RecordPaymentForSubscriptionError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/payments.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `RecordPaymentResponse`
-- **Error**: `Invoices.RecordPaymentForSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.RecordPaymentForSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.RecordPaymentForSubscriptionRequest` (2):
@@ -324,10 +339,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `refundInvoice(request: Invoices.RefundInvoiceRequestParams, options?: RequestOptions): ApiPromise<Invoice, Invoices.RefundInvoiceError>`
 - **Wire**: `POST /invoices/{uid}/refunds.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Invoice`
-- **Error**: `Invoices.RefundInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.RefundInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.RefundInvoiceRequestParams` (2):
@@ -347,10 +363,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `reopenInvoice(request: Invoices.ReopenInvoiceRequest, options?: RequestOptions): ApiPromise<Invoice, Invoices.ReopenInvoiceError>`
 - **Wire**: `POST /invoices/{uid}/reopen.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Invoice`
-- **Error**: `Invoices.ReopenInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.ReopenInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] `unknown` · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.ReopenInvoiceRequest` (1):
@@ -368,10 +385,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `sendInvoice(request: Invoices.SendInvoiceRequestParams, options?: RequestOptions): ApiPromise<undefined, Invoices.SendInvoiceError>`
 - **Wire**: `POST /invoices/{uid}/deliveries.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `Invoices.SendInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.SendInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.SendInvoiceRequestParams` (2):
@@ -390,10 +408,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `updateCustomerInformation(request: Invoices.UpdateCustomerInformationRequest, options?: RequestOptions): ApiPromise<Invoice, Invoices.UpdateCustomerInformationError>`
 - **Wire**: `PUT /invoices/{uid}/customer_information.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Invoice`
-- **Error**: `Invoices.UpdateCustomerInformationError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.UpdateCustomerInformationError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [404] `ErrorListResponse1` · `"errorListResponse12"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.UpdateCustomerInformationRequest` (1):
@@ -411,10 +430,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `updateInvoice(request: Invoices.UpdateInvoiceRequestParams, options?: RequestOptions): ApiPromise<InvoiceResponse, Invoices.UpdateInvoiceError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}/invoices/{uid}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `InvoiceResponse`
-- **Error**: `Invoices.UpdateInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.UpdateInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [404] `ErrorListResponse1` · `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.UpdateInvoiceRequestParams` (3):
@@ -436,10 +456,11 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 - **Signature**: `voidInvoice(request: Invoices.VoidInvoiceRequestParams, options?: RequestOptions): ApiPromise<Invoice, Invoices.VoidInvoiceError>`
 - **Wire**: `POST /invoices/{uid}/void.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `Invoice`
-- **Error**: `Invoices.VoidInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Invoices.VoidInvoiceError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] `unknown` · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Invoices.VoidInvoiceRequestParams` (2):

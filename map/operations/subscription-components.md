@@ -4,16 +4,17 @@
 
 Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription-components.ts` · 17 operations · Request and error types: namespace `SubscriptionComponents`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### activateEventBasedComponent
 
-- **Signature**: `activateEventBasedComponent(request: SubscriptionComponents.ActivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `activateEventBasedComponent(request: SubscriptionComponents.ActivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `POST /event_based_billing/subscriptions/{subscription_id}/components/{component_id}/activate.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.ActivateEventBasedComponentRequest` (3):
 
@@ -31,10 +32,11 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `allocateComponent(request: SubscriptionComponents.AllocateComponentRequest, options?: RequestOptions): ApiPromise<AllocationResponse, SubscriptionComponents.AllocateComponentError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/components/{component_id}/allocations.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `AllocationResponse`
-- **Error**: `SubscriptionComponents.AllocateComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.AllocateComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.AllocateComponentRequest` (3):
@@ -55,10 +57,11 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `allocateComponents(request: SubscriptionComponents.AllocateComponentsRequest, options?: RequestOptions): ApiPromise<AllocationResponse[], SubscriptionComponents.AllocateComponentsError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/allocations.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `AllocationResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `SubscriptionComponents.AllocateComponentsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.AllocateComponentsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.AllocateComponentsRequest` (2):
@@ -77,12 +80,13 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 ### bulkRecordEvents
 
 - **Server**: `ebb` — not the `production` group; see Servers & auth in sdk-map.md
-- **Signature**: `bulkRecordEvents(request: SubscriptionComponents.BulkRecordEventsRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `bulkRecordEvents(request: SubscriptionComponents.BulkRecordEventsRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `POST /events/{api_handle}/bulk.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field, a bare top-level JSON array
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field, a bare top-level JSON array. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.BulkRecordEventsRequest` (3):
 
@@ -98,12 +102,13 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 ### bulkResetSubscriptionComponentsPricePoints
 
-- **Signature**: `bulkResetSubscriptionComponentsPricePoints(request: SubscriptionComponents.BulkResetSubscriptionComponentsPricePointsRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, ResponseError>`
+- **Signature**: `bulkResetSubscriptionComponentsPricePoints(request: SubscriptionComponents.BulkResetSubscriptionComponentsPricePointsRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, ApiError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/price_points/reset.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.BulkResetSubscriptionComponentsPricePointsRequest` (1):
 
@@ -119,10 +124,11 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `bulkUpdateSubscriptionComponentsPricePoints(request: SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsRequest, options?: RequestOptions): ApiPromise<BulkComponentsPricePointAssignment, SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/price_points.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `BulkComponentsPricePointAssignment`
-- **Error**: `SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"componentPricePointError1"` [422] `ComponentPricePointError1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePointsRequest` (2):
@@ -141,10 +147,11 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `createUsage(request: SubscriptionComponents.CreateUsageRequestParams, options?: RequestOptions): ApiPromise<UsageResponse, SubscriptionComponents.CreateUsageError>`
 - **Wire**: `POST /subscriptions/{subscription_id_or_reference}/components/{component_id}/usages.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `UsageResponse`
-- **Error**: `SubscriptionComponents.CreateUsageError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.CreateUsageError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.CreateUsageRequestParams` (3):
@@ -165,12 +172,13 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 ### deactivateEventBasedComponent
 
-- **Signature**: `deactivateEventBasedComponent(request: SubscriptionComponents.DeactivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `deactivateEventBasedComponent(request: SubscriptionComponents.DeactivateEventBasedComponentRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `POST /event_based_billing/subscriptions/{subscription_id}/components/{component_id}/deactivate.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.DeactivateEventBasedComponentRequest` (2):
 
@@ -183,10 +191,11 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `deletePrepaidUsageAllocation(request: SubscriptionComponents.DeletePrepaidUsageAllocationRequest, options?: RequestOptions): ApiPromise<undefined, SubscriptionComponents.DeletePrepaidUsageAllocationError>`
 - **Wire**: `DELETE /subscriptions/{subscription_id}/components/{component_id}/allocations/{allocation_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `SubscriptionComponents.DeletePrepaidUsageAllocationError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.DeletePrepaidUsageAllocationError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"subscriptionComponentAllocationError1"` [422] `SubscriptionComponentAllocationError1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.DeletePrepaidUsageAllocationRequest` (4):
@@ -207,10 +216,10 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `listAllocations(request: SubscriptionComponents.ListAllocationsRequest, options?: RequestOptions): ApiPromise<AllocationResponse[], SubscriptionComponents.ListAllocationsError>`
 - **Wire**: `GET /subscriptions/{subscription_id}/components/{component_id}/allocations.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `AllocationResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `SubscriptionComponents.ListAllocationsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.ListAllocationsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.ListAllocationsRequest` (3):
@@ -228,12 +237,12 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 ### listSubscriptionComponents
 
-- **Signature**: `listSubscriptionComponents(request: SubscriptionComponents.ListSubscriptionComponentsRequest, options?: RequestOptions): ApiPromise<SubscriptionComponentResponse[], ResponseError>`
+- **Signature**: `listSubscriptionComponents(request: SubscriptionComponents.ListSubscriptionComponentsRequest, options?: RequestOptions): ApiPromise<SubscriptionComponentResponse[], ApiError>`
 - **Wire**: `GET /subscriptions/{subscription_id}/components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SubscriptionComponentResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.ListSubscriptionComponentsRequest` (13):
 
@@ -265,12 +274,12 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 ### listSubscriptionComponentsForSite
 
-- **Signature**: `listSubscriptionComponentsForSite(request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise<ListSubscriptionComponentsResponse, ResponseError>`
+- **Signature**: `listSubscriptionComponentsForSite(request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise<ListSubscriptionComponentsResponse, ApiError>`
 - **Wire**: `GET /subscriptions_components.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListSubscriptionComponentsResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.ListSubscriptionComponentsForSiteRequest` (14):
 
@@ -303,12 +312,12 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 ### listUsages
 
-- **Signature**: `listUsages(request: SubscriptionComponents.ListUsagesRequest, options?: RequestOptions): ApiPromise<UsageResponse[], ResponseError>`
+- **Signature**: `listUsages(request: SubscriptionComponents.ListUsagesRequest, options?: RequestOptions): ApiPromise<UsageResponse[], ApiError>`
 - **Wire**: `GET /subscriptions/{subscription_id_or_reference}/components/{component_id}/usages.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `UsageResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.ListUsagesRequest` (8):
 
@@ -333,10 +342,11 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `previewAllocations(request: SubscriptionComponents.PreviewAllocationsRequestParams, options?: RequestOptions): ApiPromise<AllocationPreviewResponse, SubscriptionComponents.PreviewAllocationsError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/allocations/preview.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `AllocationPreviewResponse`
-- **Error**: `SubscriptionComponents.PreviewAllocationsError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.PreviewAllocationsError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"componentAllocationError1"` [422] `ComponentAllocationError1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.PreviewAllocationsRequestParams` (2):
@@ -356,10 +366,10 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `readSubscriptionComponent(request: SubscriptionComponents.ReadSubscriptionComponentRequest, options?: RequestOptions): ApiPromise<SubscriptionComponentResponse, SubscriptionComponents.ReadSubscriptionComponentError>`
 - **Wire**: `GET /subscriptions/{subscription_id}/components/{component_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SubscriptionComponentResponse`
-- **Error**: `SubscriptionComponents.ReadSubscriptionComponentError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.ReadSubscriptionComponentError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.ReadSubscriptionComponentRequest` (2):
@@ -376,12 +386,13 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 ### recordEvent
 
 - **Server**: `ebb` — not the `production` group; see Servers & auth in sdk-map.md
-- **Signature**: `recordEvent(request: SubscriptionComponents.RecordEventRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `recordEvent(request: SubscriptionComponents.RecordEventRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `POST /events/{api_handle}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `SubscriptionComponents.RecordEventRequest` (3):
 
@@ -399,10 +410,11 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 - **Signature**: `updatePrepaidUsageAllocationExpirationDate(request: SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateRequest, options?: RequestOptions): ApiPromise<undefined, SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}/components/{component_id}/allocations/{allocation_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"subscriptionComponentAllocationError1"` [422] `SubscriptionComponentAllocationError1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDateRequest` (4):

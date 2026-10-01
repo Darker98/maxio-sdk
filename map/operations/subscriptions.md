@@ -4,16 +4,17 @@
 
 Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 12 operations · Request and error types: namespace `Subscriptions`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### activateSubscription
 
 - **Signature**: `activateSubscription(request: Subscriptions.ActivateSubscriptionRequestParams, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.ActivateSubscriptionError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}/activate.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `Subscriptions.ActivateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.ActivateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [400] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.ActivateSubscriptionRequestParams` (2):
@@ -33,10 +34,11 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `applyCouponsToSubscription(request: Subscriptions.ApplyCouponsToSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.ApplyCouponsToSubscriptionError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/add_coupon.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `Subscriptions.ApplyCouponsToSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.ApplyCouponsToSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"subscriptionAddCouponError1"` [422] `SubscriptionAddCouponError1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.ApplyCouponsToSubscriptionRequest` (3):
@@ -57,10 +59,11 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `createSubscription(request: Subscriptions.CreateSubscriptionRequestParams, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.CreateSubscriptionError>`
 - **Wire**: `POST /subscriptions.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `Subscriptions.CreateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.CreateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.CreateSubscriptionRequestParams` (1):
@@ -79,10 +82,10 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `findSubscription(request: Subscriptions.FindSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.FindSubscriptionError>`
 - **Wire**: `GET /subscriptions/lookup.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SubscriptionResponse`
-- **Error**: `Subscriptions.FindSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.FindSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.FindSubscriptionRequest` (1):
@@ -97,24 +100,30 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 ### listSubscriptions
 
-- **Signature**: `listSubscriptions(request: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse[], ResponseError>`
+- **Signature**: `listSubscriptions(request: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse[], ApiError>`
 - **Wire**: `GET /subscriptions.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SubscriptionResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
-**Fields** — `Subscriptions.ListSubscriptionsRequest` (17):
+**Fields** — `Subscriptions.ListSubscriptionsRequest` (25):
 
 | Field | Channel | Wire | Type | Req | Default |
 | --- | --- | --- | --- | --- | --- |
 | `page` | `query` | — | `number` | no | `1` |
 | `perPage` | `query` | `per_page` | `number` | no | `20` |
+| `sort` | `query` | — | `SubscriptionSort` | no | `SubscriptionSort.SignupDate` |
+| `direction` | `query` | — | `SortingDirection` | no | — |
 | `state` | `query` | — | `SubscriptionStateFilter` | no | — |
-| `product` | `query` | — | `number` | no | — |
+| `product` | `query` | — | `Product1` | no | — |
+| `q` | `query` | — | `string` | no | — |
+| `qScope` | `query` | `q_scope` | `QScope` | no | — |
+| `customerId` | `query` | `customer_id` | `number` | no | — |
 | `productPricePointId` | `query` | `product_price_point_id` | `number` | no | — |
 | `coupon` | `query` | — | `number` | no | — |
 | `couponCode` | `query` | `coupon_code` | `string` | no | — |
+| `collectionMethod` | `query` | `collection_method` | `CollectionMethod1` | no | — |
 | `brandingThemeId` | `query` | `branding_theme_id` | `number` | no | — |
 | `dateField` | `query` | `date_field` | `SubscriptionDateField` | no | — |
 | `startDate` | `query` | `start_date` | `string` (date) | no | — |
@@ -122,16 +131,22 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 | `startDatetime` | `query` | `start_datetime` | `Date` (date-time) | no | — |
 | `endDatetime` | `query` | `end_datetime` | `Date` (date-time) | no | — |
 | `metadata` | `query` | — | `Record<string, string>` | no | — |
-| `direction` | `query` | — | `SortingDirection` | no | — |
-| `sort` | `query` | — | `SubscriptionSort` | no | `SubscriptionSort.SignupDate` |
+| `groupStatus` | `query` | `group_status` | `GroupStatus` | no | — |
+| `dunningExemption` | `query` | `dunning_exemption` | `boolean` | no | — |
+| `paymentGateways` | `query` | `payment_gateways` | `string` | no | — |
+| `currencies` | `query` | — | `string` | no | — |
 | `include` | `query` | — | `SubscriptionListInclude[]` | no | — |
 
 | Type | Schema value | Source |
 | --- | --- | --- |
-| `SubscriptionStateFilter` | `subscriptionStateFilterSchema` | `src/models/subscription-state-filter.ts` |
-| `SubscriptionDateField` | `subscriptionDateFieldSchema` | `src/models/subscription-date-field.ts` |
-| `SortingDirection` | `sortingDirectionSchema` | `src/models/sorting-direction.ts` |
 | `SubscriptionSort` | `subscriptionSortSchema` | `src/models/subscription-sort.ts` |
+| `SortingDirection` | `sortingDirectionSchema` | `src/models/sorting-direction.ts` |
+| `SubscriptionStateFilter` | `subscriptionStateFilterSchema` | `src/models/subscription-state-filter.ts` |
+| `Product1` | `product1Schema` | `src/models/unions/product1.ts` |
+| `QScope` | `qScopeSchema` | `src/models/qscope.ts` |
+| `CollectionMethod1` | `collectionMethod1Schema` | `src/models/collection-method1.ts` |
+| `SubscriptionDateField` | `subscriptionDateFieldSchema` | `src/models/subscription-date-field.ts` |
+| `GroupStatus` | `groupStatusSchema` | `src/models/group-status.ts` |
 | `SubscriptionListInclude` | `subscriptionListIncludeSchema` | `src/models/subscription-list-include.ts` |
 | `SubscriptionResponse` | `subscriptionResponseSchema` | `src/models/subscription-response.ts` |
 
@@ -139,10 +154,11 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `overrideSubscription(request: Subscriptions.OverrideSubscriptionRequestParams, options?: RequestOptions): ApiPromise<undefined, Subscriptions.OverrideSubscriptionError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}/override.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `Subscriptions.OverrideSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.OverrideSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"singleErrorResponse1"` [422] `SingleErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.OverrideSubscriptionRequestParams` (2):
@@ -159,12 +175,13 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 ### previewSubscription
 
-- **Signature**: `previewSubscription(request: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionPreviewResponse, ResponseError>`
+- **Signature**: `previewSubscription(request: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionPreviewResponse, ApiError>`
 - **Wire**: `POST /subscriptions/preview.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionPreviewResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Subscriptions.PreviewSubscriptionRequest` (1):
 
@@ -181,10 +198,11 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `purgeSubscription(request: Subscriptions.PurgeSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.PurgeSubscriptionError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/purge.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `Subscriptions.PurgeSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.PurgeSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"subscriptionResponse"` [400] `SubscriptionResponse` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.PurgeSubscriptionRequest` (3):
@@ -202,12 +220,12 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 ### readSubscription
 
-- **Signature**: `readSubscription(request: Subscriptions.ReadSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, ResponseError>`
+- **Signature**: `readSubscription(request: Subscriptions.ReadSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, ApiError>`
 - **Wire**: `GET /subscriptions/{subscription_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `SubscriptionResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Subscriptions.ReadSubscriptionRequest` (2):
 
@@ -225,10 +243,11 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `removeCouponFromSubscription(request: Subscriptions.RemoveCouponFromSubscriptionRequest, options?: RequestOptions): ApiPromise<string, Subscriptions.RemoveCouponFromSubscriptionError>`
 - **Wire**: `DELETE /subscriptions/{subscription_id}/remove_coupon.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `string` — a bare `application/json` string; the success type *is* the string
-- **Error**: `Subscriptions.RemoveCouponFromSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.RemoveCouponFromSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"subscriptionRemoveCouponErrors1"` [422] `SubscriptionRemoveCouponErrors1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.RemoveCouponFromSubscriptionRequest` (2):
@@ -246,10 +265,11 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `updatePrepaidSubscriptionConfiguration(request: Subscriptions.UpdatePrepaidSubscriptionConfigurationRequest, options?: RequestOptions): ApiPromise<PrepaidConfigurationResponse, Subscriptions.UpdatePrepaidSubscriptionConfigurationError>`
 - **Wire**: `POST /subscriptions/{subscription_id}/prepaid_configurations.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `PrepaidConfigurationResponse`
-- **Error**: `Subscriptions.UpdatePrepaidSubscriptionConfigurationError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.UpdatePrepaidSubscriptionConfigurationError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"prepaidConfigurationErrorResponse"` [422] `PrepaidConfigurationErrorResponse` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.UpdatePrepaidSubscriptionConfigurationRequest` (2):
@@ -269,10 +289,11 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 
 - **Signature**: `updateSubscription(request: Subscriptions.UpdateSubscriptionRequestParams, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.UpdateSubscriptionError>`
 - **Wire**: `PUT /subscriptions/{subscription_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `SubscriptionResponse`
-- **Error**: `Subscriptions.UpdateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Subscriptions.UpdateSubscriptionError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Subscriptions.UpdateSubscriptionRequestParams` (2):

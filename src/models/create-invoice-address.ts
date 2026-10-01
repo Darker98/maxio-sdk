@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
+/** Overrides the default address. */
 export type CreateInvoiceAddress = {
   firstName?: string;
   lastName?: string;

@@ -4,14 +4,16 @@ import {
   changeInvoiceStatusEventDataSchema,
   type ChangeInvoiceStatusEventData,
 } from "./change-invoice-status-event-data.js";
-import { invoiceEventTypeSchema, type InvoiceEventType } from "./invoice-event-type.js";
+import { InvoiceEventType, invoiceEventTypeSchema } from "./invoice-event-type.js";
 import { invoiceSchema, type Invoice } from "./invoice.js";
 
 export type ChangeInvoiceStatusEvent = {
   id: number;
   timestamp: Date;
   invoice: Invoice;
-  eventType: InvoiceEventType;
+  /** @default InvoiceEventType.ChangeInvoiceStatus */
+  eventType?: InvoiceEventType;
+  /** Example schema for an `change_invoice_status` event */
   eventData: ChangeInvoiceStatusEventData;
 };
 
@@ -20,7 +22,7 @@ export const changeInvoiceStatusEventSchema: Schema<ChangeInvoiceStatusEvent> =
     id: s.number(),
     timestamp: s.dateTime(),
     invoice: invoiceSchema,
-    eventType: invoiceEventTypeSchema,
+    eventType: s.defaulted(invoiceEventTypeSchema, InvoiceEventType.ChangeInvoiceStatus),
     eventData: changeInvoiceStatusEventDataSchema,
     _keysMap: {
       eventType: "event_type",

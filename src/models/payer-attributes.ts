@@ -19,6 +19,10 @@ export type PayerAttributes = {
   vatNumber?: string;
   taxExempt?: boolean;
   taxExemptReason?: string;
+  /**
+   * (Optional) A set of key/value pairs representing custom fields and their values. Metafields
+   * will be created “on-the-fly” in your site for a given key, if they have not been created yet.
+   */
   metafields?: Record<string, string>;
 };
 

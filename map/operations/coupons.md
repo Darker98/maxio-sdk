@@ -4,16 +4,17 @@
 
 Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operations · Request and error types: namespace `Coupons`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### archiveCoupon
 
-- **Signature**: `archiveCoupon(request: Coupons.ArchiveCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ResponseError>`
+- **Signature**: `archiveCoupon(request: Coupons.ArchiveCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ApiError>`
 - **Wire**: `DELETE /product_families/{product_family_id}/coupons/{coupon_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CouponResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.ArchiveCouponRequest` (2):
 
@@ -30,10 +31,11 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 - **Signature**: `createCoupon(request: Coupons.CreateCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, Coupons.CreateCouponError>`
 - **Wire**: `POST /product_families/{product_family_id}/coupons.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CouponResponse`
-- **Error**: `Coupons.CreateCouponError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Coupons.CreateCouponError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Coupons.CreateCouponRequest` (2):
@@ -51,12 +53,13 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### createCouponSubcodes
 
-- **Signature**: `createCouponSubcodes(request: Coupons.CreateCouponSubcodesRequest, options?: RequestOptions): ApiPromise<CouponSubcodesResponse, ResponseError>`
+- **Signature**: `createCouponSubcodes(request: Coupons.CreateCouponSubcodesRequest, options?: RequestOptions): ApiPromise<CouponSubcodesResponse, ApiError>`
 - **Wire**: `POST /coupons/{coupon_id}/codes.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CouponSubcodesResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.CreateCouponSubcodesRequest` (2):
 
@@ -74,10 +77,11 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 - **Signature**: `createOrUpdateCouponCurrencyPrices(request: Coupons.CreateOrUpdateCouponCurrencyPricesRequest, options?: RequestOptions): ApiPromise<CouponCurrencyResponse, Coupons.CreateOrUpdateCouponCurrencyPricesError>`
 - **Wire**: `PUT /coupons/{coupon_id}/currency_prices.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CouponCurrencyResponse`
-- **Error**: `Coupons.CreateOrUpdateCouponCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Coupons.CreateOrUpdateCouponCurrencyPricesError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorStringMapResponse1"` [422] `ErrorStringMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Coupons.CreateOrUpdateCouponCurrencyPricesRequest` (2):
@@ -97,10 +101,11 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 - **Signature**: `deleteCouponSubcode(request: Coupons.DeleteCouponSubcodeRequest, options?: RequestOptions): ApiPromise<undefined, Coupons.DeleteCouponSubcodeError>`
 - **Wire**: `DELETE /coupons/{coupon_id}/codes/{subcode}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `Coupons.DeleteCouponSubcodeError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Coupons.DeleteCouponSubcodeError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"error404"` [404] no body · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Coupons.DeleteCouponSubcodeRequest` (2):
@@ -112,12 +117,12 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### findCoupon
 
-- **Signature**: `findCoupon(request: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ResponseError>`
+- **Signature**: `findCoupon(request: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ApiError>`
 - **Wire**: `GET /coupons/find.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CouponResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.FindCouponRequest` (3):
 
@@ -133,12 +138,12 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### listCouponSubcodes
 
-- **Signature**: `listCouponSubcodes(request: Coupons.ListCouponSubcodesRequest, options?: RequestOptions): ApiPromise<CouponSubcodes, ResponseError>`
+- **Signature**: `listCouponSubcodes(request: Coupons.ListCouponSubcodesRequest, options?: RequestOptions): ApiPromise<CouponSubcodes, ApiError>`
 - **Wire**: `GET /coupons/{coupon_id}/codes.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CouponSubcodes`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.ListCouponSubcodesRequest` (3):
 
@@ -154,12 +159,12 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### listCoupons
 
-- **Signature**: `listCoupons(request: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise<CouponResponse[], ResponseError>`
+- **Signature**: `listCoupons(request: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise<CouponResponse[], ApiError>`
 - **Wire**: `GET /coupons.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CouponResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.ListCouponsRequest` (4):
 
@@ -177,12 +182,12 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### listCouponsForProductFamily
 
-- **Signature**: `listCouponsForProductFamily(request: Coupons.ListCouponsForProductFamilyRequest, options?: RequestOptions): ApiPromise<CouponResponse[], ResponseError>`
+- **Signature**: `listCouponsForProductFamily(request: Coupons.ListCouponsForProductFamilyRequest, options?: RequestOptions): ApiPromise<CouponResponse[], ApiError>`
 - **Wire**: `GET /product_families/{product_family_id}/coupons.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CouponResponse[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.ListCouponsForProductFamilyRequest` (5):
 
@@ -201,12 +206,12 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### readCoupon
 
-- **Signature**: `readCoupon(request: Coupons.ReadCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ResponseError>`
+- **Signature**: `readCoupon(request: Coupons.ReadCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ApiError>`
 - **Wire**: `GET /product_families/{product_family_id}/coupons/{coupon_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CouponResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.ReadCouponRequest` (3):
 
@@ -222,12 +227,12 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### readCouponUsage
 
-- **Signature**: `readCouponUsage(request: Coupons.ReadCouponUsageRequest, options?: RequestOptions): ApiPromise<CouponUsage[], ResponseError>`
+- **Signature**: `readCouponUsage(request: Coupons.ReadCouponUsageRequest, options?: RequestOptions): ApiPromise<CouponUsage[], ApiError>`
 - **Wire**: `GET /product_families/{product_family_id}/coupons/{coupon_id}/usage.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CouponUsage[]` — a bare `application/json` array; the success type *is* the array, not a wrapper model
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.ReadCouponUsageRequest` (2):
 
@@ -244,10 +249,11 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 - **Signature**: `updateCoupon(request: Coupons.UpdateCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, Coupons.UpdateCouponError>`
 - **Wire**: `PUT /product_families/{product_family_id}/coupons/{coupon_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CouponResponse`
-- **Error**: `Coupons.UpdateCouponError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Coupons.UpdateCouponError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Coupons.UpdateCouponRequest` (3):
@@ -266,12 +272,13 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### updateCouponSubcodes
 
-- **Signature**: `updateCouponSubcodes(request: Coupons.UpdateCouponSubcodesRequest, options?: RequestOptions): ApiPromise<CouponSubcodesResponse, ResponseError>`
+- **Signature**: `updateCouponSubcodes(request: Coupons.UpdateCouponSubcodesRequest, options?: RequestOptions): ApiPromise<CouponSubcodesResponse, ApiError>`
 - **Wire**: `PUT /coupons/{coupon_id}/codes.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `CouponSubcodesResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Coupons.UpdateCouponSubcodesRequest` (2):
 
@@ -289,10 +296,10 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 - **Signature**: `validateCoupon(request: Coupons.ValidateCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, Coupons.ValidateCouponError>`
 - **Wire**: `GET /coupons/validate.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `CouponResponse`
-- **Error**: `Coupons.ValidateCouponError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Coupons.ValidateCouponError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"singleStringErrorResponse1"` [404] `SingleStringErrorResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Coupons.ValidateCouponRequest` (2):

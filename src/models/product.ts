@@ -1,48 +1,123 @@
 import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 import { expirationIntervalUnitSchema, type ExpirationIntervalUnit } from "./expiration-interval-unit.js";
+import { featureCatalogItemSchema, type FeatureCatalogItem } from "./feature-catalog-item.js";
 import { intervalUnitSchema, type IntervalUnit } from "./interval-unit.js";
 import { productFamilySchema, type ProductFamily } from "./product-family.js";
 import { publicSignupPageSchema, type PublicSignupPage } from "./public-signup-page.js";
 
 export type Product = {
   id?: number;
+  /** The product name */
   name?: string;
+  /** The product API handle */
   handle?: string | null;
+  /** The product description */
   description?: string | null;
+  /** E.g., Internal ID or SKU Number */
   accountingCode?: string | null;
+  /**
+   * Deprecated value that can be ignored unless you have legacy hosted pages. For Public Signup
+   * Page users, read this attribute from under the signup page.
+   */
   requestCreditCard?: boolean;
+  /**
+   * A numerical interval for the length a subscription to this product will run before it expires.
+   * See the description of interval for a description of how this value is coupled with an interval
+   * unit to calculate the full interval.
+   */
   expirationInterval?: number | null;
+  /**
+   * A string representing the expiration interval unit for this product, either month, day or never
+   */
   expirationIntervalUnit?: ExpirationIntervalUnit | null;
+  /** Timestamp indicating when this product was created */
   createdAt?: Date;
+  /** Timestamp indicating when this product was last updated */
   updatedAt?: Date;
+  /** The product price, in integer cents */
   priceInCents?: number;
+  /**
+   * The numerical interval. e.g., an interval of ‘30’ coupled with an interval_unit of day would
+   * mean this product would renew every 30 days.
+   */
   interval?: number;
+  /** A string representing the interval unit for this product, either month or day */
   intervalUnit?: IntervalUnit;
+  /** The up front charge you have specified. */
   initialChargeInCents?: number | null;
+  /** The price of the trial period for a subscription to this product, in integer cents. */
   trialPriceInCents?: number | null;
+  /**
+   * A numerical interval for the length of the trial period of a subscription to this product. See
+   * the description of interval for a description of how this value is coupled with an interval
+   * unit to calculate the full interval.
+   */
   trialInterval?: number | null;
+  /** A string representing the trial interval unit for this product, either month or day */
   trialIntervalUnit?: IntervalUnit | null;
+  /** Timestamp indicating when this product was archived */
   archivedAt?: Date | null;
+  /**
+   * Boolean that controls whether a payment profile is required to be entered for customers wishing
+   * to sign up on this product.
+   */
   requireCreditCard?: boolean;
   returnParams?: string | null;
   taxable?: boolean;
+  /** The url to which a customer will be returned after a successful account update */
   updateReturnUrl?: string | null;
   initialChargeAfterTrial?: boolean | null;
+  /** The version of the product */
   versionNumber?: number;
+  /**
+   * The parameters will append to the url after a successful account update. See [help
+   * documentation](https://help.chargify.com/products/product-editing.html#return-parameters-after-account-update).
+   */
   updateReturnParams?: string | null;
   productFamily?: ProductFamily;
   publicSignupPages?: PublicSignupPage[];
   productPricePointName?: string;
+  /**
+   * A boolean indicating whether to request a billing address on any Self-Service Pages that are
+   * used by subscribers of this product.
+   */
   requestBillingAddress?: boolean;
+  /**
+   * A boolean indicating whether a billing address is required to add a payment profile, especially
+   * at signup.
+   */
   requireBillingAddress?: boolean;
+  /**
+   * A boolean indicating whether a shipping address is required for the customer, especially at
+   * signup.
+   */
   requireShippingAddress?: boolean;
+  /**
+   * A string representing the tax code related to the product type. This is especially important
+   * when using AvaTax to tax based on locale. This attribute has a max length of 25 characters.
+   */
   taxCode?: string | null;
   defaultProductPricePointId?: number;
   useSiteExchangeRate?: boolean | null;
+  /**
+   * One of the following: Business Software, Consumer Software, Digital Services, Physical Goods,
+   * Other
+   */
   itemCategory?: string | null;
   productPricePointId?: number;
   productPricePointHandle?: string | null;
+  /**
+   * (Optional) Custom UNSPSC commodity code for Level 3/CEDP payment data. When set, this value is
+   * sent as the commodity code on invoice line items for this product instead of the default
+   * derived from item_category.
+   */
+  unspscCode?: string | null;
+  /**
+   * The active feature catalog items attached to this product. Present only when the request
+   * includes `include_features=true`.
+   */
+  features?: FeatureCatalogItem[] | null;
 };
 
 export const productSchema: Schema<Product> = s.object<Product>({
@@ -83,6 +158,8 @@ export const productSchema: Schema<Product> = s.object<Product>({
   itemCategory: s.optionalNullable(s.string()),
   productPricePointId: s.optional(s.number()),
   productPricePointHandle: s.optionalNullable(s.string()),
+  unspscCode: s.optionalNullable(s.string()),
+  features: s.optionalNullable(s.array(s.lazy(() => featureCatalogItemSchema))),
   _keysMap: {
     accountingCode: "accounting_code",
     requestCreditCard: "request_credit_card",
@@ -115,5 +192,6 @@ export const productSchema: Schema<Product> = s.object<Product>({
     itemCategory: "item_category",
     productPricePointId: "product_price_point_id",
     productPricePointHandle: "product_price_point_handle",
+    unspscCode: "unspsc_code",
   },
 });

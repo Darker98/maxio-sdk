@@ -24,6 +24,11 @@ export type Segment = {
   componentId?: number;
   pricePointId?: number;
   eventBasedBillingMetricId?: number;
+  /**
+   * The identifier for the pricing scheme. See [Product
+   * Components](https://help.chargify.com/products/product-components.html) for an overview of
+   * pricing schemes.
+   */
   pricingScheme?: PricingScheme;
   segmentProperty1Value?: SegmentProperty1Value1;
   segmentProperty2Value?: SegmentProperty2Value1;

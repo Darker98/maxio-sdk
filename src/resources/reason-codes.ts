@@ -1,9 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
+import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
   createReasonCodeRequestSchema,
@@ -29,6 +29,30 @@ export class ReasonCodes {
     this.#auth = auth;
   }
 
+  /**
+   * Create Reason Code
+   *
+   * @remarks
+   * Creates a reason code for a given site.
+   *
+   * Reason Codes are a way to gain a high-level view of why your customers are cancelling the
+   * subscription to your product or service.
+   *
+   * Add a set of churn reason codes to be displayed in-app and/or the Maxio Billing Portal. As your
+   * subscribers decide to cancel their subscription, learn why they decided to cancel.
+   *
+   * For more information, see [Churn Reason
+   * Codes](https://maxio.zendesk.com/hc/en-us/articles/24286647554701-Churn-Reason-Codes).
+   *
+   * @returns OK
+   *
+   * @throws {@link ReasonCodes.CreateReasonCodeError} when the API answers with an error status —
+   * narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   createReasonCode(
     request: ReasonCodes.CreateReasonCodeRequestParams,
     options?: RequestOptions,
@@ -37,7 +61,8 @@ export class ReasonCodes {
       {
         method: "POST",
         url: this.#servers.production("/reason_codes.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -52,6 +77,22 @@ export class ReasonCodes {
     );
   }
 
+  /**
+   * Delete Reason Code
+   *
+   * @remarks
+   * Deletes a reason code from the Churn Reason Codes. This code will be immediately removed. This
+   * action is not reversible.
+   *
+   * @returns OK
+   *
+   * @throws {@link ReasonCodes.DeleteReasonCodeError} when the API answers with an error status —
+   * narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   deleteReasonCode(
     request: ReasonCodes.DeleteReasonCodeRequest,
     options?: RequestOptions,
@@ -60,8 +101,9 @@ export class ReasonCodes {
       {
         method: "DELETE",
         url: this.#servers.production("/reason_codes/{reason_code_id}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "reason_code_id", value: request.reasonCodeId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: { kind: "empty" },
       },
       {
@@ -72,6 +114,21 @@ export class ReasonCodes {
     );
   }
 
+  /**
+   * List Reason Codes
+   *
+   * @remarks
+   * Lists all current churn codes for a given site.
+   *
+   * @returns OK
+   *
+   * @throws {@link ReasonCodes.ListReasonCodesError} when the API answers with an error status —
+   * narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listReasonCodes(
     request: ReasonCodes.ListReasonCodesRequest,
     options?: RequestOptions,
@@ -80,7 +137,7 @@ export class ReasonCodes {
       {
         method: "GET",
         url: this.#servers.production("/reason_codes.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [
           { name: "page", value: request.page, schema: s.defaulted(s.number(), 1) },
           { name: "per_page", value: request.perPage, schema: s.defaulted(s.number(), 20) },
@@ -95,6 +152,21 @@ export class ReasonCodes {
     );
   }
 
+  /**
+   * Read Reason Code
+   *
+   * @remarks
+   * Returns a particular churn reason code for a given site by its unique ID.
+   *
+   * @returns OK
+   *
+   * @throws {@link ReasonCodes.ReadReasonCodeError} when the API answers with an error status —
+   * narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   readReasonCode(
     request: ReasonCodes.ReadReasonCodeRequest,
     options?: RequestOptions,
@@ -103,7 +175,7 @@ export class ReasonCodes {
       {
         method: "GET",
         url: this.#servers.production("/reason_codes/{reason_code_id}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "reason_code_id", value: request.reasonCodeId, schema: s.number() }],
         body: { kind: "empty" },
       },
@@ -115,6 +187,21 @@ export class ReasonCodes {
     );
   }
 
+  /**
+   * Update Reason Code
+   *
+   * @remarks
+   * Updates an existing reason code for a given site.
+   *
+   * @returns OK
+   *
+   * @throws {@link ReasonCodes.UpdateReasonCodeError} when the API answers with an error status —
+   * narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   updateReasonCode(
     request: ReasonCodes.UpdateReasonCodeRequestParams,
     options?: RequestOptions,
@@ -123,8 +210,9 @@ export class ReasonCodes {
       {
         method: "PUT",
         url: this.#servers.production("/reason_codes/{reason_code_id}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "reason_code_id", value: request.reasonCodeId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -145,55 +233,80 @@ export namespace ReasonCodes {
     body?: CreateReasonCodeRequest;
   };
 
-  export class CreateReasonCodeError extends ResponseError<
-    Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class CreateReasonCodeError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<CreateReasonCodeError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];
   }
 
   export type DeleteReasonCodeRequest = {
+    /** The Advanced Billing id of the reason code */
     reasonCodeId: number;
   };
 
-  export class DeleteReasonCodeError extends ResponseError<Declared<"error404", undefined>> {
+  export class DeleteReasonCodeError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+
     static readonly errors: ErrorDecoders<DeleteReasonCodeError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
     ];
   }
 
   export type ListReasonCodesRequest = {
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 20. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 20
+     */
     perPage?: number;
   };
 
-  export class ListReasonCodesError extends ResponseError<
-    Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class ListReasonCodesError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<ListReasonCodesError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];
   }
 
   export type ReadReasonCodeRequest = {
+    /** The Advanced Billing id of the reason code */
     reasonCodeId: number;
   };
 
-  export class ReadReasonCodeError extends ResponseError<Declared<"error404", undefined>> {
+  export class ReadReasonCodeError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+
     static readonly errors: ErrorDecoders<ReadReasonCodeError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
     ];
   }
 
   export type UpdateReasonCodeRequestParams = {
+    /** The Advanced Billing id of the reason code */
     reasonCodeId: number;
     body?: UpdateReasonCodeRequest;
   };
 
-  export class UpdateReasonCodeError extends ResponseError<
-    Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class UpdateReasonCodeError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<UpdateReasonCodeError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

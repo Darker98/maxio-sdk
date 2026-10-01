@@ -1,9 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
+import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
   addSubscriptionToAGroupSchema,
@@ -75,16 +75,58 @@ export class SubscriptionGroups {
     this.#auth = auth;
   }
 
+  /**
+   * Add Subscription to Group
+   *
+   * @remarks
+   * Adds an existing subscription to a subscription group. For sites making use of the
+   * [Relationship
+   * Billing](https://maxio.zendesk.com/hc/en-us/articles/24252287829645-Advanced-Billing-Invoices-Overview)
+   * and [Customer
+   * Hierarchy](https://maxio.zendesk.com/hc/en-us/articles/24252185211533-Customer-Hierarchies-WhoPays#customer-hierarchies)
+   * features, it is possible to add existing subscriptions to subscription groups.
+   *
+   * Passing `group` parameters with a `target` containing a `type` and optional `id` is all that's
+   * needed. When the `target` parameter specifies a `"customer"` or `"subscription"` that is
+   * already part of a hierarchy, the subscription will become a member of the customer's
+   * subscription group. If the target customer or subscription is not part of a subscription group,
+   * a new group will be created and the subscription will become part of the group with the
+   * specified target customer set as the responsible payer for the group's subscriptions.
+   *
+   * **Note:** In order to add an existing subscription to a subscription group, it must belong to
+   * either the same customer record as the target, or be within the same customer hierarchy.
+   *
+   * Rather than specifying a customer, the `target` parameter could instead simply have a value of
+   * * `"self"` which indicates the subscription will be paid for not by some other customer, but by
+   *   the subscribing customer,
+   * * `"parent"` which indicates the subscription will be paid for by the subscribing customer's
+   *   parent within a customer hierarchy, or
+   * * `"eldest"` which indicates the subscription will be paid for by the root-level customer in
+   *   the subscribing customer's hierarchy.
+   *
+   * To create a new subscription into a subscription group, reference the following: [Create
+   * Subscription in a Subscription
+   * Group](https://developers.chargify.com/docs/api-docs/d571659cf0f24-create-subscription#subscription-in-a-subscription-group)
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   addSubscriptionToGroup(
     request: SubscriptionGroups.AddSubscriptionToGroupRequest,
     options?: RequestOptions,
-  ): ApiPromise<SubscriptionGroupResponse, ResponseError> {
-    return this.#rawClient.execute<SubscriptionGroupResponse, ResponseError>(
+  ): ApiPromise<SubscriptionGroupResponse, ApiError> {
+    return this.#rawClient.execute<SubscriptionGroupResponse, ApiError>(
       {
         method: "POST",
         url: this.#servers.production("/subscriptions/{subscription_id}/group.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -93,12 +135,27 @@ export class SubscriptionGroups {
       },
       {
         success: { kind: "json", schema: subscriptionGroupResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Create Subscription Group
+   *
+   * @remarks
+   * Creates a subscription group with given members.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionGroups.CreateSubscriptionGroupError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   createSubscriptionGroup(
     request: SubscriptionGroups.CreateSubscriptionGroupRequestParams,
     options?: RequestOptions,
@@ -107,7 +164,8 @@ export class SubscriptionGroups {
       {
         method: "POST",
         url: this.#servers.production("/subscription_groups.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -122,6 +180,21 @@ export class SubscriptionGroups {
     );
   }
 
+  /**
+   * Delete Subscription Group
+   *
+   * @remarks
+   * Deletes a subscription group. Only groups without members can be deleted.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionGroups.DeleteSubscriptionGroupError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   deleteSubscriptionGroup(
     request: SubscriptionGroups.DeleteSubscriptionGroupRequest,
     options?: RequestOptions,
@@ -130,8 +203,9 @@ export class SubscriptionGroups {
       {
         method: "DELETE",
         url: this.#servers.production("/subscription_groups/{uid}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "uid", value: request.uid, schema: s.string() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: { kind: "empty" },
       },
       {
@@ -142,6 +216,23 @@ export class SubscriptionGroups {
     );
   }
 
+  /**
+   * Find Subscription Group
+   *
+   * @remarks
+   * Finds the subscription group associated with a subscription.
+   *
+   * If the subscription is not in a group, this endpoint returns an error.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionGroups.FindSubscriptionGroupError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   findSubscriptionGroup(
     request: SubscriptionGroups.FindSubscriptionGroupRequest,
     options?: RequestOptions,
@@ -150,7 +241,7 @@ export class SubscriptionGroups {
       {
         method: "GET",
         url: this.#servers.production("/subscription_groups/lookup.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [{ name: "subscription_id", value: request.subscriptionId, schema: s.string() }],
         body: { kind: "empty" },
       },
@@ -162,15 +253,36 @@ export class SubscriptionGroups {
     );
   }
 
+  /**
+   * List Subscription Groups
+   *
+   * @remarks
+   * Lists subscription groups for the site. The response is paginated and will return a `meta` key
+   * with pagination information.
+   *
+   * #### Account Balance Information
+   *
+   * Account balance information for the subscription groups is not returned by default. If this
+   * information is desired, the `include[]=account_balances` parameter must be provided with the
+   * request.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listSubscriptionGroups(
     request: SubscriptionGroups.ListSubscriptionGroupsRequest,
     options?: RequestOptions,
-  ): ApiPromise<ListSubscriptionGroupsResponse, ResponseError> {
-    return this.#rawClient.execute<ListSubscriptionGroupsResponse, ResponseError>(
+  ): ApiPromise<ListSubscriptionGroupsResponse, ApiError> {
+    return this.#rawClient.execute<ListSubscriptionGroupsResponse, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/subscription_groups.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         query: [
           { name: "page", value: request.page, schema: s.defaulted(s.number(), 1) },
           { name: "per_page", value: request.perPage, schema: s.defaulted(s.number(), 20) },
@@ -184,21 +296,41 @@ export class SubscriptionGroups {
       },
       {
         success: { kind: "json", schema: listSubscriptionGroupsResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Read Subscription Group
+   *
+   * @remarks
+   * Returns subscription group details.
+   *
+   * #### Current Billing Amount in Cents
+   *
+   * Current billing amount for the subscription group is not returned by default. If this
+   * information is desired, the `include[]=current_billing_amount_in_cents` parameter must be
+   * provided with the request.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   readSubscriptionGroup(
     request: SubscriptionGroups.ReadSubscriptionGroupRequest,
     options?: RequestOptions,
-  ): ApiPromise<FullSubscriptionGroupResponse, ResponseError> {
-    return this.#rawClient.execute<FullSubscriptionGroupResponse, ResponseError>(
+  ): ApiPromise<FullSubscriptionGroupResponse, ApiError> {
+    return this.#rawClient.execute<FullSubscriptionGroupResponse, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/subscription_groups/{uid}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "uid", value: request.uid, schema: s.string() }],
         query: [
           {
@@ -211,12 +343,32 @@ export class SubscriptionGroups {
       },
       {
         success: { kind: "json", schema: fullSubscriptionGroupResponseSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Remove Subscription from Group
+   *
+   * @remarks
+   * Removes an existing subscription from a subscription group. For sites making use of the
+   * [Relationship
+   * Billing](https://maxio.zendesk.com/hc/en-us/articles/24252287829645-Advanced-Billing-Invoices-Overview)
+   * and [Customer
+   * Hierarchy](https://maxio.zendesk.com/hc/en-us/articles/24252185211533-Customer-Hierarchies-WhoPays#customer-hierarchies)
+   * features, it is possible to remove an existing subscription from a subscription group.
+   *
+   * @returns No Content
+   *
+   * @throws {@link SubscriptionGroups.RemoveSubscriptionFromGroupError} when the API answers with
+   * an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   removeSubscriptionFromGroup(
     request: SubscriptionGroups.RemoveSubscriptionFromGroupRequest,
     options?: RequestOptions,
@@ -225,8 +377,9 @@ export class SubscriptionGroups {
       {
         method: "DELETE",
         url: this.#servers.production("/subscriptions/{subscription_id}/group.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: { kind: "empty" },
       },
       {
@@ -237,6 +390,38 @@ export class SubscriptionGroups {
     );
   }
 
+  /**
+   * Subscription Group Signup
+   *
+   * @remarks
+   * Creates multiple subscriptions at once under the same customer and consolidates them into a
+   * subscription group.
+   *
+   * You must provide one and only one of the `payer_id`/`payer_reference`/`payer_attributes` for
+   * the customer attached to the group.
+   *
+   * You must provide one and only one of the
+   * `payment_profile_id`/`credit_card_attributes`/`bank_account_attributes` for the payment profile
+   * attached to the group.
+   *
+   * Only one of the `subscriptions` can have `"primary": true` attribute set.
+   *
+   * When passing a product to a subscription you can use either `product_id` or `product_handle` or
+   * `offer_id`. You can also use `custom_price` instead. The subscription request examples below
+   * will be split into two sections. The first section, "Subscription Customization", will focus on
+   * passing different information with a subscription, such as components, calendar billing, and
+   * custom fields. These examples will presume you are using a secure chargify_token generated by
+   * Maxio.js (formerly Chargify.js).
+   *
+   * @returns Created
+   *
+   * @throws {@link SubscriptionGroups.SignupWithSubscriptionGroupError} when the API answers with
+   * an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   signupWithSubscriptionGroup(
     request: SubscriptionGroups.SignupWithSubscriptionGroupRequest,
     options?: RequestOptions,
@@ -245,7 +430,8 @@ export class SubscriptionGroups {
       {
         method: "POST",
         url: this.#servers.production("/subscription_groups/signup.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -260,6 +446,24 @@ export class SubscriptionGroups {
     );
   }
 
+  /**
+   * Update Subscription Group Members
+   *
+   * @remarks
+   * Updates subscription group members. `"member_ids"` should contain an array of both subscription
+   * IDs to set as group members and subscription IDs already present in the groups. Not including
+   * them will result in removing them from the subscription group. To clean up members, just leave
+   * the array empty.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionGroups.UpdateSubscriptionGroupMembersError} when the API answers
+   * with an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   updateSubscriptionGroupMembers(
     request: SubscriptionGroups.UpdateSubscriptionGroupMembersRequest,
     options?: RequestOptions,
@@ -268,8 +472,9 @@ export class SubscriptionGroups {
       {
         method: "PUT",
         url: this.#servers.production("/subscription_groups/{uid}.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "uid", value: request.uid, schema: s.string() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -287,6 +492,7 @@ export class SubscriptionGroups {
 
 export namespace SubscriptionGroups {
   export type AddSubscriptionToGroupRequest = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
     body?: AddSubscriptionToAGroup;
   };
@@ -295,9 +501,11 @@ export namespace SubscriptionGroups {
     body?: CreateSubscriptionGroupRequest;
   };
 
-  export class CreateSubscriptionGroupError extends ResponseError<
-    Declared<"subscriptionGroupCreateErrorResponse1", SubscriptionGroupCreateErrorResponse1>
-  > {
+  export class CreateSubscriptionGroupError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"subscriptionGroupCreateErrorResponse1", SubscriptionGroupCreateErrorResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<CreateSubscriptionGroupError> = [
       {
         on: 422,
@@ -308,43 +516,80 @@ export namespace SubscriptionGroups {
   }
 
   export type DeleteSubscriptionGroupRequest = {
+    /** The uid of the subscription group */
     uid: string;
   };
 
-  export class DeleteSubscriptionGroupError extends ResponseError<Declared<"error404", undefined>> {
+  export class DeleteSubscriptionGroupError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+
     static readonly errors: ErrorDecoders<DeleteSubscriptionGroupError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
     ];
   }
 
   export type FindSubscriptionGroupRequest = {
+    /** The Advanced Billing id of the subscription associated with the subscription group */
     subscriptionId: string;
   };
 
-  export class FindSubscriptionGroupError extends ResponseError<Declared<"error404", undefined>> {
+  export class FindSubscriptionGroupError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+
     static readonly errors: ErrorDecoders<FindSubscriptionGroupError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
     ];
   }
 
   export type ListSubscriptionGroupsRequest = {
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 20. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 20
+     */
     perPage?: number;
+    /**
+     * A list of additional information to include in the response. The following values are
+     * supported:
+     *
+     * - `account_balances`: Account balance information for the subscription groups. Use in query:
+     *   `include[]=account_balances`
+     */
     include?: SubscriptionGroupsListInclude[];
   };
 
   export type ReadSubscriptionGroupRequest = {
+    /** The uid of the subscription group */
     uid: string;
+    /**
+     * Allows including additional data in the response. Use in query:
+     * `include[]=current_billing_amount_in_cents`.
+     */
     include?: SubscriptionGroupInclude[];
   };
 
   export type RemoveSubscriptionFromGroupRequest = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
   };
 
-  export class RemoveSubscriptionFromGroupError extends ResponseError<
-    Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class RemoveSubscriptionFromGroupError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<RemoveSubscriptionFromGroupError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -355,9 +600,11 @@ export namespace SubscriptionGroups {
     body?: SubscriptionGroupSignupRequest;
   };
 
-  export class SignupWithSubscriptionGroupError extends ResponseError<
-    Declared<"subscriptionGroupSignupErrorResponse1", SubscriptionGroupSignupErrorResponse1>
-  > {
+  export class SignupWithSubscriptionGroupError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"subscriptionGroupSignupErrorResponse1", SubscriptionGroupSignupErrorResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<SignupWithSubscriptionGroupError> = [
       {
         on: 422,
@@ -368,13 +615,16 @@ export namespace SubscriptionGroups {
   }
 
   export type UpdateSubscriptionGroupMembersRequest = {
+    /** The uid of the subscription group */
     uid: string;
     body?: UpdateSubscriptionGroupRequest;
   };
 
-  export class UpdateSubscriptionGroupMembersError extends ResponseError<
-    Declared<"subscriptionGroupUpdateErrorResponse1", SubscriptionGroupUpdateErrorResponse1>
-  > {
+  export class UpdateSubscriptionGroupMembersError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"subscriptionGroupUpdateErrorResponse1", SubscriptionGroupUpdateErrorResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<UpdateSubscriptionGroupMembersError> = [
       {
         on: 422,

@@ -1,9 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
+import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { errorListResponse1Schema, type ErrorListResponse1 } from "../models/error-list-response1.js";
 import {
@@ -32,6 +32,54 @@ export class SubscriptionProducts {
     this.#auth = auth;
   }
 
+  /**
+   * Migrate Subscription Product
+   *
+   * @remarks
+   * Migrates a subscription to a different product.
+   *
+   * To create a migration, you must pass the `product_id` or `product_handle` in the object when
+   * you send a POST request. You can also pass either a `product_price_point_id` or
+   * `product_price_point_handle` to choose which price point the subscription is moved to. If no
+   * price point identifier is passed, the subscription is moved to the product's default price
+   * point. The response is the updated subscription.
+   *
+   * ## Valid Subscriptions
+   *
+   * Subscriptions should be in the `active` or `trialing` state to be migrated.
+   *
+   * (For backwards compatibility reasons, it is possible to migrate a subscription that is in the
+   * `trial_ended` state via the API, however this is not recommended. Since `trial_ended` is an
+   * end-of-life state, the subscription should be canceled, the product changed, and then the
+   * subscription can be reactivated.)
+   *
+   * For more information, see [Product Changes and
+   * Migrations](https://docs.maxio.com/hc/en-us/articles/24252069837581-Product-Changes-and-Migrations).
+   *
+   * ## Failed Migrations
+   *
+   * Important note: One of the most common ways that a migration can fail is when the attempt is
+   * made to migrate a subscription to its current product.
+   *
+   * ## 3D Secure (3DS) Authentication post-authentication flow
+   *
+   * When a payment requires 3DS Authentication to adhere to Strong Customer Authentication (SCA),
+   * the request enters a post-authentication flow where a 422 Unprocessable Entity status is
+   * returned with an action_link that will direct the customer through 3DS Authentication.
+   *
+   * See the [3D Secure Post-Authentication
+   * Flow](https://docs.maxio.com/hc/en-us/articles/44277749524365-3D-Secure-Post-Authentication-Flow)
+   * article in the product documentation to learn how to manage the redirect flow.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionProducts.MigrateSubscriptionProductError} when the API answers with
+   * an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   migrateSubscriptionProduct(
     request: SubscriptionProducts.MigrateSubscriptionProductRequest,
     options?: RequestOptions,
@@ -40,8 +88,9 @@ export class SubscriptionProducts {
       {
         method: "POST",
         url: this.#servers.production("/subscriptions/{subscription_id}/migrations.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -56,6 +105,29 @@ export class SubscriptionProducts {
     );
   }
 
+  /**
+   * Preview Subscription Product Migration
+   *
+   * @remarks
+   * Previews the charges resulting from migrating a subscription to a different product.
+   *
+   * ## Previewing a future date
+   * It is also possible to preview the migration for a date in the future, as long as it's still
+   * within the subscription's current billing period, by passing a `proration_date` along with the
+   * request (e.g., `"proration_date": "2020-12-18T18:25:43.511Z"`).
+   *
+   * This will calculate the prorated adjustment, charge, payment and credit applied values assuming
+   * the migration is done at that date in the future as opposed to right now.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionProducts.PreviewSubscriptionProductMigrationError} when the API
+   * answers with an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   previewSubscriptionProductMigration(
     request: SubscriptionProducts.PreviewSubscriptionProductMigrationRequest,
     options?: RequestOptions,
@@ -67,8 +139,9 @@ export class SubscriptionProducts {
       {
         method: "POST",
         url: this.#servers.production("/subscriptions/{subscription_id}/migrations/preview.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -86,26 +159,28 @@ export class SubscriptionProducts {
 
 export namespace SubscriptionProducts {
   export type MigrateSubscriptionProductRequest = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
     body?: SubscriptionProductMigrationRequest;
   };
 
-  export class MigrateSubscriptionProductError extends ResponseError<
-    Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class MigrateSubscriptionProductError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<MigrateSubscriptionProductError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];
   }
 
   export type PreviewSubscriptionProductMigrationRequest = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
     body?: SubscriptionMigrationPreviewRequest;
   };
 
-  export class PreviewSubscriptionProductMigrationError extends ResponseError<
-    Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class PreviewSubscriptionProductMigrationError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+
     static readonly errors: ErrorDecoders<PreviewSubscriptionProductMigrationError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
     ];

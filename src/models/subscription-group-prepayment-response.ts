@@ -4,9 +4,13 @@ import { serviceCreditTypeSchema, type ServiceCreditType } from "./service-credi
 
 export type SubscriptionGroupPrepaymentResponse = {
   id?: number;
+  /** The amount in cents of the entry. */
   amountInCents?: number;
+  /** The ending balance in cents of the account. */
   endingBalanceInCents?: number;
+  /** The type of entry */
   entryType?: ServiceCreditType;
+  /** A memo attached to the entry. */
   memo?: string | null;
 };
 

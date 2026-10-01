@@ -1,6 +1,7 @@
 import * as s from "../core/validation/index.js";
 import type { EnumSchema } from "../core/validation/schema.js";
 
+/** The current chargeback status. */
 export const ChargebackStatus = {
   Open: "open",
   Lost: "lost",

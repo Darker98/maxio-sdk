@@ -1,9 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
+import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
-import { anyAuth } from "../core/auth/schemes.js";
 import type { RawClient } from "../core/raw-client.js";
-import { ResponseError, type Declared, type ErrorDecoders } from "../core/response-error.js";
+import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { accountBalancesSchema, type AccountBalances } from "../models/account-balances.js";
 import {
@@ -72,6 +72,40 @@ export class SubscriptionInvoiceAccount {
     this.#auth = auth;
   }
 
+  /**
+   * Create Prepayment
+   *
+   * @remarks
+   * Creates a prepayment for a subscription.
+   *
+   * In order to specify a prepayment made against a subscription, specify the `amount, memo,
+   * details, method`.
+   *
+   * When the `method` specified is `"credit_card_on_file"`, the prepayment amount will be collected
+   * using the default credit card payment profile and applied to the prepayment account balance.
+   * This is especially useful for manual replenishment of prepaid subscriptions.
+   *
+   * Note that passing `amount_in_cents` is now allowed.
+   *
+   * ## 3D Secure (3DS) Authentication post-authentication flow
+   *
+   * When a payment requires 3DS Authentication to adhere to Strong Customer Authentication (SCA),
+   * the request enters a post-authentication flow where a 422 Unprocessable Entity status is
+   * returned with an action_link that will direct the customer through 3DS Authentication.
+   *
+   * See the [3D Secure Post-Authentication
+   * Flow](https://docs.maxio.com/hc/en-us/articles/44277749524365-3D-Secure-Post-Authentication-Flow)
+   * article in the product documentation to learn how to manage the redirect flow.
+   *
+   * @returns Created
+   *
+   * @throws {@link SubscriptionInvoiceAccount.CreatePrepaymentError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   createPrepayment(
     request: SubscriptionInvoiceAccount.CreatePrepaymentRequestParams,
     options?: RequestOptions,
@@ -80,8 +114,9 @@ export class SubscriptionInvoiceAccount {
       {
         method: "POST",
         url: this.#servers.production("/subscriptions/{subscription_id}/prepayments.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -96,6 +131,22 @@ export class SubscriptionInvoiceAccount {
     );
   }
 
+  /**
+   * Deduct Service Credit
+   *
+   * @remarks
+   * Deducts a service credit from the subscription in the specified amount. The credit amount being
+   * deducted must be equal to or less than the current credit balance.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionInvoiceAccount.DeductServiceCreditError} when the API answers with
+   * an error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   deductServiceCredit(
     request: SubscriptionInvoiceAccount.DeductServiceCreditRequestParams,
     options?: RequestOptions,
@@ -104,8 +155,9 @@ export class SubscriptionInvoiceAccount {
       {
         method: "POST",
         url: this.#servers.production("/subscriptions/{subscription_id}/service_credit_deductions.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -120,6 +172,22 @@ export class SubscriptionInvoiceAccount {
     );
   }
 
+  /**
+   * Issue Service Credit
+   *
+   * @remarks
+   * Adds a service credit to the subscription in the specified amount. The credit is subsequently
+   * applied to the next generated invoice.
+   *
+   * @returns Created
+   *
+   * @throws {@link SubscriptionInvoiceAccount.IssueServiceCreditError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   issueServiceCredit(
     request: SubscriptionInvoiceAccount.IssueServiceCreditRequestParams,
     options?: RequestOptions,
@@ -128,8 +196,9 @@ export class SubscriptionInvoiceAccount {
       {
         method: "POST",
         url: this.#servers.production("/subscriptions/{subscription_id}/service_credits.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -144,6 +213,21 @@ export class SubscriptionInvoiceAccount {
     );
   }
 
+  /**
+   * List Prepayments
+   *
+   * @remarks
+   * Lists a subscription's prepayments.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionInvoiceAccount.ListPrepaymentsError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listPrepayments(
     request: SubscriptionInvoiceAccount.ListPrepaymentsRequest,
     options?: RequestOptions,
@@ -152,7 +236,7 @@ export class SubscriptionInvoiceAccount {
       {
         method: "GET",
         url: this.#servers.production("/subscriptions/{subscription_id}/prepayments.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
         query: [
           { name: "page", value: request.page, schema: s.defaulted(s.number(), 1) },
@@ -173,6 +257,21 @@ export class SubscriptionInvoiceAccount {
     );
   }
 
+  /**
+   * List Service Credits
+   *
+   * @remarks
+   * Lists a subscription's service credits.
+   *
+   * @returns OK
+   *
+   * @throws {@link SubscriptionInvoiceAccount.ListServiceCreditsError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   listServiceCredits(
     request: SubscriptionInvoiceAccount.ListServiceCreditsRequest,
     options?: RequestOptions,
@@ -181,7 +280,7 @@ export class SubscriptionInvoiceAccount {
       {
         method: "GET",
         url: this.#servers.production("/subscriptions/{subscription_id}/service_credits/list.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
         query: [
           { name: "page", value: request.page, schema: s.defaulted(s.number(), 1) },
@@ -202,26 +301,61 @@ export class SubscriptionInvoiceAccount {
     );
   }
 
+  /**
+   * Read Account Balances
+   *
+   * @remarks
+   * Returns the `balance_in_cents` of the Subscription's Pending Discount, Service Credit, and
+   * Prepayment accounts, as well as the sum of the Subscription's open, payable invoices.
+   *
+   * @returns OK
+   *
+   * @throws {@link ApiError} when the API answers with an error status
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   readAccountBalances(
     request: SubscriptionInvoiceAccount.ReadAccountBalancesRequest,
     options?: RequestOptions,
-  ): ApiPromise<AccountBalances, ResponseError> {
-    return this.#rawClient.execute<AccountBalances, ResponseError>(
+  ): ApiPromise<AccountBalances, ApiError> {
+    return this.#rawClient.execute<AccountBalances, ApiError>(
       {
         method: "GET",
         url: this.#servers.production("/subscriptions/{subscription_id}/account_balances.json"),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [{ name: "subscription_id", value: request.subscriptionId, schema: s.number() }],
         body: { kind: "empty" },
       },
       {
         success: { kind: "json", schema: accountBalancesSchema },
-        errorFactory: ResponseError,
+        errorFactory: ApiError,
       },
       options,
     );
   }
 
+  /**
+   * Refund Prepayment
+   *
+   * @remarks
+   * Refunds a prepayment applied to a subscription, either fully or partially. The `prepayment_id`
+   * will be the account transaction ID of the original payment. The prepayment must have some
+   * amount remaining in order to be refunded.
+   *
+   * The amount may be passed either as a decimal, with `amount`, or an integer in cents, with
+   * `amount_in_cents`.
+   *
+   * @returns Created
+   *
+   * @throws {@link SubscriptionInvoiceAccount.RefundPrepaymentError} when the API answers with an
+   * error status — narrow on `err.payload.kind`
+   *
+   * @throws {@link MaxioAdvancedBillingError} when no usable response was produced: a connection
+   * failure, a timeout, a body that would not decode, a value that would not encode, or a
+   * credential that could not be obtained
+   */
   refundPrepayment(
     request: SubscriptionInvoiceAccount.RefundPrepaymentRequestParams,
     options?: RequestOptions,
@@ -232,11 +366,12 @@ export class SubscriptionInvoiceAccount {
         url: this.#servers.production(
           "/subscriptions/{subscription_id}/prepayments/{prepayment_id}/refunds.json",
         ),
-        auth: anyAuth(this.#auth.basicAuth, this.#auth.bearerAuth),
+        auth: this.#auth.basicAuth,
         pathParams: [
           { name: "subscription_id", value: request.subscriptionId, schema: s.number() },
           { name: "prepayment_id", value: request.prepaymentId, schema: s.number() },
         ],
+        headers: [{ name: "Idempotency-Key", value: uuid(), schema: s.string() }],
         body: {
           kind: "json",
           value: request.body,
@@ -254,13 +389,16 @@ export class SubscriptionInvoiceAccount {
 
 export namespace SubscriptionInvoiceAccount {
   export type CreatePrepaymentRequestParams = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
     body?: CreatePrepaymentRequest;
   };
 
-  export class CreatePrepaymentError extends ResponseError<
-    Declared<"createPrepaymentErrorResponse", CreatePrepaymentErrorResponse>
-  > {
+  export class CreatePrepaymentError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"createPrepaymentErrorResponse", CreatePrepaymentErrorResponse>
+    >;
+
     static readonly errors: ErrorDecoders<CreatePrepaymentError> = [
       {
         on: 422,
@@ -271,13 +409,16 @@ export namespace SubscriptionInvoiceAccount {
   }
 
   export type DeductServiceCreditRequestParams = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
     body?: DeductServiceCreditRequest;
   };
 
-  export class DeductServiceCreditError extends ResponseError<
-    Declared<"deductServiceCreditErrorResponse", DeductServiceCreditErrorResponse>
-  > {
+  export class DeductServiceCreditError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"deductServiceCreditErrorResponse", DeductServiceCreditErrorResponse>
+    >;
+
     static readonly errors: ErrorDecoders<DeductServiceCreditError> = [
       {
         on: 422,
@@ -288,13 +429,16 @@ export namespace SubscriptionInvoiceAccount {
   }
 
   export type IssueServiceCreditRequestParams = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
     body?: IssueServiceCreditRequest;
   };
 
-  export class IssueServiceCreditError extends ResponseError<
-    Declared<"issueServiceCreditErrorResponse", IssueServiceCreditErrorResponse>
-  > {
+  export class IssueServiceCreditError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"issueServiceCreditErrorResponse", IssueServiceCreditErrorResponse>
+    >;
+
     static readonly errors: ErrorDecoders<IssueServiceCreditError> = [
       {
         on: 422,
@@ -305,28 +449,68 @@ export namespace SubscriptionInvoiceAccount {
   }
 
   export type ListPrepaymentsRequest = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 20. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 20
+     */
     perPage?: number;
+    /** Filter to use for List Prepayments operations */
     filter?: ListPrepaymentsFilter;
   };
 
-  export class ListPrepaymentsError extends ResponseError<Declared<"error404", undefined>> {
+  export class ListPrepaymentsError extends ApiError {
+    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+
     static readonly errors: ErrorDecoders<ListPrepaymentsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
     ];
   }
 
   export type ListServiceCreditsRequest = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
+    /**
+     * Result records are organized in pages. By default, the first page of results is displayed.
+     * The page parameter specifies a page number of results to fetch. You can start navigating
+     * through the pages to consume the results. You do this by passing in a page parameter.
+     * Retrieve the next page by adding ?page=2 to the query string. If there are no results to
+     * return, then an empty result set will be returned. Use in query `page=1`.
+     *
+     * @default 1
+     */
     page?: number;
+    /**
+     * This parameter indicates how many records to fetch in each request. Default value is 20. The
+     * maximum allowed values is 200; any per_page value over 200 will be changed to 200. Use in
+     * query `per_page=200`.
+     *
+     * @default 20
+     */
     perPage?: number;
+    /** Controls the order in which results are returned. Use in query `direction=asc`. */
     direction?: SortingDirection;
   };
 
-  export class ListServiceCreditsError extends ResponseError<
-    Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-  > {
+  export class ListServiceCreditsError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
+    >;
+
     static readonly errors: ErrorDecoders<ListServiceCreditsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -334,20 +518,25 @@ export namespace SubscriptionInvoiceAccount {
   }
 
   export type ReadAccountBalancesRequest = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
   };
 
   export type RefundPrepaymentRequestParams = {
+    /** The Chargify id of the subscription. */
     subscriptionId: number;
+    /** id of prepayment */
     prepaymentId: number;
     body?: RefundPrepaymentRequest;
   };
 
-  export class RefundPrepaymentError extends ResponseError<
-    | Declared<"refundPrepaymentBaseErrorsResponse1", RefundPrepaymentBaseErrorsResponse1>
-    | Declared<"error404", string>
-    | Declared<"refundPrepaymentErrorResponse", RefundPrepaymentErrorResponse>
-  > {
+  export class RefundPrepaymentError extends ApiError {
+    declare readonly payload: ErrorPayload<
+      | Declared<"refundPrepaymentBaseErrorsResponse1", RefundPrepaymentBaseErrorsResponse1>
+      | Declared<"error404", string>
+      | Declared<"refundPrepaymentErrorResponse", RefundPrepaymentErrorResponse>
+    >;
+
     static readonly errors: ErrorDecoders<RefundPrepaymentError> = [
       {
         on: 400,

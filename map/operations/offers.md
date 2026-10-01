@@ -4,16 +4,17 @@
 
 Accessor: `client.offers` · Source: `src/resources/offers.ts` · 5 operations · Request and error types: namespace `Offers`
 
-**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ResponseError` and the runtime error family are excluded — see sdk-map.md.
+**Type sources**: every type an operation names, with the file that declares it and the schema value exported beside it. Import every name from `@zaid.sid/maxio-advanced-billing`; the `Source` path is where to **read** the shape, never what to import. `ApiError`, the runtime error family and the file vocabulary are excluded — see sdk-map.md.
 
 ### archiveOffer
 
-- **Signature**: `archiveOffer(request: Offers.ArchiveOfferRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `archiveOffer(request: Offers.ArchiveOfferRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `PUT /offers/{offer_id}/archive.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Offers.ArchiveOfferRequest` (1):
 
@@ -25,10 +26,11 @@ Accessor: `client.offers` · Source: `src/resources/offers.ts` · 5 operations �
 
 - **Signature**: `createOffer(request: Offers.CreateOfferRequestParams, options?: RequestOptions): ApiPromise<OfferResponse, Offers.CreateOfferError>`
 - **Wire**: `POST /offers.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
-- **Request body**: `application/json` — the `body` field
+- **Auth**: `basicAuth`
+- **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `OfferResponse`
-- **Error**: `Offers.CreateOfferError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Offers.CreateOfferError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorArrayMapResponse1"` [422] `ErrorArrayMapResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Offers.CreateOfferRequestParams` (1):
@@ -47,10 +49,10 @@ Accessor: `client.offers` · Source: `src/resources/offers.ts` · 5 operations �
 
 - **Signature**: `listOffers(request: Offers.ListOffersRequest, options?: RequestOptions): ApiPromise<ListOffersResponse, Offers.ListOffersError>`
 - **Wire**: `GET /offers.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `ListOffersResponse`
-- **Error**: `Offers.ListOffersError` — **typed arms**, narrowed on `err.payload.kind`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"`, an instance of `Offers.ListOffersError` — **typed arms**, narrowed on `err.payload.kind`
 - **Error arms**: `"errorListResponse1"` [422] `ErrorListResponse1` · `"undeclared"` [any other] `rawBody: ArrayBuffer`
 
 **Fields** — `Offers.ListOffersRequest` (3):
@@ -68,12 +70,12 @@ Accessor: `client.offers` · Source: `src/resources/offers.ts` · 5 operations �
 
 ### readOffer
 
-- **Signature**: `readOffer(request: Offers.ReadOfferRequest, options?: RequestOptions): ApiPromise<OfferResponse, ResponseError>`
+- **Signature**: `readOffer(request: Offers.ReadOfferRequest, options?: RequestOptions): ApiPromise<OfferResponse, ApiError>`
 - **Wire**: `GET /offers/{offer_id}.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
 - **Returns**: `OfferResponse`
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Offers.ReadOfferRequest` (1):
 
@@ -87,12 +89,13 @@ Accessor: `client.offers` · Source: `src/resources/offers.ts` · 5 operations �
 
 ### unarchiveOffer
 
-- **Signature**: `unarchiveOffer(request: Offers.UnarchiveOfferRequest, options?: RequestOptions): ApiPromise<undefined, ResponseError>`
+- **Signature**: `unarchiveOffer(request: Offers.UnarchiveOfferRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `PUT /offers/{offer_id}/unarchive.json`
-- **Auth**: any of `basicAuth`, `bearerAuth` — the first one configured is sent
+- **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
+- **SDK-sent**: `header Idempotency-Key` (minted per call)
 - **Returns**: `undefined` — the operation resolves to nothing
-- **Error**: `ResponseError` — untyped, `payload.kind` always `"undeclared"`
+- **Error**: `MaxioAdvancedBillingError` with `kind: "api"` — untyped, `payload.kind` always `"undeclared"`
 
 **Fields** — `Offers.UnarchiveOfferRequest` (1):
 

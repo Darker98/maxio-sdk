@@ -9,6 +9,7 @@ export type CreatePayment = {
   amount: string;
   memo: string;
   paymentDetails: string;
+  /** The type of payment method used. Defaults to other. */
   paymentMethod: InvoicePaymentMethodType;
 };
 

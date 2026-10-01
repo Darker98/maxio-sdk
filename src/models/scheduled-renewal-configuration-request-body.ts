@@ -2,10 +2,21 @@ import * as s from "../core/validation/index.js";
 import type { Schema } from "../core/validation/schema.js";
 
 export type ScheduledRenewalConfigurationRequestBody = {
+  /** (Optional) Start of the renewal term. */
   startsAt?: Date;
+  /** (Optional) End of the renewal term. */
   endsAt?: Date;
+  /** (Optional) Lock-in date for the renewal. */
   lockInAt?: Date;
+  /**
+   * (Optional) Existing contract to associate with the scheduled renewal. Contracts must be enabled
+   * for your site.
+   */
   contractId?: number;
+  /**
+   * (Optional) Set to true to create a new contract when contracts are enabled. Contracts must be
+   * enabled for your site.
+   */
   createNewContract?: boolean;
 };
 

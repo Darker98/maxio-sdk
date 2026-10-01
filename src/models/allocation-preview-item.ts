@@ -12,13 +12,36 @@ export type AllocationPreviewItem = {
   previousQuantity?: PreviousQuantity1;
   memo?: string | null;
   timestamp?: string | null;
+  /**
+   * @deprecated
+   */
   prorationUpgradeScheme?: string;
+  /**
+   * @deprecated
+   */
   prorationDowngradeScheme?: string;
   accrueCharge?: boolean;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   upgradeCharge?: CreditType | null;
+  /**
+   * The type of credit to be created when upgrading/downgrading. Defaults to the component and then
+   * site setting if one is not provided.
+   */
   downgradeCredit?: CreditType | null;
   pricePointId?: number;
+  /**
+   * The numerical interval. e.g., an interval of ‘30’ coupled with an interval_unit of day would
+   * mean this component price point would renew every 30 days. This property is only available for
+   * sites with Multifrequency enabled.
+   */
   interval?: number;
+  /**
+   * A string representing the interval unit for this component price point, either month or day.
+   * This property is only available for sites with Multifrequency enabled.
+   */
   intervalUnit?: IntervalUnit | null;
   previousPricePointId?: number;
   pricePointHandle?: string;

@@ -4,6 +4,9 @@ import { componentCustomPriceSchema, type ComponentCustomPrice } from "./compone
 
 export type UpdateSubscriptionComponent = {
   componentId?: number;
+  /**
+   * Create or update custom pricing unique to the subscription. Used in place of `price_point_id`.
+   */
   customPrice?: ComponentCustomPrice;
 };
 
