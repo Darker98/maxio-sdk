@@ -122,9 +122,9 @@ export class MaxioAdvancedBillingClient {
     this.#rawClient = new RawClient({
       ...buildCoreClientOptions(options),
       defaultHeaders: [
-        { name: "User-Agent", value: "MaxioAdvancedBillingClient/1.0.0 TypeScript", schema: s.string() },
+        { name: "User-Agent", value: "MaxioAdvancedBillingClient/2.0.1 TypeScript", schema: s.string() },
         { name: "X-APIMatic-Lang", value: "TypeScript", schema: s.string() },
-        { name: "X-APIMatic-Package-Version", value: "1.0.0", schema: s.string() },
+        { name: "X-APIMatic-Package-Version", value: "2.0.1", schema: s.string() },
         { name: "X-APIMatic-Gen-Version", value: "4.0.0", schema: s.string() },
         { name: "X-APIMatic-OS", value: host.operatingSystem(), schema: s.optional(s.string()) },
         { name: "X-APIMatic-Runtime", value: host.runtimeDescription(), schema: s.optional(s.string()) },

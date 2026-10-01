@@ -8,7 +8,7 @@
 | --- | --- |
 | SDK display name | Maxio Advanced Billing |
 | Package | `@zaid.sid/maxio-advanced-billing` |
-| Package version | `1.0.0` |
+| Package version | `2.0.1` |
 | API spec version | `1.0` |
 | Import specifier | `@zaid.sid/maxio-advanced-billing` — the package root is the **only** entry. Deep imports (`@zaid.sid/maxio-advanced-billing/models/...`) do not resolve; the `exports` map exposes `.` and `./package.json` and nothing else |
 | Module format | dual ESM + CommonJS, as folder dialects (`dist/esm`, `dist/commonjs`), each with its own `package.json` marker. No `.mjs`, `.cjs`, `.d.mts` or `.d.cts` files exist |
